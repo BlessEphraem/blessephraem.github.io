@@ -1,0 +1,981 @@
+/* Core Imports */
+@import url(https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css);
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css');
+
+/* Variables */
+:root {
+    /* Colors */
+    --main-color: #ff1796;
+    --main-color-light: #ff70bf;
+    --background-color: #0C0C0C;
+    --text-color: #8a8a8a;
+    --white-color: #ffffff;
+
+    /* Animated Text Colors */
+    --color-editor-video: rgb(255, 41, 41);
+    --color-editor-video-shadow: rgba(255, 41, 41, 0.4);
+    --color-graphiste: rgb(26, 26, 187);
+    --color-graphiste-shadow: rgb(26, 26, 187, 0.4);
+    --color-artiste-fx: rgb(223, 22, 82);
+    --color-artiste-fx-shadow: rgb(223, 22, 82, 0.4);
+    --color-motion-designer: rgb(146, 19, 44);
+    --color-motion-designer-shadow: rgb(146, 19, 44, 0.4);
+    --color-createur-3d: rgb(255, 153, 0);
+    --color-createur-3d-shadow: rgb(255, 153, 0, 0.4);
+
+    /* Timeline Colors */
+    --color-sora: #00BCD4;
+    --color-kira: #FFEB3B;
+    --color-tartin: #3F51B5;
+    --color-okamedia: #FF2929;
+    --color-colasbim: #4CAF50;
+    --color-timeline-bar-bg: rgba(255, 255, 255, 0.1);
+    --color-timeline-dot: gray;
+
+    /* Fonts */
+    --font-main: 'Fira Code', Monospace;
+
+    /* Font Sizes */
+    --font-size-h1: 5rem;
+    --font-size-h3: 2rem;
+    --font-size-nav: 1.3rem;
+    --font-size-paragraph: 1rem;
+    --font-size-btn: 1rem;
+    --font-size-title: 2rem;
+    --font-size-home-icons: 2rem;
+    --font-size-timeline-scale: 2rem;
+
+    /* Spacing & Sizing */
+    --header-padding: 2rem 9%;
+    --section-gap: 8rem;
+    --social-icon-size: 4rem;
+    --social-icon-margin: 2rem 2rem 2rem 0;
+    --btn-padding: 1rem 2.8rem;
+    --btn-border-radius: 4rem;
+    --border-width: 3px;
+    --timeline-bar-height: 10px;
+    --timeline-dot-size: 8px;
+
+    /* Animation Durations & Delays */
+    --anim-duration-typing: 20s;
+    --anim-duration-scale: 0.3s;
+    --anim-duration-slide: 1s;
+    --anim-duration-image: 2s;
+    --anim-speed-cursor: 0.6s;
+    --anim-delay-h3: 0.05s;
+    --anim-delay-p: 0.1s;
+    --anim-bg-duration: 15s;
+
+    /* Max Widths */
+    --max-width-content-desktop: 50vw;
+    --max-width-content-mobile: 90vw;
+    --max-width-p-desktop: 90vw;
+    --max-width-p-mobile: 85vw;
+
+    /* Font Sizes for Mobile */
+    --font-size-p-mobile: 0.9rem;
+    --font-size-p-tablet: 0.85rem;
+    --font-size-p-phone: 0.8rem;
+    --font-size-p-tiny: 0.75rem;
+
+    /* Timeline Dot Sizes for Mobile */
+    --timeline-dot-size-mobile: 6px;
+    --timeline-dot-size-phone: 6px;
+    --timeline-dot-size-tiny: 6px;
+}
+
+/* Base Styles & Configuration */
+html {
+    scroll-behavior: smooth;
+    height: 100%;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* IMPORTANT: Ensures padding and border are included in element's total width and height */
+    text-decoration: none;
+    border: none;
+    outline: none;
+    font-family: var(--font-main);
+}
+
+body {
+    background-color: var(--background-color);
+    animation: bg var(--anim-bg-duration) ease-in-out infinite;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Changed from hidden to auto, if sections are taller than viewport */
+    color: var(--text-color);
+    scrollbar-width: none;
+}
+/* If you want scrolling for the body itself when sections are taller than viewport: */
+body {
+    overflow-y: auto; /* Allow vertical scrolling for the entire body */
+    overflow-x: hidden; /* Prevent horizontal scrolling on the body */
+}
+
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+/* Header & Navigation */
+header {
+    margin-top: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: var(--header-padding);
+    background-color: transparent;
+    filter: drop-shadow(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+}
+
+.title {
+    font-size: var(--font-size-title);
+    color: var(--main-color);
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.5s ease;
+    animation: slideFromUp var(--anim-duration-slide) ease-in-out forwards;
+    transform-origin: top top;
+}
+
+.title:hover {
+    transform: scale(1.1);
+}
+
+.experiences-content h1 {
+    display: none;
+}
+
+nav {
+    animation: slideFromUp var(--anim-duration-slide) ease-in-out forwards;
+    transform-origin: top top;
+}
+
+nav a {
+    font-size: var(--font-size-nav);
+    color: var(--white-color);
+    margin-left: 1rem;
+    font-weight: 500;
+    transition: var(--anim-duration-scale) ease;
+    border-bottom: var(--border-width) solid transparent;
+}
+
+nav a:hover,
+nav a.active {
+    color: var(--main-color);
+    border-bottom: var(--border-width) solid var(--main-color);
+}
+
+/* Main Content Structure */
+.container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.main-content {
+    height: 100%;
+    display: flex;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.main-content::-webkit-scrollbar {
+    display: none;
+}
+
+section {
+    min-width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    height: 100%;
+    gap: var(--section-gap);
+    flex-direction: row;
+}
+
+.home-content,
+.experiences-content,
+.skills-content,
+.contact-content {
+    max-width: var(--max-width-content-desktop);
+}
+
+h1 {
+    font-size: var(--font-size-h1);
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+h3 {
+    font-size: var(--font-size-h3);
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+p {
+    max-width: var(--max-width-p-desktop);
+    font-size: var(--font-size-paragraph);
+}
+
+span {
+    color: var(--main-color);
+}
+
+/* Home Section Specific Styles */
+.home-content h1 {
+    animation: slideFromLeft var(--anim-duration-slide) ease-in-out forwards;
+    transform-origin: left center;
+}
+
+.home-content h3 {
+    opacity: 0;
+    animation: slideFromLeft var(--anim-duration-slide) ease-in-out forwards;
+    animation-delay: var(--anim-delay-h3);
+    transform-origin: left center;
+}
+
+.home-content p {
+    opacity: 0;
+    animation: slideFromLeft var(--anim-duration-slide) ease-in-out forwards;
+    animation-delay: var(--anim-delay-p);
+    transform-origin: left center;
+}
+
+.home-img {
+    animation: slideFromDown var(--anim-duration-image) ease-in-out forwards;
+    transform-origin: center center;
+    border-radius: 50%;
+}
+
+.home-img img {
+    padding: 0 1rem;
+    position: relative;
+    width: 32vw;
+    cursor: pointer;
+    transition: var(--anim-duration-scale) ease-in-out;
+}
+
+.home-img img:hover {
+    transform: scale(1.1);
+    transition: 0.1s ease;
+}
+
+.typing-text {
+    min-width: 500px;
+    animation: slideFromLeft var(--anim-duration-slide) ease-in-out forwards;
+    animation-delay: 1s;
+}
+
+.typing-text span {
+    position: relative;
+}
+
+.typing-text span:before {
+    content: "PLACEHOLDER";
+    color: var(--main-color-light);
+    animation: words var(--anim-duration-typing) infinite;
+}
+
+.typing-text span:after {
+    content: "";
+    position: absolute;
+    top: calc((var(--font-size-h3) - 80%) / 2);
+    height: 80%;
+    border-left: var(--border-width) solid transparent;
+    margin-left: 8px;
+    animation: cursor var(--anim-speed-cursor) infinite;
+}
+
+/* Home Social Icons */
+.home-social-icons {
+    display: flex;
+    animation: slideFromDown var(--anim-duration-slide) ease-in-out forwards;
+}
+
+.home-social-icons a {
+    color: var(--background-color);
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: var(--social-icon-size);
+    height: var(--social-icon-size);
+    background-color: var(--main-color);
+    border: var(--border-width) solid var(--main-color);
+    font-size: var(--font-size-home-icons);
+    border-radius: 50%;
+    margin: var(--social-icon-margin);
+    transition: all 0.2s ease;
+}
+
+.home-social-icons a:hover {
+    color: var(--white-color);
+    transform: scale(1.2);
+    box-shadow: 0 0 25px var(--main-color);
+    transition: all 0.2s ease;
+}
+
+/* Contact Button */
+.button {
+    display: inline-block;
+    animation: slideFromDown var(--anim-duration-slide) ease-in-out forwards;
+}
+
+.btn {
+    text-transform: uppercase;
+    font-weight: bold;
+    display: inline-block;
+    padding: var(--btn-padding);
+    border-radius: var(--btn-border-radius);
+    color: var(--background-color);
+    letter-spacing: 0.3rem;
+    transition: all var(--anim-duration-scale) ease;
+    background-color: var(--main-color);
+    cursor: pointer;
+}
+
+.btn:hover {
+    transform: scale(1.1);
+    background-color: var(--main-color);
+    border-color: var(--main-color);
+    color: var(--white-color);
+    box-shadow: 0 0 25px var(--main-color);
+}
+
+/* Experience Section Specific Styles (Timeline) */
+.experiences {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.experiences-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 90vw;
+}
+
+.experiences-content h1 {
+    color: var(--main-color);
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    text-align: center;
+}
+
+.timeline {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.timeline-scale {
+    font-weight: 900;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0 5px 0;
+    color: var(--text-color);
+    font-size: var(--font-size-timeline-scale);
+    box-sizing: border-box;
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin-bottom: 10px;
+}
+
+.timeline-scale span {
+    color: var(--white-color);
+}
+
+.timeline-scale span:first-child,
+.timeline-scale span:last-child {
+    position: static;
+    left: unset;
+    right: unset;
+}
+
+.timeline-items-wrapper {
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+    width: 100%;
+}
+
+.timeline-item {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+        "label"
+        "detail"
+        "bar-and-dots";
+    align-items: center;
+    column-gap: 0;
+    row-gap: 5px;
+    position: relative;
+    width: 100%;
+}
+
+.timeline-label {
+    grid-area: label;
+    text-align: left;
+    font-size: 1.1rem;
+    padding-bottom: 5px;
+    color: var(--white-color);
+    font-weight: bold;
+}
+
+.timeline-detail {
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.03);
+    border-left: 4px solid var(--main-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    padding: 10px 16px;
+    box-sizing: border-box;
+}
+
+.timeline-title {
+    font-size: 1.1em;
+    font-weight: bold;
+    flex-shrink: 0;
+    margin-right: 16px;
+}
+
+.timeline-detail .timeline-title + * {
+    margin-left: auto;
+    text-align: right;
+    width: 100%;
+}
+
+.timeline-bar-container {
+    grid-area: bar-and-dots;
+    width: 100%;
+    position: relative;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+}
+
+.timeline-bar {
+    width: 100%;
+    height: var(--timeline-bar-height);
+    background-color: var(--color-timeline-bar-bg);
+    border-radius: 5px;
+    position: relative;
+    overflow: visible;
+    margin-bottom: 30px;
+}
+
+.timeline-segment {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    border-radius: 5px;
+    position: relative;
+}
+
+/* Timeline Segment Colors & Widths */
+.sora-segment {
+    background-color: var(--color-sora);
+    width: calc(1 * (100% / 7));
+    left: 0;
+}
+
+.kira-segment {
+    background-color: var(--color-kira);
+    width: calc(1 * (100% / 7));
+    left: 0;
+}
+
+.tartin-segment {
+    background-color: var(--color-tartin);
+    width: calc(2.5 * (100% / 7));
+    left: calc(0.75 * (100% / 7));
+}
+
+.okamedia-segment {
+    background-color: var(--color-okamedia);
+    width: calc(1.6 * (100% / 7));
+    left: calc(1.5 * (100% / 7));
+}
+
+.colasbim-segment {
+    background-color: var(--color-colasbim);
+    width: calc(4.1 * (100% / 7));
+    left: calc(2.9 * (100% / 7));
+}
+
+.sora .timeline-detail { border-color: var(--color-sora); }
+.kira .timeline-detail { border-color: var(--color-kira); }
+.tartin .timeline-detail { border-color: var(--color-tartin); }
+.okamedia .timeline-detail { border-color: var(--color-okamedia); }
+.colasbim .timeline-detail { border-color: var(--color-colasbim); }
+
+.timeline-dots {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    pointer-events: none;
+    padding: 0 2px;
+    box-sizing: border-box;
+}
+
+.timeline-dots span {
+    width: var(--timeline-dot-size);
+    height: var(--timeline-dot-size);
+    background-color: var(--color-timeline-dot);
+    transform: rotate(45deg);
+    display: block;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.651);
+}
+
+/* Specific dot colors */
+.sora .timeline-dots span { background-color: var(--color-sora); }
+.kira .timeline-dots span { background-color: var(--color-kira); }
+.tartin .timeline-dots span { background-color: var(--color-tartin); }
+.okamedia .timeline-dots span { background-color: var(--color-okamedia); }
+.colasbim .timeline-dots span { background-color: var(--color-colasbim); }
+
+/* Keyframe Animations */
+@keyframes cursor {
+    50% { border-left-color: var(--white-color); }
+}
+
+@keyframes words {
+    0%, 20% {
+        content: "Éditeur Vidéo";
+        color: var(--color-editor-video);
+        text-shadow: 0 0 25px var(--color-editor-video-shadow);
+    }
+    21%, 40% {
+        content: "Graphiste";
+        color: var(--color-graphiste);
+        text-shadow: 0 0 25px var(--color-graphiste-shadow);
+    }
+    41%, 60% {
+        content: "Artiste FX";
+        color: var(--color-artiste-fx);
+        text-shadow: 0 0 25px var(--color-artiste-fx-shadow);
+    }
+    61%, 80% {
+        content: "Motion Designer";
+        color: var(--color-motion-designer);
+        text-shadow: 0 0 25px var(--color-motion-designer-shadow);
+    }
+    81%, 100% {
+        content: "Créateur 3D";
+        color: var(--color-createur-3d);
+        text-shadow: 0 0 25px var(--color-createur-3d-shadow);
+    }
+}
+
+@keyframes slideFromLeft {
+    from { opacity: 0; transform: translateX(100px); }
+    to { opacity: 1; transform: translateX(0px); }
+}
+
+@keyframes slideFromDown {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0px); }
+}
+
+@keyframes slideFromBottom {
+    from { opacity: 0; transform: translateY(400px); }
+    to { opacity: 1; transform: translateY(0px); }
+}
+
+@keyframes slideFromUp {
+    from { opacity: 0; transform: translateY(-100px); }
+    to { opacity: 1; transform: translateY(0px); }
+}
+
+/* Media Queries (Responsiveness) */
+@media (max-width: 995px) {
+    header, .title {
+        display: none;
+    }
+
+    /* Important: main-content for mobile sections */
+    .main-content {
+        flex-direction: column;
+        overflow-x: hidden; /* Prevent horizontal scroll on mobile sections */
+        overflow-y: scroll; /* Allow vertical scroll for sections */
+        scroll-snap-type: none; /* Disable snap for vertical scrolling */
+    }
+
+    section {
+        min-width: unset; /* Remove fixed width for mobile */
+        min-height: 100vh; /* Ensure sections take full viewport height */
+        justify-content: center;
+        align-items: center;
+        padding: 10vw; /* Add some padding for content inside sections */
+        flex-direction: column;
+        gap: 10vw;
+        height: auto; /* Allow section height to be determined by content */
+        justify-content: flex-start;
+        scroll-snap-align: none; /* Disable snap for sections themselves */
+    }
+
+    .home-content,
+    .experiences-content,
+    .skills-content,
+    .contact-content {
+        max-width: var(--max-width-content-mobile);
+        width: 100%; /* Ensure content takes full width */
+        text-align: center;
+    }
+
+    p {
+        max-width: var(--max-width-p-mobile);
+        font-size: var(--font-size-p-mobile);
+        margin: 1rem auto;
+    }
+
+    .timeline-dots span {
+        width: var(--timeline-dot-size-mobile);
+        height: var(--timeline-dot-size-mobile);
+    }
+
+    .home-img img {
+        width: 40vw;
+        padding: 0;
+    }
+
+    h1 { font-size: calc(var(--font-size-h1) * 0.6); }
+    h3 { font-size: calc(var(--font-size-h3) * 0.8); }
+    p {
+        max-width: 85vw;
+        font-size: 0.9rem;
+        margin: 1rem auto;
+    }
+
+    .typing-text {
+        min-width: unset;
+        font-size: calc(var(--font-size-h3) * 0.8);
+    }
+    .typing-text span:after {
+        top: calc((calc(var(--font-size-h3) * 0.8) - 80%) / 2);
+    }
+
+    .home-social-icons {
+        justify-content: center;
+        margin: 1rem 0;
+    }
+    .home-social-icons a {
+        width: 3.5rem;
+        height: 3.5rem;
+        font-size: 1.8rem;
+        margin: 1rem;
+    }
+
+    .button { text-align: center; }
+    .btn {
+        padding: 0.8rem 2rem;
+        font-size: 0.9rem;
+    }
+
+    /* Experience Timeline adjustments for smaller screens */
+    .experiences {
+        padding: 10vw;
+        gap: 10vw;
+        height: auto;
+    }
+    .experiences-content h1 {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+    .timeline {
+        width: 100%; /* Ensure it takes full width of its parent (.experiences-content) */
+        max-width: 100%; /* Ensure it doesn't exceed 100% width */
+        padding: 0 10px; /* Add horizontal padding to prevent content touching edges */
+        box-sizing: border-box; /* Include padding in the width calculation */
+        padding-top: 40px;
+        margin: 0; /* Remove auto margins to avoid potential shifting */
+    }
+    .timeline-scale {
+        font-size: calc(var(--font-size-timeline-scale) / 1.25);
+        padding: 0 5px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        justify-content: space-between;
+        position: relative;
+        top: 0;
+        transform: none;
+    }
+    .timeline-scale span:first-child,
+    .timeline-scale span:last-child {
+        position: static;
+        transform: none;
+    }
+
+    .timeline-items-wrapper {
+        width: 100%; /* Ensure this wrapper takes full width */
+    }
+
+    .timeline-item {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        grid-template-areas:
+            "label"
+            "detail"
+            "bar-and-dots";
+        align-items: center;
+        column-gap: 0;
+        row-gap: 5px;
+        position: relative;
+        width: 100%; /* Ensure item takes full width of its wrapper */
+        margin-bottom: 25px;
+        padding: 0; /* Remove any padding that might be pushing content out */
+    }
+
+    .timeline-label {
+        grid-area: label;
+        text-align: left;
+        font-size: 1.1rem;
+        color: var(--white-color);
+        font-weight: bold;
+    }
+
+    .timeline-bar-container {
+        grid-area: bar-and-dots;
+        width: 100%;
+        position: relative;
+        margin-left: 0;
+        margin-right: 0;
+        padding: 0;
+    }
+
+    .timeline-bar {
+        width: 100%;
+        height: 8px;
+        position: relative;
+        margin-bottom: 0;
+    }
+
+    .timeline-segment {
+        position: absolute;
+        height: 100%;
+        top: 0;
+    }
+
+    .timeline-detail {
+        grid-area: detail;
+        text-align: left;
+        font-size: 0.9rem;
+    }
+
+    .timeline-dots {
+        position: absolute;
+        top: var(--timeline-bar-height);
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        pointer-events: none;
+        padding: 0 2px;
+        box-sizing: border-box;
+        margin-top: 5px;
+    }
+
+    .timeline-dots span {
+        width: 6px;
+        height: 6px;
+    }
+}
+
+@media (max-width: 768px) {
+    h1 { font-size: calc(var(--font-size-h1) * 0.5); }
+    h3 { font-size: calc(var(--font-size-h3) * 0.7); }
+    p { font-size: var(--font-size-p-tablet); }
+
+    .typing-text { font-size: calc(var(--font-size-h3) * 0.7); }
+    .typing-text span:after {
+        top: calc((calc(var(--font-size-h3) * 0.7) - 80%) / 2);
+    }
+
+    .home-img img { width: 60vw; }
+    .home-social-icons a {
+        width: 3rem;
+        height: 3rem;
+        font-size: 1.5rem;
+        margin: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content { overflow-y: scroll; }
+
+    h1 { font-size: calc(var(--font-size-h1) * 0.4); }
+    h3 {
+        font-size: calc(var(--font-size-h3) * 0.6);
+        margin-bottom: 0.25rem;
+    }
+    p { font-size: var(--font-size-p-phone); margin: 0; }
+
+    .typing-text { font-size: calc(var(--font-size-h3) * 0.6); }
+    .typing-text span:after {
+        top: calc((calc(var(--font-size-h3) * 0.6) - 80%) / 2);
+    }
+
+    .home-social-icons a {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1.5rem;
+        margin: 0.6rem 1rem;
+    }
+    .btn {
+        padding: 0.7rem 1.8rem;
+        font-size: 0.8rem;
+    }
+
+    /* Experience Timeline specific mobile adjustments */
+    .timeline {
+        padding: 0 5px; /* Réduire le padding horizontal sur les très petits écrans */
+    }
+    .timeline-scale { font-size: calc(var(--font-size-timeline-scale) / 2); }
+    .timeline-label { font-size: 1rem; }
+    .timeline-detail { font-size: 0.8rem; }
+}
+
+@media (max-width: 320px) {
+    h1 { font-size: calc(var(--font-size-h1) * 0.25); }
+    h3 { font-size: calc(var(--font-size-h3) * 0.45); }
+    p { font-size: var(--font-size-p-tiny); }
+
+    .typing-text { font-size: calc(var(--font-size-h3) * 0.455); }
+    .typing-text span:after {
+        top: calc((calc(var(--font-size-h3) * 0.45) - 80%) / 2);
+    }
+
+    .home-social-icons a {
+        width: 2rem;
+        height: 2rem;
+        font-size: 1.15rem;
+        margin: 0.5rem;
+    }
+    .btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.75rem;
+    }
+}
+
+.timeline-desc {
+    margin-left: auto;
+    text-align: right;
+    width: 100%;
+    padding-left: 0;
+    color: var(--text-color);
+}
+
+.sora .timeline-title { color: var(--color-sora); }
+.kira .timeline-title { color: var(--color-kira); }
+.tartin .timeline-title { color: var(--color-tartin); }
+.okamedia .timeline-title { color: var(--color-okamedia); }
+.colasbim .timeline-title { color: var(--color-colasbim); }
+
+.skills-matrix {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    max-width: 700px;
+    width: 100%;
+    margin: 2rem auto 0 auto;
+}
+
+.skill-track {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    width: 100%;
+    animation: slideFromLeft 0.8s cubic-bezier(.77,0,.18,1) both;
+}
+
+.skill-label {
+    min-width: 160px;
+    font-weight: bold;
+    color: var(--white-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+}
+
+.skill-stars {
+    display: flex;
+    gap: 8px;
+    font-size: 1.5rem;
+    color: var(--main-color);
+    flex: 1;
+    justify-content: center;
+}
+
+.skill-level {
+    min-width: 100px;
+    text-align: right;
+    color: var(--main-color);
+    font-size: 1rem;
+    font-family: var(--font-main);
+}
+
+@media (max-width: 600px) {
+    .skills-matrix {
+        max-width: 100%;
+        gap: 24px;
+        margin: 1rem 0 0 0;
+        align-items: center;
+    }
+    .skill-track {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 0;
+        text-align: center;
+        margin-bottom: 16px;
+    }
+    .skill-label {
+        font-size: 1rem;
+        min-width: unset;
+        justify-content: center;
+        width: 100%;
+        text-align: center;
+    }
+    .skill-stars {
+        justify-content: center;
+        font-size: 1.2rem;
+        width: 100%;
+        text-align: center;
+    }
+    .skill-level {
+        font-size: 0.95rem;
+        min-width: unset;
+        text-align: center;
+        width: 100%;
+    }
+}
