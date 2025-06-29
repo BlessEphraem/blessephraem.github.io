@@ -156,4 +156,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // il faudrait ajouter une logique ici. Pour l'instant, on laisse le comportement natif.
         }
     });
+
+    // Ajout : forcer l'affichage de la section Home au chargement
+    if (!isMobileView()) {
+        scrollToSection(0);
+    }
 });
