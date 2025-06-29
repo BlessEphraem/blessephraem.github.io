@@ -275,7 +275,6 @@ h2, h3 {
 }
 
 p {
-    max-width: var(--max-width-p-desktop);
     font-size: var(--font-size-paragraph);
 }
 
@@ -284,6 +283,41 @@ span {
 }
 
 /* Home Section Specific Styles */
+.home-wrapper {
+    max-width: var(--max-width-content-desktop);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.home-img {
+    flex: 1;
+    max-width: 36vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-img img {
+    width: 100%;
+    height: auto;
+    max-width: 32vw;
+    object-fit: contain;
+    padding: 0;
+    position: relative;
+    cursor: pointer;
+    transition: var(--anim-duration-scale) ease-in-out;
+}
+
+.home-content {
+    max-width: 50vw;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .home-content h1 {
     animation: slideFromLeft var(--anim-duration-slide) ease-in-out forwards;
     transform-origin: left center;
@@ -301,20 +335,7 @@ span {
     animation: slideFromLeft var(--anim-duration-slide) ease-in-out forwards;
     animation-delay: var(--anim-delay-p);
     transform-origin: left center;
-}
 
-.home-img {
-    animation: slideFromDown var(--anim-duration-image) ease-in-out forwards;
-    transform-origin: center center;
-    border-radius: 50%;
-}
-
-.home-img img {
-    padding: 0 1rem;
-    position: relative;
-    width: 32vw;
-    cursor: pointer;
-    transition: var(--anim-duration-scale) ease-in-out;
 }
 
 .home-img img:hover {
@@ -716,10 +737,21 @@ span {
         text-align: center;
         width: 100%;
     }
+    
+    .home-wrapper {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        gap: 10vw;
+    }
+    
     .home-img {
         display: flex;
         justify-content: center;
         width: 100%;
+        padding: 0;
+        flex: unset;
     }
 
     .home-content h2,
@@ -729,7 +761,7 @@ span {
     .contact-content h2 {
         color: var(--main-color);
         margin: 2rem 0 2rem 0;
-        font-size: 2.5rem;
+        font-size: 2.25rem;
         text-align: center;
         letter-spacing: 2px;
         width: 100%;
@@ -743,10 +775,11 @@ span {
         width: 100%;
         text-align: center;
     }
-    p {
+    .home-content p {
         max-width: var(--max-width-p-mobile);
         font-size: var(--font-size-p-mobile);
-        margin: 1rem auto;
+        margin: 1rem 1rem;
+        text-align: center;
     }
     .timeline-dots span {
         width: var(--timeline-dot-size-mobile);
@@ -762,6 +795,7 @@ span {
         max-width: 85vw;
         font-size: 0.9rem;
         margin: 1rem auto;
+        text-align: center;
     }
     .typing-text {
         min-width: unset;
@@ -802,6 +836,16 @@ span {
     .contact-content h2 {
         display: block;
     }
+
+    .experiences-content p,
+    .skills-content p,
+    .contact-content p,
+    .services-content p {
+        max-width: var(--max-width-p-mobile);
+        font-size: var(--font-size-p-mobile);
+        margin: 1rem auto;
+        text-align: center;
+    }
 }
 
 @media (max-width: 768px) {
@@ -826,7 +870,7 @@ span {
     h1 { font-size: calc(var(--font-size-h1) * 0.4); }
     h3 {
         font-size: calc(var(--font-size-h3) * 0.6);
-        margin-bottom: 0.25rem;
+        margin: 0.5rem 0;
     }
     p { font-size: var(--font-size-p-phone); margin: 0; }
     .typing-text { font-size: calc(var(--font-size-h3) * 0.6); }
@@ -1172,7 +1216,7 @@ span {
 }
 .contact-email-center a {
     color: var(--main-color);
-    font-size: 1.15rem;
+    font-size: 1rem;
     font-weight: 600;
     letter-spacing: 1px;
     text-decoration: none;
