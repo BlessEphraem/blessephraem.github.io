@@ -5,9 +5,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const header = document.querySelector('header');
     const title = document.querySelector('.title');
 
+    // Gestion du formulaire de contact avec Formspree (AJAX)
+    const form = document.getElementById("my-form");
+    if (form) {
+        form.addEventListener("submit", async function handleSubmit(event) {
+            event.preventDefault();
+            const status = document.getElementById("my-form-status");
+            const data = new FormData(form);
+            const submitBtn = form.querySelector('button[type=\"submit\"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Envoi...';
+            try {
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    body: data,
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (response.ok) {
+                    status.innerHTML = "Merci ! Votre message a bien été envoyé.";
+                    form.reset();
+                } else {
+                    const result = await response.json();
+                    if (result.errors) {
+                        status.innerHTML = result.errors.map(error => error.message).join(', ');
+                    } else {
+                        status.innerHTML = "Oups ! Une erreur est survenue lors de l'envoi.";
+                    }
+                }
+            } catch (error) {
+                status.innerHTML = "Oups ! Une erreur réseau est survenue.";
+            }
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Envoyer';
+        });
+    }
+
     let currentSectionIndex = 0;
-    let isThrottled = false;
-    const throttleTime = 300; // Temps de latence pour le défilement desktop/clavier
+    let isScrolling = false;
 
     const isMobileView = () => {
         return window.matchMedia("(max-width: 995px)").matches;
@@ -19,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Fonction pour mettre à jour le lien de navigation actif
-    const updateNavLink = (index) => {
+    const updateNavLinks = (index) => {
         if (window.getComputedStyle(header).display !== 'none') {
             navLinks.forEach(link => link.classList.remove('active'));
             if (navLinks[index]) {
@@ -28,137 +62,111 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Fonction pour faire défiler vers une section spécifique (utilisée uniquement sur desktop et navigation)
-    const scrollToSection = (index) => {
-        if (index >= 0 && index < sections.length) {
-            // Uniquement pour le mode desktop, le scroll mobile est natif
-            if (!isMobileView()) {
-                const scrollPosition = index * window.innerWidth; // Défilement horizontal
-                mainContent.scrollTo({
-                    left: scrollPosition,
-                    behavior: 'smooth'
-                });
-                currentSectionIndex = index;
-                updateNavLink(currentSectionIndex);
-            }
-            // Sur mobile, cette fonction n'aura pas d'effet sur le scroll manuel,
-            // mais pourrait être appelée par les liens de navigation si on les rendait visibles
-            // et qu'on voulait un scroll "smooth" vers une section spécifique.
-            // Pour l'instant, on se base sur le scroll natif.
-        }
-    };
-
-    // --- Gestion du défilement pour Desktop (molette de souris) ---
-    mainContent.addEventListener('wheel', (event) => {
-        // Appliquer cette logique uniquement sur desktop
-        if (!isMobileView()) {
-            if (isThrottled) {
-                return;
-            }
-
-            isThrottled = true;
-            event.preventDefault(); // Empêche le défilement vertical par défaut du navigateur
-
-            if (event.deltaY > 0) { // Défilement vers le bas (mappé à la droite/section suivante)
-                scrollToSection(currentSectionIndex + 1);
-            } else { // Défilement vers le haut (mappé à la gauche/section précédente)
-                scrollToSection(currentSectionIndex - 1);
-            }
-
-            setTimeout(() => {
-                isThrottled = false;
-            }, throttleTime);
-        }
-    }, { passive: false }); // `passive: false` est nécessaire car nous utilisons `preventDefault`
-
-    // --- Suppression de la gestion tactile personnalisée ---
-    // Les écouteurs 'touchstart', 'touchmove', 'touchend' sont supprimés.
-    // Le défilement sur mobile sera géré nativement par le navigateur.
-
-    // --- Liens de navigation (fonctionnent toujours pour les deux vues) ---
-    // Ces liens utiliseront scrollToSection, qui est conditionnel au mode desktop
-    // ou si le scroll mobile natif est géré par le navigateur après le clic.
-    if (window.getComputedStyle(header).display !== 'none') {
-        navLinks.forEach((link, index) => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                // Sur mobile, le clic sur un lien fera défiler la page normalement
-                // ou déclenchera scrollToSection s'il était actif.
-                // Ici, on fait simplement un scroll vers l'ID si on est sur mobile,
-                // pour un comportement natif.
-                if (isMobileView()) {
-                    const targetId = e.target.getAttribute('href');
-                    const targetSection = document.querySelector(targetId);
-                    if (targetSection) {
-                        targetSection.scrollIntoView({ behavior: 'smooth' });
-                    }
-                } else {
-                    // Sur desktop, on utilise notre fonction scrollToSection pour le défilement snap
-                    scrollToSection(index);
-                }
-            });
+    // Scroll vers une section (desktop)
+    function scrollToSection(index, instant = false) {
+        if (index < 0 || index >= sections.length) return;
+        const scrollPos = index * window.innerWidth;
+        mainContent.scrollTo({
+            left: scrollPos,
+            behavior: instant ? 'auto' : 'smooth'
         });
+        currentSectionIndex = index;
+        updateNavLinks(index);
     }
 
-    // --- Navigation au clavier (fonctionne pour les deux vues, mais le comportement diffère) ---
-    document.addEventListener('keydown', (event) => {
-        if (isMobileView()) {
-            // Sur mobile, les flèches haut/bas vont faire défiler la page normalement
-            // sans "snap" aux sections.
-            // On peut optionnellement ajouter un `preventDefault()` ici pour les flèches,
-            // mais si on veut un scroll natif, on le laisse.
-            // Pour l'instant, pas de modification spécifique pour le clavier sur mobile
-            // pour un défilement entièrement natif.
-        } else {
-            // Sur desktop, les flèches gauche/droite changent de section
-            if (event.key === 'ArrowRight') {
-                event.preventDefault(); // Empêche le défilement natif de la page
+    // Clic sur la nav bar
+    navLinks.forEach((link, i) => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (isMobileView()) {
+                // Scroll natif sur mobile
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            } else {
+                scrollToSection(i, false);
+            }
+        });
+    });
+
+    // Molette (desktop uniquement)
+    mainContent.addEventListener('wheel', (e) => {
+        if (isMobileView()) return;
+        if (isScrolling) return;
+        e.preventDefault();
+        isScrolling = true;
+        if (e.deltaY > 0) {
+            // Droite
+            if (currentSectionIndex < sections.length - 1) {
                 scrollToSection(currentSectionIndex + 1);
-            } else if (event.key === 'ArrowLeft') {
-                event.preventDefault(); // Empêche le défilement natif de la page
+            }
+        } else {
+            // Gauche
+            if (currentSectionIndex > 0) {
                 scrollToSection(currentSectionIndex - 1);
+            }
+        }
+        setTimeout(() => { isScrolling = false; }, 400); // délai pour éviter le spam
+    }, { passive: false });
+
+    // Flèches clavier (desktop uniquement)
+    document.addEventListener('keydown', (e) => {
+        if (isMobileView()) return;
+        if (isScrolling) return;
+        if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            if (currentSectionIndex < sections.length - 1) {
+                isScrolling = true;
+                scrollToSection(currentSectionIndex + 1);
+                setTimeout(() => { isScrolling = false; }, 400);
+            }
+        } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            if (currentSectionIndex > 0) {
+                isScrolling = true;
+                scrollToSection(currentSectionIndex - 1);
+                setTimeout(() => { isScrolling = false; }, 400);
             }
         }
     });
 
-    // L'Intersection Observer doit continuer à observer les sections.
-    // Sa logique reste la même car il détecte l'intersection d'éléments pour la navigation.
+    // Observer pour synchroniser la nav bar avec la section visible
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const id = entry.target.getAttribute('id');
-                const index = Array.from(sections).findIndex(sec => sec.id === id);
-                if (index !== -1) {
-                    // Mettre à jour l'index de la section courante uniquement si on est sur desktop
-                    // ou si l'en-tête est visible (car c'est là que les liens sont mis à jour)
-                    if (!isMobileView() || window.getComputedStyle(header).display !== 'none') {
-                         currentSectionIndex = index;
-                         updateNavLink(currentSectionIndex);
-                    }
+                const idx = sections.indexOf(entry.target);
+                if (idx !== -1) {
+                    currentSectionIndex = idx;
+                    updateNavLinks(idx);
                 }
             }
         });
-    }, { threshold: 0.7, root: mainContent }); // Le `root: mainContent` est important pour le défilement des sections
-
-    sections.forEach(section => {
-        observer.observe(section);
+    }, {
+        threshold: 0.6,
+        root: mainContent
     });
+    sections.forEach(section => observer.observe(section));
 
-    // Gérer le redimensionnement de la fenêtre pour ajuster le scrollPosition initial
+    // Resize : recalcule la position de la section courante
     window.addEventListener('resize', () => {
-        // Recalculer la position de la section courante après un redimensionnement
-        // Uniquement si on est en mode desktop pour maintenir le "snap"
         if (!isMobileView()) {
-            scrollToSection(currentSectionIndex);
-        } else {
-            // Sur mobile, si l'en-tête est caché, les sections sont en défilement normal.
-            // S'il y a un besoin de recentrer une section spécifique au redimensionnement,
-            // il faudrait ajouter une logique ici. Pour l'instant, on laisse le comportement natif.
+            scrollToSection(currentSectionIndex, true);
         }
     });
 
-    // Ajout : forcer l'affichage de la section Home au chargement
+    // Au chargement, scroll sur la première section (desktop)
     if (!isMobileView()) {
-        scrollToSection(0);
+        scrollToSection(0, true);
+    }
+
+    // Juste après la déclaration de const nav = document.querySelector('nav');
+    const nav = document.querySelector('nav');
+    if (nav) {
+        nav.classList.add('nav-animating');
+        nav.addEventListener('animationend', () => {
+            nav.classList.remove('nav-animating');
+        }, { once: true });
     }
 });

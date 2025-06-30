@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <link rel="stylesheet" href="style.css">
-    <title>Portfolio Website</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>Ephraem - Portfolio</title>
 </head>
 
 <body>
@@ -13,11 +14,11 @@
     <header>
         <a href="#home" class="title">Ephraem</a>
         <nav>
-            <a href="#home" class="active">Home</a>
-            <a href="#skills">Skills</a>
-            <a href="#services">Services</a>
-            <a href="#experiences">Experiences</a>
-            <a href="#contact">Contact</a>
+            <a href="#home" class="nav-home active">Home</a>
+            <a href="#skills" class="nav-skills">Skills</a>
+            <a href="#services" class="nav-services">Services</a>
+            <a href="#experiences" class="nav-experiences">Experiences</a>
+            <a href="#contact" class="nav-contact">Contact</a>
         </nav>
     </header>
 
@@ -272,7 +273,7 @@
                         <a href="mailto:valentin.gerome2002@gmail.com">valentin.gerome2002@gmail.com</a>
                     </div>
                     <div class="contact-panel">
-                        <form class="contact-form">
+                        <form id="my-form" class="contact-form" action="https://formspree.io/f/manjvepn" method="POST">
                             <div class="form-group">
                                 <input type="text" name="name" placeholder="Votre nom" required>
                             </div>
@@ -282,7 +283,8 @@
                             <div class="form-group">
                                 <textarea name="message" rows="4" placeholder="Votre message" required></textarea>
                             </div>
-                            <button type="submit" class="btn">Envoyer</button>
+                            <button id="my-form-button" class="btn" type="submit">Envoyer</button>
+                            <p id="my-form-status"></p>
                         </form>
                     </div>
                 </div>
