@@ -330,7 +330,7 @@ span {
 .home-img img {
     width: 100%;
     height: auto;
-    max-width: 32vw;
+    max-width: 85vw;
     object-fit: contain;
     padding: 0;
     position: relative;
@@ -1120,7 +1120,7 @@ span {
 }
 
 .contact-content h2 {
-    color: var(--color-sora);
+    color: var(--color-contact);
     margin-bottom: 2rem;
     animation: slideFromLeft var(--anim-duration-slide) ease-in-out forwards;
     transform-origin: center center;
@@ -1378,5 +1378,74 @@ section.services {
     box-shadow: 0 0 8px var(--color-contact), 0 0 2px #fff;
     font-weight: 700;
     border: 1.5px solid var(--color-contact);
+}
+
+/* Animation d'apparition simple */
+.apparition {
+  animation: apparitionFadeSlide 0.8s cubic-bezier(.77,0,.18,1) both;
+}
+
+@keyframes apparitionFadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation au scroll pour les autres sections */
+.skills-content,
+.skills-content h2,
+.skill-track,
+.services-content,
+.service-card,
+.service-card li,
+.experiences-content,
+.timeline-item,
+.contact-content,
+.contact-content h2,
+.contact-content p,
+.contact-panel,
+.contact-form {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s cubic-bezier(.77,0,.18,1), transform 0.7s cubic-bezier(.77,0,.18,1);
+}
+
+.skills-content.in-view,
+.skills-content h2.in-view,
+.skill-track.in-view,
+.services-content.in-view,
+.service-card.in-view,
+.service-card li.in-view,
+.experiences-content.in-view,
+.timeline-item.in-view,
+.contact-content.in-view,
+.contact-content h2.in-view,
+.contact-content p.in-view,
+.contact-panel.in-view,
+.contact-form.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.skills-content.out-view,
+.skills-content h2.out-view,
+.skill-track.out-view,
+.services-content.out-view,
+.service-card.out-view,
+.service-card li.out-view,
+.experiences-content.out-view,
+.timeline-item.out-view,
+.contact-content.out-view,
+.contact-content h2.out-view,
+.contact-content p.out-view,
+.contact-panel.out-view,
+.contact-form.out-view {
+  opacity: 0;
+  transform: translateY(40px);
 }
 

@@ -1,18 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     const mainContent = document.querySelector('.main-content');
-    const sections = document.querySelectorAll('section');
-    const navLinks = document.querySelectorAll('header nav a');
+    const sections = Array.from(document.querySelectorAll('section'));
+    const navLinks = Array.from(document.querySelectorAll('header nav a'));
     const header = document.querySelector('header');
     const title = document.querySelector('.title');
 
-    // Gestion du formulaire de contact avec Formspree (AJAX)
+    // Formulaire de contact (Formspree)
     const form = document.getElementById("my-form");
     if (form) {
-        form.addEventListener("submit", async function handleSubmit(event) {
+        form.addEventListener("submit", async function (event) {
             event.preventDefault();
             const status = document.getElementById("my-form-status");
             const data = new FormData(form);
-            const submitBtn = form.querySelector('button[type=\"submit\"]');
+            const submitBtn = form.querySelector('button[type="submit"]');
             submitBtn.disabled = true;
             submitBtn.textContent = 'Envoi...';
             try {
@@ -26,13 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     form.reset();
                 } else {
                     const result = await response.json();
-                    if (result.errors) {
-                        status.innerHTML = result.errors.map(error => error.message).join(', ');
-                    } else {
-                        status.innerHTML = "Oups ! Une erreur est survenue lors de l'envoi.";
-                    }
+                    status.innerHTML = result.errors ? result.errors.map(e => e.message).join(', ') : "Oups ! Une erreur est survenue lors de l'envoi.";
                 }
-            } catch (error) {
+            } catch {
                 status.innerHTML = "Oups ! Une erreur réseau est survenue.";
             }
             submitBtn.disabled = false;
@@ -43,97 +39,69 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSectionIndex = 0;
     let isScrolling = false;
 
-    const isMobileView = () => {
-        return window.matchMedia("(max-width: 995px)").matches;
-    };
+    const isMobileView = () => window.matchMedia("(max-width: 995px)").matches;
 
     // Initialisation du lien de navigation actif si l'en-tête est visible
     if (navLinks.length > 0 && window.getComputedStyle(header).display !== 'none') {
         navLinks[currentSectionIndex].classList.add('active');
     }
 
-    // Fonction pour mettre à jour le lien de navigation actif
-    const updateNavLinks = (index) => {
+    function updateNavLinks(index) {
         if (window.getComputedStyle(header).display !== 'none') {
             navLinks.forEach(link => link.classList.remove('active'));
-            if (navLinks[index]) {
-                navLinks[index].classList.add('active');
-            }
+            if (navLinks[index]) navLinks[index].classList.add('active');
         }
-    };
+    }
 
-    // Scroll vers une section (desktop)
     function scrollToSection(index, instant = false) {
         if (index < 0 || index >= sections.length) return;
         const scrollPos = index * window.innerWidth;
-        mainContent.scrollTo({
-            left: scrollPos,
-            behavior: instant ? 'auto' : 'smooth'
-        });
+        mainContent.scrollTo({ left: scrollPos, behavior: instant ? 'auto' : 'smooth' });
         currentSectionIndex = index;
         updateNavLinks(index);
     }
 
-    // Clic sur la nav bar
     navLinks.forEach((link, i) => {
-        link.addEventListener('click', (e) => {
+        link.addEventListener('click', e => {
             e.preventDefault();
             if (isMobileView()) {
-                // Scroll natif sur mobile
                 const targetId = link.getAttribute('href');
                 const targetSection = document.querySelector(targetId);
-                if (targetSection) {
-                    targetSection.scrollIntoView({ behavior: 'smooth' });
-                }
+                if (targetSection) targetSection.scrollIntoView({ behavior: 'smooth' });
             } else {
                 scrollToSection(i, false);
             }
         });
     });
 
-    // Molette (desktop uniquement)
-    mainContent.addEventListener('wheel', (e) => {
-        if (isMobileView()) return;
-        if (isScrolling) return;
+    mainContent.addEventListener('wheel', e => {
+        if (isMobileView() || isScrolling) return;
         e.preventDefault();
         isScrolling = true;
-        if (e.deltaY > 0) {
-            // Droite
-            if (currentSectionIndex < sections.length - 1) {
-                scrollToSection(currentSectionIndex + 1);
-            }
-        } else {
-            // Gauche
-            if (currentSectionIndex > 0) {
-                scrollToSection(currentSectionIndex - 1);
-            }
+        if (e.deltaY > 0 && currentSectionIndex < sections.length - 1) {
+            scrollToSection(currentSectionIndex + 1);
+        } else if (e.deltaY < 0 && currentSectionIndex > 0) {
+            scrollToSection(currentSectionIndex - 1);
         }
-        setTimeout(() => { isScrolling = false; }, 400); // délai pour éviter le spam
+        setTimeout(() => { isScrolling = false; }, 400);
     }, { passive: false });
 
-    // Flèches clavier (desktop uniquement)
-    document.addEventListener('keydown', (e) => {
-        if (isMobileView()) return;
-        if (isScrolling) return;
-        if (e.key === 'ArrowRight') {
+    document.addEventListener('keydown', e => {
+        if (isMobileView() || isScrolling) return;
+        if (e.key === 'ArrowRight' && currentSectionIndex < sections.length - 1) {
             e.preventDefault();
-            if (currentSectionIndex < sections.length - 1) {
-                isScrolling = true;
-                scrollToSection(currentSectionIndex + 1);
-                setTimeout(() => { isScrolling = false; }, 400);
-            }
-        } else if (e.key === 'ArrowLeft') {
+            isScrolling = true;
+            scrollToSection(currentSectionIndex + 1);
+            setTimeout(() => { isScrolling = false; }, 400);
+        } else if (e.key === 'ArrowLeft' && currentSectionIndex > 0) {
             e.preventDefault();
-            if (currentSectionIndex > 0) {
-                isScrolling = true;
-                scrollToSection(currentSectionIndex - 1);
-                setTimeout(() => { isScrolling = false; }, 400);
-            }
+            isScrolling = true;
+            scrollToSection(currentSectionIndex - 1);
+            setTimeout(() => { isScrolling = false; }, 400);
         }
     });
 
-    // Observer pour synchroniser la nav bar avec la section visible
-    const observer = new IntersectionObserver((entries) => {
+    const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const idx = sections.indexOf(entry.target);
@@ -143,25 +111,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-    }, {
-        threshold: 0.6,
-        root: mainContent
-    });
+    }, { threshold: 0.6, root: mainContent });
     sections.forEach(section => observer.observe(section));
 
-    // Resize : recalcule la position de la section courante
     window.addEventListener('resize', () => {
-        if (!isMobileView()) {
-            scrollToSection(currentSectionIndex, true);
-        }
+        if (!isMobileView()) scrollToSection(currentSectionIndex, true);
     });
 
-    // Au chargement, scroll sur la première section (desktop)
-    if (!isMobileView()) {
-        scrollToSection(0, true);
-    }
+    if (!isMobileView()) scrollToSection(0, true);
 
-    // Juste après la déclaration de const nav = document.querySelector('nav');
     const nav = document.querySelector('nav');
     if (nav) {
         nav.classList.add('nav-animating');
@@ -169,4 +127,66 @@ document.addEventListener('DOMContentLoaded', () => {
             nav.classList.remove('nav-animating');
         }, { once: true });
     }
+
+    // === ANIMATIONS AU SCROLL (hors home) ===
+
+    // Sélecteurs des éléments à animer au scroll (hors .home)
+    const animatedSelectorsScroll = [
+        '.skills-content',
+        '.skills-content h2',
+        '.skill-track',
+        '.services-content',
+        '.service-card',
+        '.service-card li',
+        '.experiences-content',
+        '.timeline-item',
+        '.contact-content',
+        '.contact-content h2',
+        '.contact-content p',
+        '.contact-panel',
+        '.contact-form',
+    ];
+
+    const animatedElementsScroll = Array.from(document.querySelectorAll(animatedSelectorsScroll.join(',')));
+
+    const animateOnScroll = (entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                entry.target.classList.remove('out-view');
+            } else {
+                entry.target.classList.remove('in-view');
+                entry.target.classList.add('out-view');
+            }
+        });
+    };
+
+    const animationObserver = new IntersectionObserver(animateOnScroll, {
+        threshold: 0.5
+    });
+
+    animatedElementsScroll.forEach(el => {
+        animationObserver.observe(el);
+    });
+
+    function animateOnScrollProgressive() {
+        const elements = document.querySelectorAll('.skills-content, .services-content, .experiences-content, .contact-content');
+        elements.forEach(el => {
+            const rect = el.getBoundingClientRect();
+            const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+            // Calcul du pourcentage de visibilité
+            let percent = 0;
+            if (rect.top < windowHeight && rect.bottom > 0) {
+                const visible = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+                percent = Math.max(0, Math.min(1, visible / rect.height));
+            }
+            // Application de l'animation progressive
+            el.style.opacity = percent;
+            el.style.transform = `translateY(${40 * (1 - percent)}px)`;
+        });
+    }
+
+    window.addEventListener('scroll', animateOnScrollProgressive);
+    window.addEventListener('resize', animateOnScrollProgressive);
+    document.addEventListener('DOMContentLoaded', animateOnScrollProgressive);
 });
