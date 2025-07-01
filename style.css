@@ -908,6 +908,30 @@ span {
         margin: 1rem auto;
         text-align: center;
     }
+
+    /* Animation progressive gérée par le JS : invisible par défaut sauf home */
+    .skills-content,
+    .skills-content h2,
+    .skill-track,
+    .services-content,
+    .service-card,
+    .service-card li,
+    .experiences-content,
+    .timeline-item,
+    .contact-content,
+    .contact-content h2,
+    .contact-content p,
+    .contact-panel,
+    .contact-form,
+    section:not(.home) {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 0.5s cubic-bezier(.77,0,.18,1), transform 0.5s cubic-bezier(.77,0,.18,1);
+    }
+    section.home {
+        opacity: 1;
+        transform: none;
+    }
 }
 
 @media (max-width: 768px) {
@@ -1410,9 +1434,9 @@ section.services {
 .contact-content p,
 .contact-panel,
 .contact-form {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.7s cubic-bezier(.77,0,.18,1), transform 0.7s cubic-bezier(.77,0,.18,1);
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out; /* Assurez-vous que la transition est définie */
 }
 
 .skills-content.in-view,

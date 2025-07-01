@@ -149,44 +149,125 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const animatedElementsScroll = Array.from(document.querySelectorAll(animatedSelectorsScroll.join(',')));
 
-    const animateOnScroll = (entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('in-view');
-                entry.target.classList.remove('out-view');
-            } else {
-                entry.target.classList.remove('in-view');
-                entry.target.classList.add('out-view');
-            }
+    // IntersectionObserver pour desktop uniquement
+    let animationObserver = null;
+    function setupDesktopScrollAnimations() {
+        if (animationObserver) {
+            animationObserver.disconnect();
+        }
+        animationObserver = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                    entry.target.classList.remove('out-view');
+                } else {
+                    entry.target.classList.remove('in-view');
+                    entry.target.classList.add('out-view');
+                }
+            });
+        }, { threshold: 0.5 });
+        animatedElementsScroll.forEach(el => {
+            // Ensure no inline styles are present before observing for desktop animations
+            el.style.opacity = '';
+            el.style.transform = '';
+            animationObserver.observe(el);
         });
-    };
+    }
 
-    const animationObserver = new IntersectionObserver(animateOnScroll, {
-        threshold: 0.5
-    });
-
-    animatedElementsScroll.forEach(el => {
-        animationObserver.observe(el);
-    });
+    // Animation progressive pour mobile uniquement
+    // Sensibilité de l'apparition progressive adaptée à la taille de la section
+    function getAppearThreshold(rect, windowHeight) {
+        // Ratio de la taille de la section par rapport à la fenêtre
+        const ratio = rect.height / windowHeight;
+        // Clamp pour éviter des valeurs extrêmes (min 0.3, max 0.8)
+        return Math.max(0.3, Math.min(0.8, 0.7 / ratio));
+    }
 
     function animateOnScrollProgressive() {
-        const elements = document.querySelectorAll('.skills-content, .services-content, .experiences-content, .contact-content');
-        elements.forEach(el => {
-            const rect = el.getBoundingClientRect();
+        if (!isMobileView()) return;
+        sections.forEach(section => {
+            if (section.classList.contains('home') || section.classList.contains('contact')) {
+                // Toujours visible pour home et contact
+                section.style.opacity = 1;
+                section.style.transform = 'none';
+                const animatedChildren = section.querySelectorAll('.skills-content, .skills-content h2, .skill-track, .services-content, .service-card, .service-card li, .experiences-content, .timeline-item, .contact-content, .contact-content h2, .contact-content p, .contact-panel, .contact-form');
+                animatedChildren.forEach(el => {
+                    el.style.opacity = 1;
+                    el.style.transform = 'none';
+                });
+                return;
+            }
+            const rect = section.getBoundingClientRect();
             const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-            // Calcul du pourcentage de visibilité
             let percent = 0;
             if (rect.top < windowHeight && rect.bottom > 0) {
                 const visible = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
                 percent = Math.max(0, Math.min(1, visible / rect.height));
             }
-            // Application de l'animation progressive
-            el.style.opacity = percent;
-            el.style.transform = `translateY(${40 * (1 - percent)}px)`;
+            // Calcul dynamique du seuil d'apparition selon la taille de la section
+            const appearThreshold = getAppearThreshold(rect, windowHeight);
+            let displayPercent = percent / appearThreshold;
+            displayPercent = Math.max(0, Math.min(1, displayPercent));
+            if (percent > 0) {
+                section.style.opacity = displayPercent;
+                section.style.transform = `translateY(${40 * (1 - displayPercent)}px)`;
+            } else {
+                section.style.opacity = 0;
+                section.style.transform = `translateY(40px)`;
+            }
+            const animatedChildren = section.querySelectorAll('.skills-content, .skills-content h2, .skill-track, .services-content, .service-card, .service-card li, .experiences-content, .timeline-item, .contact-content, .contact-content h2, .contact-content p, .contact-panel, .contact-form');
+            animatedChildren.forEach(el => {
+                if (percent > 0) {
+                    el.style.opacity = displayPercent;
+                    el.style.transform = `translateY(${40 * (1 - displayPercent)}px)`;
+                } else {
+                    el.style.opacity = 0;
+                    el.style.transform = `translateY(40px)`;
+                }
+            });
         });
     }
 
-    window.addEventListener('scroll', animateOnScrollProgressive);
-    window.addEventListener('resize', animateOnScrollProgressive);
-    document.addEventListener('DOMContentLoaded', animateOnScrollProgressive);
+    // Nettoyer les styles inline quand on repasse en desktop
+    function cleanMobileInlineStyles() {
+        sections.forEach(section => {
+            section.style.opacity = '';
+            section.style.transform = '';
+            const animatedChildren = section.querySelectorAll('.skills-content, .skills-content h2, .skill-track, .services-content, .service-card, .service-card li, .experiences-content, .timeline-item, .contact-content, .contact-content h2, .contact-content p, .contact-panel, .contact-form');
+            animatedChildren.forEach(el => {
+                el.style.opacity = '';
+                el.style.transform = '';
+                el.classList.add('out-view');
+                el.classList.remove('in-view');
+            });
+        });
+    }
+
+    // Gestion du mode responsive pour les animations
+    function handleResponsiveAnimations() {
+        if (isMobileView()) {
+            if (animationObserver) {
+                animationObserver.disconnect();
+                animationObserver = null;
+            }
+            window.addEventListener('scroll', animateOnScrollProgressive);
+            if (mainContent) {
+                mainContent.addEventListener('scroll', animateOnScrollProgressive);
+            }
+        } else {
+            // Si on passe en mode desktop, on nettoie les styles inline et on réactive les animations CSS
+            cleanMobileInlineStyles();
+            setupDesktopScrollAnimations();
+            window.removeEventListener('scroll', animateOnScrollProgressive);
+            if (mainContent) {
+                mainContent.removeEventListener('scroll', animateOnScrollProgressive);
+            }
+        }
+    }
+
+    // On gère les animations au chargement
+    handleResponsiveAnimations();
+
+    // Et on réagit aux changements de taille de fenêtre
+    window.addEventListener('resize', handleResponsiveAnimations);
 });
