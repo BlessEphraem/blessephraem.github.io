@@ -179,8 +179,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function getAppearThreshold(rect, windowHeight) {
         // Ratio de la taille de la section par rapport à la fenêtre
         const ratio = rect.height / windowHeight;
-        // Clamp pour éviter des valeurs extrêmes (min 0.3, max 0.8)
-        return Math.max(0.3, Math.min(0.8, 0.7 / ratio));
+        // Clamp pour éviter des valeurs extrêmes (min 0.2, max 0.3)
+        return Math.max(0.1, Math.min(0.1, 0.7 / ratio));
     }
 
     function animateOnScrollProgressive() {
@@ -210,19 +210,19 @@ document.addEventListener('DOMContentLoaded', () => {
             displayPercent = Math.max(0, Math.min(1, displayPercent));
             if (percent > 0) {
                 section.style.opacity = displayPercent;
-                section.style.transform = `translateY(${40 * (1 - displayPercent)}px)`;
+                section.style.transform = `translateY(${20 * (1 - displayPercent)}px)`;
             } else {
                 section.style.opacity = 0;
-                section.style.transform = `translateY(40px)`;
+                section.style.transform = `translateY(20px)`;
             }
             const animatedChildren = section.querySelectorAll('.skills-content, .skills-content h2, .skill-track, .services-content, .service-card, .service-card li, .experiences-content, .timeline-item, .contact-content, .contact-content h2, .contact-content p, .contact-panel, .contact-form');
             animatedChildren.forEach(el => {
                 if (percent > 0) {
                     el.style.opacity = displayPercent;
-                    el.style.transform = `translateY(${40 * (1 - displayPercent)}px)`;
+                    el.style.transform = `translateY(${20 * (1 - displayPercent)}px)`;
                 } else {
                     el.style.opacity = 0;
-                    el.style.transform = `translateY(40px)`;
+                    el.style.transform = `translateY(20px)`;
                 }
             });
         });
