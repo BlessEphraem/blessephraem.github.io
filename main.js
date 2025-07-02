@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Ratio de la taille de la section par rapport à la fenêtre
         const ratio = rect.height / windowHeight;
         // Clamp pour éviter des valeurs extrêmes (min 0.2, max 0.3)
-        return Math.max(0.1, Math.min(0.1, 0.7 / ratio));
+        return Math.max(0.2, Math.min(0.3, 0.7 / ratio));
     }
 
     function animateOnScrollProgressive() {
