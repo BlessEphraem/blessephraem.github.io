@@ -263,7 +263,7 @@ nav.nav-animating {
 }
 
 section {
-    max-width: 100vw;
+    min-width: 100vw;
     display: flex;
     justify-content: center;
     align-items: center;
