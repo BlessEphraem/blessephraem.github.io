@@ -312,7 +312,7 @@ span {
 
 /* Home Section Specific Styles */
 .home-wrapper {
-    max-width: var(--max-width-content-desktop);
+    max-width: 100vw;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -340,7 +340,7 @@ span {
 }
 
 .home-content {
-    max-width: 50vw;
+    width: 50vw;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
