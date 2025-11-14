@@ -1690,7 +1690,7 @@ section.blog {
 /* Liste des articles */
 #posts-list {
     width: 90vw;
-
+    max-width: 1000px;
     margin-top: 2rem;
     text-align: left;
 }
