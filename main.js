@@ -283,46 +283,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadBlogPosts() {
         if (!postsListContainer) return;
-    
+
         try {
             // 1. Récupérer la liste des fichiers du dossier _posts via l'API GitHub
             const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_PATH}`);
-        
+
             if (!response.ok) {
                 throw new Error(`Erreur GitHub API: ${response.statusText}`);
             }
-        
+
             let files = await response.json();
-        
+
             // 2. On ne garde que les .md et on les trie par nom (date) DÉCROISSANT (le plus récent en premier)
             // C'est la réponse à votre première demande !
             files = files
                 .filter(file => file.name.endsWith('.md'))
                 .sort((a, b) => b.name.localeCompare(a.name)); // 'b' avant 'a' = décroissant
-        
+
             if (files.length === 0) {
                 postsListContainer.innerHTML = "<p>Aucun article pour le moment.</p>";
                 return;
             }
-        
+
             // 3. NOUVEAU : Préparer les promesses pour télécharger le contenu de TOUS les fichiers
             const fetchPromises = files.map(file => 
                 fetch(file.download_url).then(res => res.text())
             );
-        
+
             // Attendre que tous les contenus soient téléchargés
             const allPostTexts = await Promise.all(fetchPromises);
-        
+
             // 4. Afficher chaque post complet
             postsListContainer.innerHTML = ''; // Vider la liste
-        
+
             allPostTexts.forEach((postText, index) => {
                 const file = files[index]; // Récupérer les métadonnées du fichier
-            
+
                 // Extraire le titre et la date du nom de fichier
                 const cleanName = file.name.replace(/\.md$/, '').substring(11).replace(/-/g, ' ');
                 const postDate = file.name.substring(0, 10);
-            
+
                 // Extraire le contenu Markdown (comme on le faisait dans 'showPost')
                 let postHtml = postText;
                 if (postText.startsWith('---')) {
@@ -333,11 +333,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 // Convertir le Markdown en HTML
                 const convertedHtml = marked.parse(postHtml); 
-            
+
                 // Créer l'élément complet du post
                 const postElement = document.createElement('div');
                 postElement.className = 'post-item'; // On garde le style
-            
+
                 // Injecter le titre, la date ET le contenu converti
                 postElement.innerHTML = `
                     <h3>${cleanName}</h3>
@@ -346,28 +346,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${convertedHtml}
                     </div>
                 `;
-            
+
                 // On n'ajoute PAS de 'addEventListener', on affiche tout directement
                 postsListContainer.appendChild(postElement);
             });
-        
+
         } catch (error) {
             console.error("Erreur lors du chargement des posts:", error);
             postsListContainer.innerHTML = "<p>Impossible de charger les articles. Vérifiez la configuration de GITHUB_USER et GITHUB_REPO dans main.js</p>";
         }
     }
 
-    // Gérer la fermeture de la modale
-    if(modalClose) {
-        modalClose.onclick = () => {
-            modal.style.display = 'none';
-        }
-    }
-    window.onclick = (event) => {
-        if (event.target == modal) {
-            modal.style.display = 'none';
-        }
-    }
+
 
     // Lancer le chargement des posts au démarrage
     loadBlogPosts();
