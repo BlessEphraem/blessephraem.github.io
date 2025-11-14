@@ -387,8 +387,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 4f. Générer le HTML pour la miniature (si elle existe)
                 let thumbnailHtml = '';
                 if (thumbnailUrl) {
-                    // Les chemins de Netlify CMS sont souvent absolus (ex: /assets/uploads/img.jpg)
-                    // donc on les utilise directement.
+                    // Les chemins sont lus depuis le .md (ex: /assets/uploads/img.jpg)
+                    // et utilisés directement.
                     thumbnailHtml = `<img src="${thumbnailUrl}" alt="Miniature pour ${title}" class="post-thumbnail">`;
                 }
 
