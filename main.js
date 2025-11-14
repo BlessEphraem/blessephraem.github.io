@@ -296,7 +296,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             let files = await response.json();
-            
             // 2. On ne garde que les fichiers .md et on les trie par nom (date) décroissant
             files = files
                 .filter(file => file.name.endsWith('.md'))
