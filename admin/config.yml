@@ -1,8 +1,9 @@
 # "backend" dit au CMS de se connecter directement à GitHub
 backend:
   name: github # <-- Correct
-  repo: BlessEphraem/blessephraem.github.io # <-- Votre dépôt
+  repo: BlessEphraem/blessephraem.github.io 
   branch: main # Ou "master", selon votre branche
+  site_domain: ephraem-blog.netlify.app
   
 # "media_folder" est l'endroit où les images uploadées seront stockées
 media_folder: "assets/uploads" 
