@@ -1773,3 +1773,57 @@ section.services {
     overflow-x: auto;
     font-family: var(--font-main);
 }
+
+/* Styles pour le contenu complet du post (remplace #modal-post-content) */
+.post-content-full {
+    color: var(--text-color);
+    line-height: 1.7;
+    margin-top: 2rem; /* Espace après la date */
+}
+
+.post-content-full h1,
+.post-content-full h2,
+.post-content-full h3 {
+    color: var(--main-color-light);
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.post-content-full p {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    text-align: left;
+    animation: none;
+    max-width: 100%;
+}
+
+.post-content-full a {
+    color: var(--color-sora);
+    text-decoration: underline;
+}
+
+.post-content-full img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.post-content-full pre {
+    background: #0f1013;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: var(--font-main);
+}
+
+/* Ajustement du curseur sur post-item */
+.post-item {
+    cursor: default; /* Ce n'est plus cliquable */
+}
+
+.post-item:hover {
+    transform: none; /* Plus d'effet au survol */
+    box-shadow: var(--customblock-shadow-hover); /* On peut garder l'ombre */
+    border-color: var(--main-color);
+}
