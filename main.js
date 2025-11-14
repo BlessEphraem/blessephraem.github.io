@@ -77,43 +77,44 @@ document.addEventListener('DOMContentLoaded', () => {
     mainContent.addEventListener('wheel', e => {
         if (isMobileView() || isScrolling) return;
 
-        // === NOUVELLE LOGIQUE POUR LE SCROLL DU BLOG ===
-        const currentSection = sections[currentSectionIndex];
-        // On vérifie si on est sur la section blog
-        if (currentSection.id === 'blog') {
-            const { scrollTop, clientHeight, scrollHeight } = currentSection;
-            const isScrollingDown = e.deltaY > 0;
-            const isScrollingUp = e.deltaY < 0;
+        // --- Logique du Blog (Index 0) ---
+        // (On vérifie si on est sur la section blog, qui est l'index 0)
+        if (currentSectionIndex === 5) {
+            const blogContent = sections[currentSectionIndex].querySelector('.blog-content');
+            if (blogContent) {
+                const { scrollTop, scrollHeight, clientHeight } = blogContent;
+                const deltaY = e.deltaY;
+                const isAtTop = scrollTop <= 0;
+                const isAtBottom = (scrollTop + clientHeight) >= (scrollHeight - 1);
 
-            // Si on scroll VERS LE BAS et qu'on N'EST PAS en bas de la section blog
-            if (isScrollingDown && (scrollTop + clientHeight < scrollHeight - 10)) {
-                // On laisse le navigateur scroller la section verticalement
-                // On ne fait PAS e.preventDefault() et on ne fait PAS isScrolling = true
-                return; 
+                // Si on scroll DANS le blog (ni en haut, ni en bas), on sort.
+                if ((deltaY > 0 && !isAtBottom) || (deltaY < 0 && !isAtTop)) {
+                    return; // Laisse le scroll vertical natif du blog se faire
+                }
             }
-            
-            // Si on scroll VERS LE HAUT et qu'on N'EST PAS en haut de la section blog
-            if (isScrollingUp && (scrollTop > 10)) {
-                // On laisse le navigateur scroller la section verticalement
-                return;
-            }
-            
-            // Si on EST en bas (et on scroll down) OU on EST en haut (et on scroll up),
-            // le code continue ci-dessous et déclenche le snap-scroll.
+            // Si on est en haut ou en bas du blog, on continue vers le scroll horizontal...
         }
-        e.preventDefault(); // On empêche le scroll natif SEULEMENT si on va snap-scroller
+
+        // --- Logique de scroll horizontal (pour TOUTES les sections) ---
+        e.preventDefault();
         isScrolling = true;
-        
+
+        // Tente de scroller vers la section suivante
         if (e.deltaY > 0 && currentSectionIndex < sections.length - 1) {
             scrollToSection(currentSectionIndex + 1);
+            // On réinitialise 'isScrolling' APRES l'animation
+            setTimeout(() => { isScrolling = false; }, 600); // Augmenté à 600ms pour plus de sécurité
+        
+        // Tente de scroller vers la section précédente
         } else if (e.deltaY < 0 && currentSectionIndex > 0) {
             scrollToSection(currentSectionIndex - 1);
+            // On réinitialise 'isScrolling' APRES l'animation
+            setTimeout(() => { isScrolling = false; }, 600); // Augmenté à 600ms
+        
+        // On est au bout (ex: scroll up sur Blog, ou scroll down sur Contact)
         } else {
-             // Cas où on est au bout mais on essaie de scroller plus
-             isScrolling = false;
+            isScrolling = false; // Pas de scroll, on reset le blocage immédiatement
         }
-
-        setTimeout(() => { isScrolling = false; }, 400);
     }, { passive: false });
 
     document.addEventListener('keydown', e => {
@@ -148,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isMobileView()) scrollToSection(currentSectionIndex, true);
     });
 
-    if (!isMobileView()) scrollToSection(0, true);
+    if (!isMobileView()) scrollToSection(currentSectionIndex, true);
 
     const nav = document.querySelector('nav');
     if (nav) {
@@ -216,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function animateOnScrollProgressive() {
         if (!isMobileView()) return;
         sections.forEach(section => {
-            if (section.classList.contains('home') || section.classList.contains('contact')) {
+            if (section.classList.contains('home') || section.classList.contains('contact') || section.classList.contains('blog')) {
                 // Toujours visible pour home et contact
                 section.style.opacity = 1;
                 section.style.transform = 'none';
