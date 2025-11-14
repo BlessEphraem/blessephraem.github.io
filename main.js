@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const mainContent = document.querySelector('.main-content');
     const sections = Array.from(document.querySelectorAll('section'));
-    const navLinks = Array.from(document.querySelectorAll('header nav a'));
+    const navLinks = Array.from(document.querySelectorAll('header nav a, .button a'));
     const header = document.querySelector('header');
     const title = document.querySelector('.title');
 
@@ -270,4 +270,110 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Et on réagit aux changements de taille de fenêtre
     window.addEventListener('resize', handleResponsiveAnimations);
+
+    // ===================================
+    // === SECTION : BLOG ===
+    // ===================================
+
+    const GITHUB_USER = "BlessEphraem"; 
+    const GITHUB_REPO = "blessephraem.github.io"; // Ex: "Portfolio"
+    const POSTS_PATH = "_posts";
+
+    const postsListContainer = document.getElementById('posts-list');
+    const modal = document.getElementById('blog-modal');
+    const modalContent = document.getElementById('modal-post-content');
+    const modalClose = document.querySelector('.modal-close');
+
+    async function loadBlogPosts() {
+        if (!postsListContainer) return;
+
+        try {
+            // 1. Récupérer la liste des fichiers du dossier _posts via l'API GitHub
+            const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_PATH}`);
+            
+            if (!response.ok) {
+                throw new Error(`Erreur GitHub API: ${response.statusText}`);
+            }
+            
+            let files = await response.json();
+            
+            // 2. On ne garde que les fichiers .md et on les trie par nom (date) décroissant
+            files = files
+                .filter(file => file.name.endsWith('.md'))
+                .sort((a, b) => b.name.localeCompare(a.name)); 
+
+            if (files.length === 0) {
+                postsListContainer.innerHTML = "<p>Aucun article pour le moment.</p>";
+                return;
+            }
+
+            // 3. Afficher chaque post
+            postsListContainer.innerHTML = ''; // Vider la liste
+            for (const file of files) {
+                // Le nom de fichier est ex: "2025-11-14-mon-titre.md"
+                // On essaie d'extraire un titre plus propre
+                const cleanName = file.name.replace(/\.md$/, '').substring(11).replace(/-/g, ' ');
+                const postDate = file.name.substring(0, 10);
+                
+                const postElement = document.createElement('div');
+                postElement.className = 'post-item';
+                postElement.innerHTML = `
+                    <h3>${cleanName}</h3>
+                    <p>${postDate}</p>
+                `;
+                // On stocke l'URL de téléchargement du fichier brut
+                postElement.dataset.url = file.download_url; 
+                postElement.addEventListener('click', () => showPost(file.download_url));
+                postsListContainer.appendChild(postElement);
+            }
+
+        } catch (error) {
+            console.error("Erreur lors du chargement des posts:", error);
+            postsListContainer.innerHTML = "<p>Impossible de charger les articles. Vérifiez la configuration de GITHUB_USER et GITHUB_REPO dans main.js</p>";
+        }
+    }
+
+    async function showPost(rawUrl) {
+        try {
+            // 1. Récupérer le contenu brut du fichier .md
+            const response = await fetch(rawUrl);
+            let text = await response.text();
+
+            // 2. Extraire le "Front Matter" (le YAML en haut) et le contenu
+            // Ceci est une simple extraction, pas un parseur YAML complet
+            let postHtml = text;
+            if (text.startsWith('---')) {
+                const endOfYaml = text.indexOf('---', 3);
+                if (endOfYaml !== -1) {
+                    postHtml = text.substring(endOfYaml + 3);
+                }
+            }
+
+            // 3. Convertir le Markdown en HTML
+            modalContent.innerHTML = marked.parse(postHtml); // Utilise marked.js
+            
+            // 4. Afficher la modale
+            modal.style.display = 'block';
+        } catch (error) {
+            console.error("Erreur lors de l'affichage du post:", error);
+            modalContent.innerHTML = "<p>Erreur lors du chargement de l'article.</p>";
+            modal.style.display = 'block';
+        }
+    }
+
+    // Gérer la fermeture de la modale
+    if(modalClose) {
+        modalClose.onclick = () => {
+            modal.style.display = 'none';
+        }
+    }
+    window.onclick = (event) => {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // Lancer le chargement des posts au démarrage
+    loadBlogPosts();
+
 });

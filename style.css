@@ -1614,3 +1614,162 @@ section.services {
   transform: translateY(40px);
 }
 
+/* ======================== */
+/* === STYLES DU BLOG === */
+/* ======================== */
+
+/* Couleur du lien de nav "Blog" actif */
+.nav-blog.active {
+    color: var(--color-kira); /* J'ai pris une couleur existante, changez si besoin */
+    background: rgba(247, 183, 49, 0.18);
+    box-shadow: 0 0 8px var(--color-kira), 0 0 2px #fff;
+    font-weight: 700;
+    border: 1.5px solid var(--color-kira);
+}
+
+/* Conteneur de la section Blog */
+.blog-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 90vw;
+    text-align: center;
+}
+
+.blog-content h2 {
+    color: var(--color-kira); /* Assorti au lien de nav */
+    margin-bottom: 2rem;
+    animation: slideFromLeft var(--anim-duration-slide) ease-in-out forwards;
+    transform-origin: center center;
+}
+
+.blog-content p {
+    opacity: 0;
+    animation: slideFromLeft var(--anim-duration-slide) ease-in-out forwards;
+    animation-delay: var(--anim-delay-p);
+    transform-origin: center center;
+}
+
+/* Liste des articles */
+#posts-list {
+    width: 100%;
+    max-width: 800px; /* Limite la largeur pour la lisibilité */
+    margin-top: 2rem;
+    text-align: left;
+}
+
+.post-item {
+    background: var(--customblock-bg);
+    border: var(--customblock-border);
+    border-radius: 1rem;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--customblock-shadow-hover);
+    border-color: var(--main-color);
+}
+
+.post-item h3 {
+    font-size: 1.5rem;
+    color: var(--main-color-light);
+    margin-bottom: 0.5rem;
+    text-transform: capitalize; /* Met une majuscule au début du titre */
+}
+
+.post-item p {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    opacity: 0.7;
+    animation: none; /* Annule l'animation générale des <p> */
+}
+
+/* Styles pour la modale (popup) */
+.blog-modal {
+    display: none; /* Caché par défaut */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: var(--background-color);
+    margin: 5% auto;
+    padding: 2.5rem 3rem;
+    border: 1px solid var(--main-color-light);
+    border-radius: 1rem;
+    width: 90%;
+    max-width: 900px;
+    box-shadow: 0 5px 30px rgba(255, 23, 150, 0.2);
+    position: relative;
+    animation: slideFromBottom 0.5s ease-out;
+}
+
+.modal-close {
+    color: #aaa;
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal-close:hover,
+.modal-close:focus {
+    color: var(--main-color);
+    text-decoration: none;
+}
+
+/* Styles pour le contenu de l'article dans la modale */
+#modal-post-content {
+    color: var(--text-color);
+    line-height: 1.7;
+}
+
+#modal-post-content h1,
+#modal-post-content h2,
+#modal-post-content h3 {
+    color: var(--main-color-light);
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+#modal-post-content p {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    text-align: left; /* Aligner le texte des paragraphes à gauche */
+    animation: none; /* Annule l'animation générale des <p> */
+    max-width: 100%; /* S'assure que le p prend toute la largeur */
+}
+
+#modal-post-content a {
+    color: var(--color-sora);
+    text-decoration: underline;
+}
+
+#modal-post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+#modal-post-content pre {
+    background: #0f1013;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: var(--font-main);
+}

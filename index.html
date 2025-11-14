@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <title>Ephraem - Portfolio</title>
@@ -18,6 +19,7 @@
             <a href="#skills" class="nav-skills">Skills</a>
             <a href="#services" class="nav-services">Services</a>
             <a href="#experiences" class="nav-experiences">Experiences</a>
+            <a href="#blog" class="nav-blog">Blog</a>
             <a href="#contact" class="nav-contact">Contact</a>
         </nav>
     </header>
@@ -195,6 +197,14 @@
                 </div>
             </section>
 
+            <section class="blog" id="blog"> <div class="blog-content">
+                <h2>Blog</h2>
+                <p>Mes derniers articles, réflexions et nouvelles.</p>
+                <div id="posts-list">
+                    </div>
+                    </div>
+            </section>
+
             <section class="contact" id="contact">
                 <div class="contact-content">
                     <h2>Contact</h2>
@@ -222,6 +232,15 @@
 
         </main>
     </div>
+    
     <script src="main.js"></script>
+
+    <div id="blog-modal" class="blog-modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <div id="modal-post-content"></div>
+        </div>
+    </div>
+
 </body>
 </html>

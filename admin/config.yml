@@ -1,0 +1,21 @@
+# "backend" dit à Netlify CMS comment se connecter à votre GitHub
+backend:
+  name: git-gateway # Utilise Netlify Identity et Git Gateway
+  branch: main # Ou "master", selon le nom de votre branche principale
+
+# "media_folder" est l'endroit où les images uploadées seront stockées
+media_folder: "assets/uploads" 
+public_folder: "/assets/uploads"
+
+# "collections" définit les types de contenu que vous pouvez créer.
+collections:
+  - name: "blog" # Nom de la collection
+    label: "Blog" # Nom affiché dans l'interface
+    folder: "_posts" # Dossier où les fichiers .md seront sauvegardés
+    create: true # Autorise la création de nouveaux posts
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Format du nom de fichier
+    fields: # Les champs de votre éditeur
+      - { label: "Titre", name: "title", widget: "string" }
+      - { label: "Date de publication", name: "date", widget: "datetime" }
+      - { label: "Image de couverture", name: "thumbnail", widget: "image", required: false }
+      - { label: "Contenu", name: "body", widget: "markdown" }
