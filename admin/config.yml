@@ -1,12 +1,9 @@
 # "backend" dit au CMS de se connecter directement à GitHub
 backend:
-  name: github # <-- CHANGEMENT IMPORTANT. Plus de git-gateway.
+  name: github # <-- Correct
   repo: BlessEphraem/blessephraem.github.io # <-- Votre dépôt
   branch: main # Ou "master", selon votre branche
   
-# Ceci dit au CMS d'utiliser votre "Auth Tenant" Netlify pour la connexion
-netlify_cms_proxy_server: true 
-
 # "media_folder" est l'endroit où les images uploadées seront stockées
 media_folder: "assets/uploads" 
 public_folder: "/assets/uploads"
