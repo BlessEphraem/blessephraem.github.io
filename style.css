@@ -1577,7 +1577,7 @@ section.services {
 .contact-form {
     opacity: 0;
     transform: translateY(40px);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out; /* Assurez-vous que la transition est définie */
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out; /* Assurez-vous que la transition est définie */
 }
 
 .skills-content.in-view,
