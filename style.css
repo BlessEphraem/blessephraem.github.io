@@ -1784,10 +1784,9 @@ section.blog {
 
 /* Style pour la miniature (thumbnail) de l'article */
 .post-thumbnail {
-    width: 100%; /* L'image prend toute la largeur du bloc post */
-    height: auto;
-    object-fit: cover; /* L'image couvre la zone sans se déformer */
-    border-radius: 8px; /* Bords arrondis (comme le .post-item) */
-    margin-bottom: 1.5rem; /* Espace entre l'image et le titre */
-    max-height: 450px; /* Empêche l'image d'être trop haute */
+    width: 100%;             /* L'image prend 100% de la largeur du conteneur */
+    aspect-ratio: 16 / 9;    /* Force le format 16:9 */
+    object-fit: cover;       /* "Zoom" et "coupe" l'image pour remplir le cadre 16:9 sans la déformer */
+    border-radius: 8px;      /* Garde vos bords arrondis */
+    margin-bottom: 1.5rem;  /* Garde l'espace en dessous */
 }
