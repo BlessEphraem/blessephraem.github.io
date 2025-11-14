@@ -76,13 +76,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
     mainContent.addEventListener('wheel', e => {
         if (isMobileView() || isScrolling) return;
-        e.preventDefault();
+
+        // === NOUVELLE LOGIQUE POUR LE SCROLL DU BLOG ===
+        const currentSection = sections[currentSectionIndex];
+        // On vérifie si on est sur la section blog
+        if (currentSection.id === 'blog') {
+            const { scrollTop, clientHeight, scrollHeight } = currentSection;
+            const isScrollingDown = e.deltaY > 0;
+            const isScrollingUp = e.deltaY < 0;
+
+            // Si on scroll VERS LE BAS et qu'on N'EST PAS en bas de la section blog
+            if (isScrollingDown && (scrollTop + clientHeight < scrollHeight - 10)) {
+                // On laisse le navigateur scroller la section verticalement
+                // On ne fait PAS e.preventDefault() et on ne fait PAS isScrolling = true
+                return; 
+            }
+            
+            // Si on scroll VERS LE HAUT et qu'on N'EST PAS en haut de la section blog
+            if (isScrollingUp && (scrollTop > 10)) {
+                // On laisse le navigateur scroller la section verticalement
+                return;
+            }
+            
+            // Si on EST en bas (et on scroll down) OU on EST en haut (et on scroll up),
+            // le code continue ci-dessous et déclenche le snap-scroll.
+        }
+        e.preventDefault(); // On empêche le scroll natif SEULEMENT si on va snap-scroller
         isScrolling = true;
+        
         if (e.deltaY > 0 && currentSectionIndex < sections.length - 1) {
             scrollToSection(currentSectionIndex + 1);
         } else if (e.deltaY < 0 && currentSectionIndex > 0) {
             scrollToSection(currentSectionIndex - 1);
+        } else {
+             // Cas où on est au bout mais on essaie de scroller plus
+             isScrolling = false;
         }
+
         setTimeout(() => { isScrolling = false; }, 400);
     }, { passive: false });
 
