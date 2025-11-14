@@ -1752,6 +1752,8 @@ section.blog {
 .post-content-full a {
     color: var(--color-sora);
     text-decoration: underline;
+    overflow-wrap: break-word; /* Ajout : force le retour à la ligne pour les mots/URL trop longs */
+    word-break: break-all;     /* Ajout : alternative/sécurité si le premier ne suffit pas */
 }
 
 .post-content-full img {
@@ -1780,3 +1782,12 @@ section.blog {
     border-color: var(--main-color);
 }
 
+/* Style pour la miniature (thumbnail) de l'article */
+.post-thumbnail {
+    width: 100%; /* L'image prend toute la largeur du bloc post */
+    height: auto;
+    object-fit: cover; /* L'image couvre la zone sans se déformer */
+    border-radius: 8px; /* Bords arrondis (comme le .post-item) */
+    margin-bottom: 1.5rem; /* Espace entre l'image et le titre */
+    max-height: 450px; /* Empêche l'image d'être trop haute */
+}

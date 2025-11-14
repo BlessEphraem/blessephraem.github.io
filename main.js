@@ -316,69 +316,96 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!postsListContainer) return;
 
         try {
-            // 1. Récupérer la liste des fichiers du dossier _posts via l'API GitHub
+            // 1. Récupérer la liste des fichiers
             const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_PATH}`);
-
             if (!response.ok) {
                 throw new Error(`Erreur GitHub API: ${response.statusText}`);
             }
-
             let files = await response.json();
 
-            // 2. On ne garde que les .md et on les trie par nom (date) DÉCROISSANT (le plus récent en premier)
-            // C'est la réponse à votre première demande !
+            // 2. Trier les fichiers
             files = files
                 .filter(file => file.name.endsWith('.md'))
-                .sort((a, b) => b.name.localeCompare(a.name)); // 'b' avant 'a' = décroissant
+                .sort((a, b) => b.name.localeCompare(a.name)); // Décroissant
 
             if (files.length === 0) {
                 postsListContainer.innerHTML = "<p>Aucun article pour le moment.</p>";
                 return;
             }
 
-            // 3. NOUVEAU : Préparer les promesses pour télécharger le contenu de TOUS les fichiers
+            // 3. Télécharger le contenu de tous les fichiers
             const fetchPromises = files.map(file => 
                 fetch(file.download_url).then(res => res.text())
             );
-
-            // Attendre que tous les contenus soient téléchargés
             const allPostTexts = await Promise.all(fetchPromises);
 
-            // 4. Afficher chaque post complet
-            postsListContainer.innerHTML = ''; // Vider la liste
+            // 4. Vider la liste et afficher chaque post
+            postsListContainer.innerHTML = ''; 
 
             allPostTexts.forEach((postText, index) => {
-                const file = files[index]; // Récupérer les métadonnées du fichier
+                const file = files[index];
 
-                // Extraire le titre et la date du nom de fichier
-                const cleanName = file.name.replace(/\.md$/, '').substring(11).replace(/-/g, ' ');
+                // --- NOUVELLE LOGIQUE ---
+
+                // 4a. Extraire la date du nom de fichier (fiable)
                 const postDate = file.name.substring(0, 10);
 
-                // Extraire le contenu Markdown (comme on le faisait dans 'showPost')
-                let postHtml = postText;
+                // 4b. Initialiser les variables pour le Front Matter
+                let postContent = postText; // Contenu Markdown
+                let title = '';             // Titre du post
+                let thumbnailUrl = null;    // URL de la miniature
+
+                // 4c. Parser le Front Matter (YAML) s'il existe
                 if (postText.startsWith('---')) {
                     const endOfYaml = postText.indexOf('---', 3);
                     if (endOfYaml !== -1) {
-                        postHtml = postText.substring(endOfYaml + 3);
+                        const yamlBlock = postText.substring(3, endOfYaml);
+                        postContent = postText.substring(endOfYaml + 3); // Garde le reste
+                        
+                        // Expression régulière pour trouver le titre
+                        const titleMatch = yamlBlock.match(/title:\s*(.*)/);
+                        if (titleMatch && titleMatch[1]) {
+                            title = titleMatch[1].trim();
+                        }
+
+                        // Expression régulière pour trouver la miniature
+                        const thumbnailMatch = yamlBlock.match(/thumbnail:\s*(.*)/);
+                        if (thumbnailMatch && thumbnailMatch[1]) {
+                            thumbnailUrl = thumbnailMatch[1].trim();
+                        }
                     }
                 }
-                // Convertir le Markdown en HTML
-                const convertedHtml = marked.parse(postHtml); 
 
-                // Créer l'élément complet du post
+                // 4d. Fallback : si pas de titre YAML, prendre le nom du fichier
+                if (!title) {
+                    title = file.name.replace(/\.md$/, '').substring(11).replace(/-/g, ' ');
+                }
+
+                // 4e. Convertir le contenu Markdown (sans YAML)
+                const convertedHtml = marked.parse(postContent); 
+
+                // 4f. Générer le HTML pour la miniature (si elle existe)
+                let thumbnailHtml = '';
+                if (thumbnailUrl) {
+                    // Les chemins de Netlify CMS sont souvent absolus (ex: /assets/uploads/img.jpg)
+                    // donc on les utilise directement.
+                    thumbnailHtml = `<img src="${thumbnailUrl}" alt="Miniature pour ${title}" class="post-thumbnail">`;
+                }
+
+                // 4g. Créer l'élément complet du post
                 const postElement = document.createElement('div');
-                postElement.className = 'post-item'; // On garde le style
+                postElement.className = 'post-item';
 
-                // Injecter le titre, la date ET le contenu converti
+                // Injecter le HTML (avec la miniature en premier)
                 postElement.innerHTML = `
-                    <h3>${cleanName}</h3>
+                    ${thumbnailHtml}
+                    <h3>${title}</h3>
                     <p>${postDate}</p>
                     <div class="post-content-full">
                         ${convertedHtml}
                     </div>
                 `;
 
-                // On n'ajoute PAS de 'addEventListener', on affiche tout directement
                 postsListContainer.appendChild(postElement);
             });
 
