@@ -113,7 +113,7 @@ ul { list-style: none; }
 .socials a:hover { transform: translateY(-5px); color: var(--primary); }
 
 /* Buttons */
-.btn { padding: 12px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; border: none; transition: var(--transition); }
+.btn { padding: 0.5em 1em; border-radius: 16px; font-weight: bold; cursor: pointer; border: none; transition: var(--transition); }
 .btn-primary { background: var(--primary); color: white; box-shadow: var(--glow-shadow); }
 .btn-outline { border: 2px solid var(--primary); color: white; background: transparent; }
 .btn:hover { transform: scale(1.05); }
