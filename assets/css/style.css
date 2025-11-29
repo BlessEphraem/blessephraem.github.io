@@ -114,8 +114,8 @@ ul { list-style: none; }
 
 /* Buttons */
 .btn { padding: 0.5em 1em; border-radius: 16px; font-weight: bold; cursor: pointer; border: none; transition: var(--transition); }
-.btn-primary { background: var(--primary); color: white; box-shadow: var(--glow-shadow); }
-.btn-outline { border: 2px solid var(--primary); color: white; background: transparent; }
+.btn-primary { background: var(--primary); color: white; box-shadow: var(--glow-shadow); border: 2px solid transparent}
+.btn-outline { border: 2px solid var(--primary); color: white; background: transparent;}
 .btn:hover { transform: scale(1.05); }
 
 
