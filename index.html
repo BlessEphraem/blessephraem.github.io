@@ -27,7 +27,8 @@
             <ul class="nav-links">
                 <li><a href="#home">Accueil</a></li>
                 <li><a href="#services">Services</a></li>
-                <li><a href="#portfolio">Parcours</a></li>
+                <li><a href="#parcours">Parcours</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
                 <li><a href="#contact" class="btn-nav">Contact</a></li>
             </ul>
         </div>
@@ -176,7 +177,7 @@
         </div>
     </section>
 
-    <section id="portfolio" class="section">
+    <section id="parcours" class="section">
         <div class="container">
             <h2 class="section-title"><span class="accent">Mon Parcours</span></h2>
             <div class="timeline">
@@ -216,6 +217,45 @@
         </div>
     </section>
 
+    <section id="portfolio" class="section bg-alt">
+        <div class="container">
+            <h2 class="section-title">MON <span class="accent">PORTFOLIO</span></h2>
+            <!-- CAROUSEL 3D INTERACTIF -->
+            <div class="carousel-container">
+                <!-- Video Gauche -->
+                <div class="video-card pos-left" id="video-left">
+                    <div class="video-wrapper">
+                        <div class="video-overlay"></div>
+                        <iframe src="https://www.youtube.com/embed/OdECOO3hjUE" title="Video Left" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <h3 class="video-title"></h3>
+                </div>
+
+                <!-- Video Centre (Principale) -->
+                <div class="video-card pos-center" id="video-center">
+                    <div class="video-wrapper">
+                        <div class="video-overlay"></div>
+                        <iframe src="https://www.youtube.com/embed/kb6MKt-M79M" title="Video Center" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <h3 class="video-title"></h3>
+                </div>
+
+                <!-- Video Droite -->
+                <div class="video-card pos-right" id="video-right">
+                    <div class="video-wrapper">
+                        <div class="video-overlay"></div>
+                        <iframe src="https://www.youtube.com/embed/qeYhJD5uqHc" title="Video Right" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <h3 class="video-title"></h3>
+                </div>
+            </div>
+
+            <p class="desktop-only-hint" style="text-align: center; color: var(--text-muted); margin-top: 20px;">
+                <small>Cliquez sur une vidéo latérale pour l'afficher au centre.</small>
+            </p>
+        </div>
+    </section>
+
     <section id="contact" class="section">
         <div class="container">
             <h2 class="section-title">Restons en <span class="accent">Contact</span></h2>
@@ -244,6 +284,7 @@
         <p>&copy; 2025 Ephraem.</p>
     </footer>
 
+    <script src="assets/js/vanilla-tilt.min.js"></script>
     <script src="assets/js/main.js"></script>
 </body>
 </html>

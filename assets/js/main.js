@@ -93,4 +93,110 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    
+    
+    // 3.5. Auto-update YouTube Titles
+    const updateVideoTitles = () => {
+        const wrappers = document.querySelectorAll('.video-card');
+        wrappers.forEach(card => {
+            const iframe = card.querySelector('iframe');
+            const titleEl = card.querySelector('.video-title');
+            
+            if(iframe && titleEl) {
+                // Extract Video ID from src (embed/ID)
+                const match = iframe.src.match(/\/embed\/([a-zA-Z0-9_-]+)/);
+                if(match && match[1]) {
+                    const videoId = match[1];
+                    const apiUrl = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`;
+                    
+                    fetch(apiUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            if(data.title) {
+                                titleEl.textContent = data.title;
+                            }
+                        })
+                        .catch(err => console.error("Error fetching title for video", videoId, err));
+                }
+            }
+        });
+    };
+    updateVideoTitles();
+
+    // 4. Portfolio 3D Carousel Logic
+    const videoCards = document.querySelectorAll('.video-card');
+    
+    if(videoCards.length > 0) {
+        console.log("3D Carousel initialized with", videoCards.length, "cards.");
+
+        videoCards.forEach(card => {
+            card.addEventListener('click', () => {
+                // Mobile check : on ne fait rien, comportement natif (scroll + play)
+                if (window.innerWidth <= 900) return;
+
+                // Si c'est la carte centrale, on laisse le clic passer à l'iframe (lecture)
+                if (card.classList.contains('pos-center')) return;
+
+                console.log("Swap triggered by:", card.id);
+
+                // Identifier la carte centrale actuelle
+                const currentCenter = document.querySelector('.video-card.pos-center');
+                if(!currentCenter) return;
+
+                // Quelle est la position de la carte cliquée ? (left ou right)
+                let clickedPositionClass = '';
+                if(card.classList.contains('pos-left')) clickedPositionClass = 'pos-left';
+                else if(card.classList.contains('pos-right')) clickedPositionClass = 'pos-right';
+
+                if(!clickedPositionClass) return;
+
+                // --- EXECUTION DU SWAP ---
+
+                // 1. La carte cliquée DEVIENT le centre
+                card.classList.remove(clickedPositionClass);
+                card.classList.add('pos-center');
+
+                // 2. L'ancien centre PREND la place de la carte cliquée
+                currentCenter.classList.remove('pos-center');
+                currentCenter.classList.add(clickedPositionClass);
+
+                // 3. STOPPER LA VIDÉO de l'ancien centre
+                // On recharge l'iframe pour couper le son proprement
+                const iframe = currentCenter.querySelector('iframe');
+                if(iframe) {
+                    const currentSrc = iframe.src;
+                    iframe.src = currentSrc;
+                }
+            });
+        });
+    }
+    
+    // 5. 3D Tilt Effect (VanillaTilt Library)
+    // Documentation: https://micku7zu.github.io/vanilla-tilt.js/
+    const tiltCard = document.querySelector(".highlight-box");
+    if (tiltCard && typeof VanillaTilt !== 'undefined') {
+        VanillaTilt.init(tiltCard, {
+            max: 15,          // Angle max d'inclinaison
+            speed: 400,       // Vitesse de transition
+            glare: true,      // Activer l'effet de brillance
+            "max-glare": 0.2, // Opacité max de la brillance
+            scale: 1.05,      // Zoom au survol
+            perspective: 1000 // Perspective 3D
+        });
+    } else if (tiltCard) {
+        console.warn("VanillaTilt not loaded. Check script inclusion.");
+    }
+
+    // 6. Gestion du Spotlight (Lumière blanche sous la souris)
+    if (tiltCard) {
+        tiltCard.addEventListener('mousemove', (e) => {
+            const rect = tiltCard.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            tiltCard.style.setProperty('--mouse-x', `${x}px`);
+            tiltCard.style.setProperty('--mouse-y', `${y}px`);
+        });
+    }
+
 });
