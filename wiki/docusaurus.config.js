@@ -50,6 +50,12 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      docs: {
+        sidebar: {
+          hideable: true,
+          autoCollapseCategories: true,
+        },
+      },
       image: 'img/docusaurus-social-card.jpg',
       colorMode: {
         defaultMode: 'dark',
