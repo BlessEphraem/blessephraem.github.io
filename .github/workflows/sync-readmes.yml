@@ -40,10 +40,22 @@ jobs:
               content = re.sub(rf'(?<!/wiki)/img/{re.escape(img_prefix)}/', f'/wiki/img/{img_prefix}/', content)
               return content
 
+          def fix_html_for_mdx(content):
+              # MDX parses HTML as JSX: void elements must be self-closing
+              content = re.sub(
+                  r'<(img|br|hr|input|meta|link)([^>]*?)(?<!/)>',
+                  lambda m: '<{}{} />'.format(m.group(1), m.group(2).rstrip()),
+                  content
+              )
+              # Fix </br> / </hr> used as self-close in old HTML
+              content = re.sub(r'</(br|hr)>', lambda m: '<{} />'.format(m.group(1)), content)
+              return content
+
           def write_doc(path, frontmatter, content, img_prefix=None):
               pathlib.Path(path).parent.mkdir(parents=True, exist_ok=True)
               if img_prefix:
                   content = rewrite_media(content, img_prefix)
+              content = fix_html_for_mdx(content)
               out = frontmatter + "\n\n" + content
               pathlib.Path(path).write_text(out, encoding="utf-8")
               print(f"Written: {path}")
