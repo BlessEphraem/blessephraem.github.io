@@ -3,6 +3,8 @@ name: Website Wiki Build
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '.github/workflows/**'
   workflow_run:
     workflows: [Sync READMEs]
     types: [completed]
