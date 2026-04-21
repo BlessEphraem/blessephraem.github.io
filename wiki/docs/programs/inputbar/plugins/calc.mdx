@@ -4,11 +4,13 @@ title: Calc Plugin
 sidebar_position: 2
 ---
 
-# ➗ Plugin — Calc
+# ➗ Plugin - Calc
+
+<a href="../Plugins.md" style="text-decoration:none"><kbd style="background:#30363d;color:#e6edf3;border:none;padding:3px 10px;border-radius:5px">← Back to Plugins</kbd></a>
 
 Evaluates mathematical expressions typed directly in InputBar and copies the result to the clipboard.
 
-> **Keywords:** `calc` · `*` *(global — active on every search)*
+> **Keywords:** `calc` · `*` *(global — active on every search)* - [Edit in `Plugins.json`](../Plugins.md)
 
 ## Supported operations
 
@@ -39,4 +41,4 @@ Float results are rounded to 6 decimal places to avoid display noise.
 ## Safety
 
 Expressions are evaluated using Python's `ast` module — **no `eval()` call is made**.  
-Only numeric constants and the operators listed above are permitted. Any other input is silently ignored.
+Only numeric constants and the operators listed above are permitted. Any other input is silently ignored by the plugin.

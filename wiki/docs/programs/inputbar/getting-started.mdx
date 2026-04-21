@@ -8,30 +8,31 @@ sidebar_position: 1
 
 **All configuration files live in the `Data/` folder** — created automatically on first launch.
 
-### 🧩 App Settings
+<h3>🧩 App Settings</h3>
+<ul>
+    <li><h3><a href="Settings.md" style="text-decoration:none"><kbd style="background:#30363d;color:#e6edf3;border:none;padding:3px 10px;border-radius:5px">📜 Settings</kbd></a></h3></li>
+    <li><h3><a href="Hotkeys.md" style="text-decoration:none"><kbd style="background:#30363d;color:#e6edf3;border:none;padding:3px 10px;border-radius:5px">⌨️ Hotkeys</kbd></a></h3></li>
+    <li><h3><a href="Plugins.md" style="text-decoration:none"><kbd style="background:#30363d;color:#e6edf3;border:none;padding:3px 10px;border-radius:5px">📦 Plugins</kbd></a></h3></li>
+    <li><h3><a href="Theme.md" style="text-decoration:none"><kbd style="background:#30363d;color:#e6edf3;border:none;padding:3px 10px;border-radius:5px">🎨 Theme</kbd></a></h3></li>
+</ul>
 
-- [📜 Settings](./settings)
-- [⌨️ Hotkeys](./hotkeys)
-- [📦 Plugins](./plugins)
-- [🎨 Theme](./theme)
+<h3>💻 For Developers</h3>
+<ul>
+    <li><h3><a href="IPC.md" style="text-decoration:none"><kbd style="background:#30363d;color:#e6edf3;border:none;padding:3px 10px;border-radius:5px">🛜 IPC</kbd></a></h3></li>
+    <li><h3><a href="CreatePlugins.md" style="text-decoration:none"><kbd style="background:#30363d;color:#e6edf3;border:none;padding:3px 10px;border-radius:5px">📦 Create a Plugin</kbd></a></h3></li>
+</ul>
 
-### 💻 For Developers
+</br>
 
-- [🛜 IPC](./ipc)
-- [📦 Create a Plugin](./create-plugins)
-
----
-
-## 📁 `Config.json`
+# 📁 `Config.json`
 
 Located in `Path\Config.json`.  
 Contains a single key that redirects where `Data/` and `Plugins/` are stored.
 
-> Tip: Double the backslash `\` when specifying paths.
-
+> Tip: Double the backslash '`\`' when specifying paths.
 ```json
 {
-    "ConfigDirectory": "C:\Users\YourName\AppData\Roaming\InputBar"
+    "ConfigDirectory": "C:\\Users\\YourName\\AppData\\Roaming\\InputBar"
 }
 ```
 
@@ -61,6 +62,8 @@ InputBar adopts it immediately — nothing is overwritten:
 - Any new settings keys added in this version are injected on first read
 - The old location is ignored from that point on
 
+This is the expected path when you point `ConfigDirectory` to a backup, a shared drive, or a location you populated manually beforehand.
+
 **In both cases, your data at the old location is never touched.**  
 If you want to carry it over, copy the files below before restarting:
 
@@ -75,3 +78,5 @@ If you want to carry it over, copy the files below before restarting:
 | `Plugins\Shell\default_shell.json` | Default shell preference |
 | `Plugins\Everything\favorites.data` | Everything folder shortcuts |
 | `Plugins\Everything\extensions.data` | Everything auto-trigger extensions |
+
+> The old location is left untouched. InputBar will simply ignore it once `ConfigDirectory` points elsewhere.

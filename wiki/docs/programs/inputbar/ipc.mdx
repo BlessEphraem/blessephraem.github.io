@@ -4,13 +4,17 @@ title: IPC / External Trigger
 sidebar_position: 7
 ---
 
-# External Trigger (IPC)
+## External Trigger (IPC)
+
+<a href="Configuration.md" style="text-decoration:none"><kbd style="background:#30363d;color:#e6edf3;border:none;padding:3px 10px;border-radius:5px">← Configuration</kbd></a>
 
 InputBar listens on a local pipe `InputBar_Singleton_Lock`.  
+
 Compatible with AutoHotkey, PowerShell, or any tool that can launch a process.
 
-## Bash / Shell / CMD
+It can be triggered from any external script:
 
+## Bash / Shell / CMD
 ```bash
 # Show InputBar
 python InputBar.pyw
@@ -19,22 +23,22 @@ python InputBar.pyw
 python InputBar.pyw --search "premiere"
 ```
 
-## AutoHotkey
-
-```ahk
+## Autohotkey
+```bash
 Ctrl+Space::{
-    pipeReady := DllCall("WaitNamedPipe", "Str", "\.\pipe\InputBar_Singleton_Lock", "UInt", 50)
+    pipeReady := DllCall("WaitNamedPipe", "Str", "\\.\pipe\InputBar_Singleton_Lock", "UInt", 50)
 
     if (pipeReady) {
         try {
-            pipe := FileOpen("\.\pipe\InputBar_Singleton_Lock", "w")
+            pipe := FileOpen("\\.\pipe\InputBar_Singleton_Lock", "w")
             pipe.Write("SHOW")
             pipe.Close()
-            return
+            return ; Succes, show the InputBar.
         } catch {
-            ; Fallback
+            ; If an error is thrown -> Fallback
         }
     }
+    ; Fallback -> Run "InputBar.exe/.pyw"
     Target := 'C:\Program Files (x86)\InputBar\InputBar.exe" --show'
     try {
         Run(Target, , "Hide")

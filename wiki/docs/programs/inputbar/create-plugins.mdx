@@ -6,16 +6,19 @@ sidebar_position: 6
 
 # Writing a plugin
 
+<a href="Configuration.md" style="text-decoration:none"><kbd style="background:#30363d;color:#e6edf3;border:none;padding:3px 10px;border-radius:5px">← Configuration</kbd></a>
+
 ## Clone the repository
 
-```bash
+Create a destination folder for the project, then open your preferred terminal or command prompt (e.g., CMD, PowerShell, or Git Bash). Run the following commands, making sure to replace the placeholder path with your actual folder directory:
+
+```Bash
 cd "C:\Your\Folder\Path\"
 git clone https://github.com/BlessEphraem/InputBar
 ```
 
-Install the required Python packages:
-
-```bash
+Before running the application, you need to install the required Python packages. You can easily do this using pip:
+```Bash
 pip install PyQt6 rapidfuzz keyboard pywin32
 ```
 
@@ -49,3 +52,5 @@ Each returned item can have:
 | `item_type` | str | Set to `"app"` to enable the right-arrow submenu |
 
 If `action` returns the string `"KEEP_OPEN_AND_REFRESH"`, InputBar stays open and refreshes the results — useful for confirmation flows.
+
+---

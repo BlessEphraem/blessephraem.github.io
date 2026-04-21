@@ -4,22 +4,20 @@ title: JSX Scripts
 sidebar_position: 2
 ---
 
-# 📜 JSX Scripts — for Adobe Premiere Pro
+# 📜 UXP Scripts — for Adobe Premiere Pro
 
 > A collection of personal **UXP scripts for Adobe Premiere Pro**, covering automation, export utilities, timeline manipulation, and more.
 
-These scripts are plain `.jsx` files targeting the `premierepro` UXP API. They can be executed by **any UXP-capable script runner** — no specific plugin required. That said, they were designed and tested with [**JSX Runner**](./jsx-runner), which is the recommended way to use them.
-
-[![GitHub](https://img.shields.io/badge/GitHub-JSX_Scripts-181717?style=for-the-badge&logo=github)](https://github.com/BlessEphraem/UXP)
+These scripts are plain `.jsx` files targeting the `premierepro` UXP API. They can be executed by **any UXP-capable script runner** — no specific plugin required. That said, they were designed and tested with my personnal [**JSX Runner**](https://github.com/BlessEphraem/JSX-Runner) plugin, which is the recommended way to use them (It's free and Open-Source).
 
 ---
 
 ## 📋 Prerequisites
 
-- **Adobe Premiere Pro 25.6.1 or later**, or a **Beta version** with UXP plugin support enabled.
-- A UXP Plugin script runner — see [JSX Runner](./jsx-runner).
+- **Adobe Premiere Pro 25.6.1 or later**, or a **Beta version** with UXP plugin support enabled. Earlier versions do not support UXP plugins and are not compatible.
+- A UXP Plugin script runner, you can download and install my plugin. See [JSX Runner](https://github.com/BlessEphraem/JSX-Runner)
 
-> ⚠️ These scripts use the `premierepro` UXP module. They will **not** work in older ExtendScript (`.jsx` legacy) runners or in Premiere Pro versions prior to 25.6.1.
+> ⚠️ These scripts use the `premierepro` UXP module. They will **not** work in older ExtendScript (.jsx legacy) runners or in Premiere Pro versions prior to 25.6.1.
 
 ---
 
@@ -33,8 +31,6 @@ Captures the **current frame** from the active sequence's Program Monitor and sa
 - Opens a native OS save dialog so you can choose the destination
 - Exports at the sequence's **native resolution**
 - Handles both Windows (`\`) and macOS (`/`) path separators
-
----
 
 ### 🪦 `UnNest.jsx` — *Grave Robber v12.1*
 
@@ -51,11 +47,11 @@ This is a full extraction engine — it handles multi-track nests, audio/video o
 
 > ⚠️ This script is destructive (it removes the nest and replaces it). Make sure your project is saved before running.
 
----
-
 ### 🎞️ `Retrieve_Effects.jsx`
 
 Exports the **full list of effects and transitions** available in your Premiere Pro installation to a file named `Effects.data`.
+
+The output is formatted with category prefixes for easy parsing:
 
 | Prefix | Content |
 |---|---|
@@ -66,13 +62,11 @@ Exports the **full list of effects and transitions** available in your Premiere 
 
 Useful for building preset databases, documentation, or tooling that needs to reference Premiere effects by name.
 
----
-
 ### 🔩 `Retrieve_Effects_BRUT.jsx`
 
 Same as `Retrieve_Effects.jsx`, but exports **raw internal match names** instead of display names — useful for scripting and automation where you need Premiere's internal identifiers.
 
-> ⚠️ Audio effects still use display names due to a current limitation of the UXP API (`getMatchNames()` is not yet available for `AudioFilterFactory`).
+> ⚠️ Note: Audio effects still use display names due to a current limitation of the UXP API (`getMatchNames()` is not yet available for `AudioFilterFactory`).
 
 ---
 
@@ -84,4 +78,4 @@ Feel free to open a PR to add your own UXP scripts! Please follow the existing n
 
 ## 📄 License
 
-GPL-3.0 — see [LICENSE](https://github.com/BlessEphraem/UXP/blob/main/LICENSE) for details.
+GPL-3.0 license — see [LICENSE](LICENSE) for details.
