@@ -67,7 +67,7 @@ const config = {
         },
         items: [
           {
-            to: '/programs/inputbar/configuration',
+            to: '/programs/inputbar/readme',
             position: 'left',
             label: 'Programs',
           },

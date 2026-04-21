@@ -8,14 +8,14 @@ const tools = [
     emoji: '🖥️',
     name: 'InputBar',
     desc: 'Fast application launcher for Windows, can be triggered with any shortcuts. (Even the "Win" key).',
-    link: '/programs/inputbar/configuration',
+    link: '/programs/inputbar/readme',
     color: '#9B9B9B',
   },
   {
     emoji: '🎬',
     name: 'Premiere Companion',
     desc: 'An Excalibur software + plugin alternative, and can apply Presets too. Free and Open Source.',
-    link: '/programs/premiere-companion/gettingstarted',
+    link: '/programs/premiere-companion/readme',
     color: '#ff1796',
   },
   {
@@ -75,3 +75,4 @@ export default function Home() {
     </Layout>
   );
 }
+

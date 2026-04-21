@@ -205,9 +205,21 @@ jobs:
                   print(f"ERROR fetching {url}: {e}")
 
           print("Fetching InputBar docs...")
+          try:
+              content = fetch("https://raw.githubusercontent.com/BlessEphraem/InputBar/main/README.md")
+              content += "\n\n---\n## Documentation\nimport DocCardList from '@theme/DocCardList';\n\n<DocCardList />\n"
+              write_doc("wiki/docs/programs/inputbar/readme.mdx", "---\nid: readme\ntitle: README\nsidebar_position: 0\n---", content, "inputbar")
+          except Exception as e:
+              print(f"ERROR fetching InputBar README: {e}")
           fetch_directory_recursively("BlessEphraem", "InputBar", ".docs", "wiki/docs/programs/inputbar", "inputbar")
 
           print("Fetching Premiere-Companion docs...")
+          try:
+              content = fetch("https://raw.githubusercontent.com/BlessEphraem/Premiere-Companion/main/README.md")
+              content += "\n\n---\n## Documentation\nimport DocCardList from '@theme/DocCardList';\n\n<DocCardList />\n"
+              write_doc("wiki/docs/programs/premiere-companion/readme.mdx", "---\nid: readme\ntitle: README\nsidebar_position: 0\n---", content, "premiere-companion")
+          except Exception as e:
+              print(f"ERROR fetching Premiere-Companion README: {e}")
           fetch_directory_recursively("BlessEphraem", "Premiere-Companion", ".docs", "wiki/docs/programs/premiere-companion", "premiere-companion")
           release_checks = [
               ("BlessEphraem", "InputBar",
