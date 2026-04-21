@@ -15,7 +15,7 @@ const tools = [
     emoji: '🎬',
     name: 'Premiere Companion',
     desc: 'An Excalibur software + plugin alternative, and can apply Presets too. Free and Open Source.',
-    link: '/programs/premiere-companion/readme',
+    link: '/programs/premiere-companion/',
     color: '#ff1796',
   },
   {
