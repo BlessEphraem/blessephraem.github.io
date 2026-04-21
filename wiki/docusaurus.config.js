@@ -90,29 +90,6 @@ const config = {
       },
       footer: {
         style: 'dark',
-        links: [
-          {
-            title: 'Programs',
-            items: [
-              { label: 'InputBar', to: '/programs/inputbar/getting-started' },
-              { label: 'Premiere Companion', to: '/programs/premiere-companion/getting-started' },
-            ],
-          },
-          {
-            title: 'Plugins',
-            items: [
-              { label: 'JSX Runner', to: '/plugins/jsx-runner' },
-              { label: 'JSX Scripts', to: '/plugins/jsx-scripts' },
-            ],
-          },
-          {
-            title: 'Links',
-            items: [
-              { label: 'Portfolio', href: 'https://blessephraem.github.io' },
-              { label: 'GitHub', href: 'https://github.com/BlessEphraem' },
-            ],
-          },
-        ],
         copyright: `© ${new Date().getFullYear()} Ephraem. Built with Docusaurus.`,
       },
       prism: {
