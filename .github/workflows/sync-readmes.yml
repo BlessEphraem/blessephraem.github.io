@@ -1,0 +1,78 @@
+name: Sync READMEs
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fetch and write READMEs
+        env:
+          GH_TOKEN: ${{ secrets.CROSS_REPO_TOKEN }}
+        run: |
+          python3 << 'PY'
+          import urllib.request, pathlib, os
+
+          token = os.environ.get("GH_TOKEN", "")
+          headers = {"Authorization": f"token {token}"} if token else {}
+
+          def fetch(url):
+              req = urllib.request.Request(url, headers=headers)
+              with urllib.request.urlopen(req) as r:
+                  return r.read().decode("utf-8")
+
+          def write_doc(path, frontmatter, content):
+              out = frontmatter + "\n\n" + content
+              pathlib.Path(path).write_text(out, encoding="utf-8")
+              print(f"Written: {path}")
+
+          sources = [
+              (
+                  "https://raw.githubusercontent.com/BlessEphraem/BlessEphraem/main/README.md",
+                  "wiki/docs/intro.mdx",
+                  "---\nid: intro\ntitle: About\nsidebar_position: 1\n---",
+              ),
+              (
+                  "https://raw.githubusercontent.com/BlessEphraem/JSX-Runner/main/README.md",
+                  "wiki/docs/plugins/jsx-runner.mdx",
+                  "---\nid: jsx-runner\ntitle: JSX Runner\nsidebar_position: 1\n---",
+              ),
+              (
+                  "https://raw.githubusercontent.com/BlessEphraem/UXP/main/README.md",
+                  "wiki/docs/plugins/jsx-scripts.mdx",
+                  "---\nid: jsx-scripts\ntitle: JSX Scripts\nsidebar_position: 2\n---",
+              ),
+          ]
+
+          for url, path, frontmatter in sources:
+              try:
+                  content = fetch(url)
+                  write_doc(path, frontmatter, content)
+              except Exception as e:
+                  print(f"ERROR fetching {url}: {e}")
+
+          print("Done.")
+          PY
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add wiki/docs/intro.mdx wiki/docs/plugins/jsx-runner.mdx wiki/docs/plugins/jsx-scripts.mdx
+          if git diff --cached --quiet; then
+            echo "No changes."
+          else
+            git commit -m "chore: sync READMEs from upstream repos"
+            git push
+          fi
