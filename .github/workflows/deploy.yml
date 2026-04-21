@@ -160,23 +160,30 @@ jobs:
                   is_md = path.lower().endswith(".md")
                   
                   if is_readme:
-                      path = "./"
+                      if img_prefix:
+                          path = f"/wiki/programs/{img_prefix}/"
+                      else:
+                          path = "./"
                   elif is_md:
                       path = path[:-3] # remove .md
                       path_parts = path.split('/')
                       new_parts = []
                       for p in path_parts:
-                          if p in ('.', '..'):
-                              new_parts.append(p)
-                          else:
-                              new_parts.append(slugify(p))
-                      path = "/".join(new_parts)
+                          if p in ('.', '..') or not p:
+                              continue
+                          new_parts.append(slugify(p))
+                      
+                      slug_path = "/".join(new_parts)
+                      if img_prefix:
+                          path = f"/wiki/programs/{img_prefix}/{slug_path}"
+                      else:
+                          path = slug_path
                   
                   if anchor:
                       return f"{path}#{slugify(anchor)}"
                   return path
 
-              # Matches [Anything including nested [] like badges] (URL)
+              # Matches [text](url) - supporting nested brackets for badges
               content = re.sub(r'\[((?:\[[^\]]*\]|[^\]])*)\]\(([^)]+)\)', 
                                lambda m: f'[{m.group(1)}]({transform_url(m.group(2))})', content)
               
@@ -396,7 +403,8 @@ jobs:
               content = build_release_markdown(data)
               frontmatter = f"---\nid: {doc_id}\ntitle: {title}\nsidebar_position: 0\npagination_prev: null\n---"
               try:
-                  write_doc(path, frontmatter, content)
+                  prefix = "inputbar" if repo.lower() == "inputbar" else "premiere-companion"
+                  write_doc(path, frontmatter, content, prefix)
               except Exception as e:
                   print(f"ERROR writing release page for {owner}/{repo}: {e}")
 
