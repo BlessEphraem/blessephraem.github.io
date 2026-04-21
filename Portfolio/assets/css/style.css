@@ -73,7 +73,7 @@ ul { list-style: none; }
     display: flex; justify-content: space-between; align-items: center;
     max-width: var(--max-width); margin: 0 auto; padding: 0 20px;
 }
-.logo { font-size: 1.5rem; font-weight: bold; }
+.logo { font-size: 1.5rem; font-weight: 900; }
 .nav-links { display: flex; gap: 2rem; align-items: center; }
 .nav-links a:hover { color: var(--primary); }
 .btn-nav {

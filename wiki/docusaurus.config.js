@@ -83,12 +83,12 @@ const config = {
           },
           {
             href: 'https://blessephraem.github.io',
-            label: '← Menu',
+            label: 'Menu',
             position: 'right',
           },
           {
             href: 'https://blessephraem.github.io/Portfolio',
-            label: '← Portfolio',
+            label: 'Portfolio',
             position: 'right',
           },
           {
