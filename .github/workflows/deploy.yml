@@ -140,6 +140,7 @@ jobs:
               return content
 
           def fix_html_for_mdx(content, img_prefix=None):
+              content = re.sub(r'<!--\s*embed\s*(.*?)-->', lambda m: m.group(1).strip(), content, flags=re.DOTALL)
               def fix_readme_link(m):
                   anchor = m.group(1) or ''
                   if anchor:
