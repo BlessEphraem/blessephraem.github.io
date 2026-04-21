@@ -8,10 +8,10 @@ const tools = [
     emoji: '🖥️',
     name: 'InputBar',
     desc: 'Fast application launcher for Windows, can be triggered with any shortcuts. (Even the "Win" key).',
-    link: '/programs/inputbar/readme',
+    link: '/programs/inputbar/',
     color: '#9B9B9B',
-  },
-  {
+    },
+    {
     emoji: '🎬',
     name: 'Premiere Companion',
     desc: 'An Excalibur software + plugin alternative, and can apply Presets too. Free and Open Source.',
