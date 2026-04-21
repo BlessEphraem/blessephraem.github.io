@@ -22,7 +22,7 @@ jobs:
           GH_TOKEN: ${{ secrets.CROSS_REPO_TOKEN }}
         run: |
           python3 << 'PY'
-          import urllib.request, pathlib, os, re
+          import urllib.request, pathlib, os, re, json
 
           token = os.environ.get("GH_TOKEN", "")
           headers = {"Authorization": f"token {token}"} if token else {}
@@ -31,6 +31,40 @@ jobs:
               req = urllib.request.Request(url, headers=headers)
               with urllib.request.urlopen(req) as r:
                   return r.read().decode("utf-8")
+
+          def fetch_json(url):
+              api_headers = dict(headers)
+              api_headers["Accept"] = "application/vnd.github+json"
+              req = urllib.request.Request(url, headers=api_headers)
+              try:
+                  with urllib.request.urlopen(req) as r:
+                      return json.loads(r.read().decode("utf-8"))
+              except urllib.error.HTTPError as e:
+                  if e.code == 404:
+                      return None
+                  raise
+
+          def build_release_markdown(data):
+              tag = data.get("tag_name") or data.get("name") or "Latest Release"
+              name = data.get("name") or ""
+              body = (data.get("body") or "").strip()
+              assets = data.get("assets") or []
+              html_url = data.get("html_url", "")
+
+              lines = [f"# {tag}", ""]
+              if name and name != tag:
+                  lines += [f"_{name}_", ""]
+              if body:
+                  lines += [body, ""]
+              lines += ["## Downloads", ""]
+              if assets:
+                  for a in assets:
+                      lines.append(f"- [{a.get('name', 'asset')}]({a.get('browser_download_url', '')})")
+              else:
+                  lines.append("_No downloadable assets attached to this release._")
+              if html_url:
+                  lines += ["", f"[View on GitHub]({html_url})"]
+              return "\n".join(lines)
 
           def rewrite_media(content, img_prefix):
               # baseUrl is /wiki/ so static files are served at /wiki/img/
@@ -143,6 +177,33 @@ jobs:
                   write_doc(path, frontmatter, content, img_prefix)
               except Exception as e:
                   print(f"ERROR fetching {url}: {e}")
+
+          # (owner, repo, output_path, doc_id, title)
+          release_checks = [
+              ("BlessEphraem", "InputBar",
+               "wiki/docs/programs/inputbar/releases.mdx",
+               "releases", "Download / Releases"),
+              ("BlessEphraem", "Premiere-Companion",
+               "wiki/docs/programs/premiere-companion/releases.mdx",
+               "releases", "Download / Releases"),
+          ]
+
+          for owner, repo, path, doc_id, title in release_checks:
+              api_url = f"https://api.github.com/repos/{owner}/{repo}/releases/latest"
+              try:
+                  data = fetch_json(api_url)
+              except Exception as e:
+                  print(f"ERROR fetching releases for {owner}/{repo}: {e}")
+                  continue
+              if data is None:
+                  print(f"No latest release for {owner}/{repo} (skipping).")
+                  continue
+              content = build_release_markdown(data)
+              frontmatter = f"---\nid: {doc_id}\ntitle: {title}\nsidebar_position: 0\n---"
+              try:
+                  write_doc(path, frontmatter, content)
+              except Exception as e:
+                  print(f"ERROR writing release page for {owner}/{repo}: {e}")
 
           print("Done.")
           PY
