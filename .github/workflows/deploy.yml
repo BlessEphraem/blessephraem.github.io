@@ -118,8 +118,47 @@ jobs:
               pathlib.Path(path).write_text(out, encoding="utf-8")
               print(f"Written: {path}")
 
-          BASE_IB = "https://raw.githubusercontent.com/BlessEphraem/InputBar/main/.docs"
-          BASE_PC = "https://raw.githubusercontent.com/BlessEphraem/Premiere-Companion/main/.docs"
+          def fetch_directory_recursively(owner, repo, api_path, local_base_dir, img_prefix):
+              api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{api_path}"
+              data = fetch_json(api_url)
+              if not data:
+                  return
+              if not isinstance(data, list):
+                  data = [data]
+
+              for item in data:
+                  name = item.get("name", "")
+                  item_type = item.get("type", "")
+
+                  if item_type == "dir":
+                      if name.lower() == "medias" or name.startswith("."):
+                          continue
+
+                      safe_dir_name = re.sub(r'[^a-zA-Z0-9]+', '-', name).strip('-').lower()
+                      new_local_dir = pathlib.Path(local_base_dir) / safe_dir_name
+                      new_local_dir.mkdir(parents=True, exist_ok=True)
+
+                      cat_json_path = new_local_dir / "_category_.json"
+                      cat_data = {"label": name}
+                      cat_json_path.write_text(json.dumps(cat_data), encoding="utf-8")
+
+                      fetch_directory_recursively(owner, repo, item["path"], str(new_local_dir), img_prefix)
+
+                  elif item_type == "file" and name.lower().endswith(".md"):
+                      download_url = item.get("download_url")
+                      if not download_url:
+                          continue
+
+                      base_name = name[:-3]
+                      safe_id = re.sub(r'[^a-zA-Z0-9]+', '-', base_name).strip('-').lower()
+
+                      try:
+                          content = fetch(download_url)
+                          frontmatter = f"---\nid: {safe_id}\ntitle: {base_name}\n---"
+                          local_file_path = pathlib.Path(local_base_dir) / f"{safe_id}.mdx"
+                          write_doc(str(local_file_path), frontmatter, content, img_prefix)
+                      except Exception as e:
+                          print(f"ERROR fetching {download_url}: {e}")
 
           sources = [
               ("https://raw.githubusercontent.com/BlessEphraem/BlessEphraem/main/README.md",
@@ -131,42 +170,6 @@ jobs:
               ("https://raw.githubusercontent.com/BlessEphraem/UXP/main/README.md",
                "wiki/docs/plugins/jsx-scripts.mdx",
                "---\nid: jsx-scripts\ntitle: JSX Scripts\nsidebar_position: 2\n---", None),
-              (f"{BASE_IB}/Configuration.md", "wiki/docs/programs/inputbar/getting-started.mdx",
-               "---\nid: getting-started\ntitle: Configuration\nsidebar_position: 1\n---", "inputbar"),
-              (f"{BASE_IB}/Settings.md", "wiki/docs/programs/inputbar/settings.mdx",
-               "---\nid: settings\ntitle: Settings\nsidebar_position: 2\n---", "inputbar"),
-              (f"{BASE_IB}/Hotkeys.md", "wiki/docs/programs/inputbar/hotkeys.mdx",
-               "---\nid: hotkeys\ntitle: Hotkeys\nsidebar_position: 3\n---", "inputbar"),
-              (f"{BASE_IB}/Theme.md", "wiki/docs/programs/inputbar/theme.mdx",
-               "---\nid: theme\ntitle: Themes\nsidebar_position: 4\n---", "inputbar"),
-              (f"{BASE_IB}/Plugins.md", "wiki/docs/programs/inputbar/plugins.mdx",
-               "---\nid: plugins\ntitle: Plugins Overview\nsidebar_position: 5\n---", "inputbar"),
-              (f"{BASE_IB}/CreatePlugins.md", "wiki/docs/programs/inputbar/create-plugins.mdx",
-               "---\nid: create-plugins\ntitle: Create a Plugin\nsidebar_position: 6\n---", "inputbar"),
-              (f"{BASE_IB}/IPC.md", "wiki/docs/programs/inputbar/ipc.mdx",
-               "---\nid: ipc\ntitle: IPC / External Trigger\nsidebar_position: 7\n---", "inputbar"),
-              (f"{BASE_IB}/Plugins/App.md", "wiki/docs/programs/inputbar/plugins/app.mdx",
-               "---\nid: app\ntitle: App Plugin\nsidebar_position: 1\n---", "inputbar"),
-              (f"{BASE_IB}/Plugins/Calc.md", "wiki/docs/programs/inputbar/plugins/calc.mdx",
-               "---\nid: calc\ntitle: Calc Plugin\nsidebar_position: 2\n---", "inputbar"),
-              (f"{BASE_IB}/Plugins/System.md", "wiki/docs/programs/inputbar/plugins/system.mdx",
-               "---\nid: system\ntitle: System Plugin\nsidebar_position: 3\n---", "inputbar"),
-              (f"{BASE_IB}/Plugins/Shell.md", "wiki/docs/programs/inputbar/plugins/shell.mdx",
-               "---\nid: shell\ntitle: Shell Plugin\nsidebar_position: 4\n---", "inputbar"),
-              (f"{BASE_IB}/Plugins/Everything.md", "wiki/docs/programs/inputbar/plugins/everything.mdx",
-               "---\nid: everything\ntitle: Everything Plugin\nsidebar_position: 5\n---", "inputbar"),
-              (f"{BASE_PC}/GettingStarted.md", "wiki/docs/programs/premiere-companion/getting-started.mdx",
-               "---\nid: getting-started\ntitle: Getting Started\nsidebar_position: 1\n---", "premiere-companion"),
-              (f"{BASE_PC}/SearchBar.md", "wiki/docs/programs/premiere-companion/search-bar.mdx",
-               "---\nid: search-bar\ntitle: Search Bar\nsidebar_position: 2\n---", "premiere-companion"),
-              (f"{BASE_PC}/QuickApply.md", "wiki/docs/programs/premiere-companion/quick-apply.mdx",
-               "---\nid: quick-apply\ntitle: Quick Apply (Presets)\nsidebar_position: 3\n---", "premiere-companion"),
-              (f"{BASE_PC}/Commands.md", "wiki/docs/programs/premiere-companion/commands.mdx",
-               "---\nid: commands\ntitle: Commands\nsidebar_position: 4\n---", "premiere-companion"),
-              (f"{BASE_PC}/MacrosAndHotkeys.md", "wiki/docs/programs/premiere-companion/macros-hotkeys.mdx",
-               "---\nid: macros-hotkeys\ntitle: Macros & Hotkeys\nsidebar_position: 5\n---", "premiere-companion"),
-              (f"{BASE_PC}/BetterMotion.md", "wiki/docs/programs/premiere-companion/better-motion.mdx",
-               "---\nid: better-motion\ntitle: Better Motion\nsidebar_position: 6\n---", "premiere-companion"),
           ]
 
           for url, path, frontmatter, img_prefix in sources:
@@ -176,6 +179,11 @@ jobs:
               except Exception as e:
                   print(f"ERROR fetching {url}: {e}")
 
+          print("Fetching InputBar docs...")
+          fetch_directory_recursively("BlessEphraem", "InputBar", ".docs", "wiki/docs/programs/inputbar", "inputbar")
+
+          print("Fetching Premiere-Companion docs...")
+          fetch_directory_recursively("BlessEphraem", "Premiere-Companion", ".docs", "wiki/docs/programs/premiere-companion", "premiere-companion")
           release_checks = [
               ("BlessEphraem", "InputBar",
                "wiki/docs/programs/inputbar/releases.mdx",
