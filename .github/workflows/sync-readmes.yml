@@ -33,9 +33,12 @@ jobs:
                   return r.read().decode("utf-8")
 
           def rewrite_media(content, img_prefix):
-              # Rewrite ./medias/file and medias/file → /wiki/img/<prefix>/file
               # baseUrl is /wiki/ so static files are served at /wiki/img/
-              return re.sub(r'(?:\.\.?/)?medias/', f'/wiki/img/{img_prefix}/', content)
+              # 1. Rewrite relative medias/ paths
+              content = re.sub(r'(?:\.\.?/)?medias/', f'/wiki/img/{img_prefix}/', content)
+              # 2. Rewrite already-converted /img/<prefix>/ that are missing /wiki/ prefix
+              content = re.sub(rf'(?<!/wiki)/img/{re.escape(img_prefix)}/', f'/wiki/img/{img_prefix}/', content)
+              return content
 
           def write_doc(path, frontmatter, content, img_prefix=None):
               pathlib.Path(path).parent.mkdir(parents=True, exist_ok=True)
