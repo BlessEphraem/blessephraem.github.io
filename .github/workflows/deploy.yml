@@ -119,8 +119,31 @@ jobs:
                   props[camel] = val
               return ', '.join("{}: '{}'".format(k, v) for k, v in props.items())
 
+          def fix_folder_links(content, dir_name):
+              folder_escaped = re.escape(dir_name)
+              def replace_href(m):
+                  file_part = m.group(1)
+                  slug = re.sub(r'[^a-zA-Z0-9_]+', '-', file_part[:-3]).strip('-').lower()
+                  return f'href="./{slug}"'
+              content = re.sub(
+                  rf'href="{folder_escaped}/([^"/]+\.md)"',
+                  replace_href, content, flags=re.IGNORECASE
+              )
+              def replace_mdlink(m):
+                  text, file_part = m.group(1), m.group(2)
+                  slug = re.sub(r'[^a-zA-Z0-9_]+', '-', file_part[:-3]).strip('-').lower()
+                  return f'[{text}](./{slug})'
+              content = re.sub(
+                  rf'\[([^\]]+)\]\({folder_escaped}/([^)]+\.md)\)',
+                  replace_mdlink, content, flags=re.IGNORECASE
+              )
+              return content
+
           def fix_html_for_mdx(content, img_prefix=None):
-              content = content.replace("../README.md", "./").replace("../readme.md", "./")
+              def fix_readme_link(m):
+                  anchor = m.group(1) or ''
+                  return './' + anchor.lower()
+              content = re.sub(r'\.\./[Rr][Ee][Aa][Dd][Mm][Ee]\.md(#[^\s)"\'\]]*)?', fix_readme_link, content)
               def replace_md_href(m):
                   fname = m.group(1)
                   if fname.startswith('http') or fname.startswith('/') or '/' in fname:
@@ -211,6 +234,7 @@ jobs:
                       md_item = files[md_file_name]
                       try:
                           content = fetch(md_item["download_url"])
+                          content = fix_folder_links(content, dir_name)
                           h1_title = extract_h1_title(content)
                           label = h1_title or filename_to_label(dir_name)
                           try:
@@ -269,7 +293,7 @@ jobs:
           sources = [
               ("https://raw.githubusercontent.com/BlessEphraem/BlessEphraem/main/README.md",
                "wiki/docs/intro.mdx",
-               "---\nid: intro\ntitle: About\nsidebar_position: 1\n---", None),
+               "---\nid: intro\ntitle: About\nsidebar_position: 1\ndisplayed_sidebar: null\n---", None),
               ("https://raw.githubusercontent.com/BlessEphraem/JSX-Runner/main/README.md",
                "wiki/docs/plugins/jsx-runner.mdx",
                "---\nid: jsx-runner\ntitle: JSX Runner\nsidebar_position: 1\n---", None),
@@ -308,6 +332,17 @@ jobs:
           try:
               content = fetch("https://raw.githubusercontent.com/BlessEphraem/Premiere-Companion/main/README.md")
               content = rewrite_readme_absolute_paths(content, "BlessEphraem", "Premiere-Companion")
+              video_html = (
+                  '<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden">\n'
+                  '<iframe style="position:absolute;top:0;left:0;width:100%;height:100%" '
+                  'src="https://www.youtube.com/embed/eKo5-V1aOGs" '
+                  'frameBorder="0" allowFullScreen></iframe>\n'
+                  '</div>'
+              )
+              features_pos = re.search(r'^#\s+✨', content, re.MULTILINE)
+              if features_pos:
+                  i = features_pos.start()
+                  content = content[:i] + video_html + '\n\n' + content[i:]
               content += "\n\n---\n## Documentation\nimport DocCardList from '@theme/DocCardList';\n\n<DocCardList />\n"
               write_doc(
                   "wiki/docs/programs/premiere-companion/index.mdx",
