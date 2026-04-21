@@ -20,6 +20,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     if: >
       github.event_name != 'workflow_run' ||
       github.event.workflow_run.conclusion == 'success'
@@ -44,9 +46,12 @@ jobs:
 
       - name: Assemble site
         run: |
-          mkdir -p _site/Portfolio _site/wiki
+          mkdir -p _site/wiki
           cp index.html _site/index.html
-          cp -r Portfolio/. _site/Portfolio/
+          if [ -d Portfolio ]; then
+            mkdir -p _site/Portfolio
+            cp -r Portfolio/. _site/Portfolio/
+          fi
           cp -r wiki/build/. _site/wiki/
 
       - name: Upload Pages artifact
