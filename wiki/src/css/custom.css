@@ -165,9 +165,24 @@ kbd {
   font-size: 0.85em;
 }
 
-/* Dynamic Navbar Icons */
-.navbar-icon {
-  height: 20px;
+/* Sidebar Icons */
+.sidebar-icon-inputbar::before,
+.sidebar-icon-premiere-companion::before {
+  content: "";
+  display: inline-block;
   width: 20px;
-  object-fit: contain;
+  height: 20px;
+  margin-right: 8px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  vertical-align: middle;
+}
+
+.sidebar-icon-inputbar::before {
+  background-image: url('/wiki/img/inputbar/logo_navbar.svg');
+}
+
+.sidebar-icon-premiere-companion::before {
+  background-image: url('/wiki/img/premiere-companion/logo_navbar.svg');
 }

@@ -414,7 +414,6 @@ jobs:
           print("Done.")
 
           # Generate metadata for dynamic navbar
-          programs_data = []
           for owner, repo, img_prefix in [("BlessEphraem", "InputBar", "inputbar"), ("BlessEphraem", "Premiere-Companion", "premiere-companion")]:
               try:
                   readme_content = fetch(f"https://raw.githubusercontent.com/{owner}/{repo}/main/README.md")
@@ -437,14 +436,17 @@ jobs:
                       except Exception as e:
                           print(f"Error downloading icon for {repo}: {e}")
                   
-                  name = "InputBar" if "InputBar" in repo else "Premiere Companion"
-                  programs_data.append({"name": name, "prefix": img_prefix, "icon": icon_path})
+                  # Inject className into the root _category_.json for sidebar icons
+                  cat_path = pathlib.Path(f"wiki/docs/programs/{img_prefix}/_category_.json")
+                  if cat_path.exists():
+                      cat_data = json.loads(cat_path.read_text(encoding="utf-8"))
+                      cat_data["className"] = f"sidebar-icon-{img_prefix}"
+                      cat_path.write_text(json.dumps(cat_data), encoding="utf-8")
+                      print(f"Injected className into {cat_path}")
               except Exception as e:
-                  print(f"Error fetching README for metadata ({repo}): {e}")
+                  print(f"Error processing icon for {repo}: {e}")
           
-          pathlib.Path("wiki/src/data").mkdir(parents=True, exist_ok=True)
-          pathlib.Path("wiki/src/data/programs.json").write_text(json.dumps(programs_data), encoding="utf-8")
-          print("Metadata generated.")
+          print("Sidebar icons configuration updated.")
           PY
 
       - name: Setup Node
