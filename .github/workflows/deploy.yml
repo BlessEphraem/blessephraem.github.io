@@ -437,8 +437,12 @@ jobs:
                           pathlib.Path(local_path).parent.mkdir(parents=True, exist_ok=True)
                           pathlib.Path(local_path).write_bytes(icon_data)
                           
-                          # Add dynamic CSS rule for this prefix using relative path for build resolution
-                          dynamic_css += f".sidebar-icon-{img_prefix} .menu__link::before {{ background-image: url('../../static/img/{img_prefix}/logo_navbar.{ext}'); }}\n"
+                          # Add dynamic CSS rule for this prefix using specific selectors to avoid inheritance
+                          selectors = [
+                              f".sidebar-icon-{img_prefix} > .menu__link::before",
+                              f".sidebar-icon-{img_prefix} > .menu__list-item-collapsible > .menu__link::before"
+                          ]
+                          dynamic_css += f"{', '.join(selectors)} {{ background-image: url('../../static/img/{img_prefix}/logo_navbar.{ext}'); }}\n"
                           print(f"Icon found for {repo}: {local_path}")
                       except Exception as e:
                           print(f"Error downloading icon for {repo}: {e}")

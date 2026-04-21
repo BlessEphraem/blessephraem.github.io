@@ -165,8 +165,9 @@ kbd {
   font-size: 0.85em;
 }
 
-/* Sidebar Icons (Auto) */
-[class*="sidebar-icon-"] .menu__link::before {
+/* Sidebar Icons (Auto) - Target only the top-level category link */
+[class*="sidebar-icon-"] > .menu__link::before,
+[class*="sidebar-icon-"] > .menu__list-item-collapsible > .menu__link::before {
   content: "";
   display: inline-block;
   width: 20px;
