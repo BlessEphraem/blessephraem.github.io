@@ -142,7 +142,13 @@ jobs:
           def fix_html_for_mdx(content, img_prefix=None):
               def fix_readme_link(m):
                   anchor = m.group(1) or ''
-                  return './' + anchor.lower()
+                  if anchor:
+                      slug = anchor[1:].lower()
+                      slug = re.sub(r'[^\w\s-]', '', slug)
+                      slug = re.sub(r'[\s-]+', '-', slug)
+                      slug = slug.strip('-')
+                      anchor = '#' + slug if slug else ''
+                  return './' + anchor
               content = re.sub(r'\.\./[Rr][Ee][Aa][Dd][Mm][Ee]\.md(#[^\s)"\'\]]*)?', fix_readme_link, content)
               def replace_md_href(m):
                   fname = m.group(1)
@@ -174,6 +180,8 @@ jobs:
                   content
               )
               content = re.sub(r'</(br|hr)>', lambda m: '<{} />'.format(m.group(1)), content)
+              content = re.sub(r'\bframeborder=', 'frameBorder=', content, flags=re.IGNORECASE)
+              content = re.sub(r'\ballowfullscreen\b', 'allowFullScreen', content, flags=re.IGNORECASE)
               return content
 
           def write_doc(path, frontmatter, content, img_prefix=None):
@@ -332,17 +340,6 @@ jobs:
           try:
               content = fetch("https://raw.githubusercontent.com/BlessEphraem/Premiere-Companion/main/README.md")
               content = rewrite_readme_absolute_paths(content, "BlessEphraem", "Premiere-Companion")
-              video_html = (
-                  '<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden">\n'
-                  '<iframe style="position:absolute;top:0;left:0;width:100%;height:100%" '
-                  'src="https://www.youtube.com/embed/eKo5-V1aOGs" '
-                  'frameBorder="0" allowFullScreen></iframe>\n'
-                  '</div>'
-              )
-              features_pos = re.search(r'^#\s+✨', content, re.MULTILINE)
-              if features_pos:
-                  i = features_pos.start()
-                  content = content[:i] + video_html + '\n\n' + content[i:]
               content += "\n\n---\n## Documentation\nimport DocCardList from '@theme/DocCardList';\n\n<DocCardList />\n"
               write_doc(
                   "wiki/docs/programs/premiere-companion/index.mdx",
