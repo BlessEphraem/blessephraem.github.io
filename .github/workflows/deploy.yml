@@ -147,10 +147,9 @@ jobs:
                   text = re.sub(r'[^\w\s-]', '', text)
                   return re.sub(r'[\s-]+', '-', text).strip('-')
 
-              def fix_link(m):
-                  prefix, text, url, suffix = m.groups()
+              def transform_url(url):
                   if url.startswith(('http', 'mailto:', 'tel:', '/')) or url.startswith('#'):
-                      return m.group(0)
+                      return url
                   
                   parts = url.split('#', 1)
                   path = parts[0]
@@ -177,17 +176,14 @@ jobs:
                       elif path.endswith('/readme'):
                           path = path[:-6]
                   
-                  # Re-slugify anchor if it exists to match Docusaurus
-                  final_anchor = ""
                   if anchor:
-                      final_anchor = "#" + slugify(anchor)
-                      
-                  return f'{prefix}{text}]({path}{final_anchor})' if prefix == '[' else f'{prefix}{path}{final_anchor}{suffix}'
+                      return f"{path}#{slugify(anchor)}"
+                  return path
 
               # Match Markdown links [text](url)
-              content = re.sub(r'(\[)([^\]]+)\]\(([^)]+)\)', fix_link, content)
+              content = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', lambda m: f'[{m.group(1)}]({transform_url(m.group(2))})', content)
               # Match HTML href="url"
-              content = re.sub(r'(href=")([^"]+)(\")', fix_link, content)
+              content = re.sub(r'href="([^"]+)"', lambda m: f'href="{transform_url(m.group(1))}"', content)
 
               content = re.sub(
                   r'(https://github\.com/[^\s)\]"]+\.(?:mp4|webm))',
