@@ -33,8 +33,9 @@ jobs:
                   return r.read().decode("utf-8")
 
           def rewrite_media(content, img_prefix):
-              # Rewrite ./medias/file and medias/file → /img/<prefix>/file
-              return re.sub(r'(?:\.\.?/)?medias/', f'/img/{img_prefix}/', content)
+              # Rewrite ./medias/file and medias/file → /wiki/img/<prefix>/file
+              # baseUrl is /wiki/ so static files are served at /wiki/img/
+              return re.sub(r'(?:\.\.?/)?medias/', f'/wiki/img/{img_prefix}/', content)
 
           def write_doc(path, frontmatter, content, img_prefix=None):
               pathlib.Path(path).parent.mkdir(parents=True, exist_ok=True)
