@@ -1,4 +1,4 @@
-name: Deploy Site
+name: Website Wiki Build
 
 on:
   push:
