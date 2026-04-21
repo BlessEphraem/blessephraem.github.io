@@ -8,6 +8,7 @@ const sidebars = {
       label: 'InputBar',
       link: { type: 'generated-index', title: 'InputBar', description: 'Fast application launcher for Windows.' },
       items: [
+        'programs/inputbar/releases',
         'programs/inputbar/getting-started',
         'programs/inputbar/settings',
         'programs/inputbar/hotkeys',
@@ -33,6 +34,7 @@ const sidebars = {
       label: 'Premiere Companion',
       link: { type: 'generated-index', title: 'Premiere Companion', description: 'Effect and preset launcher for Adobe Premiere Pro.' },
       items: [
+        'programs/premiere-companion/releases',
         'programs/premiere-companion/getting-started',
         'programs/premiere-companion/search-bar',
         'programs/premiere-companion/quick-apply',
