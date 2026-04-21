@@ -22,7 +22,7 @@ jobs:
           GH_TOKEN: ${{ secrets.CROSS_REPO_TOKEN }}
         run: |
           python3 << 'PY'
-          import urllib.request, pathlib, os
+          import urllib.request, pathlib, os, re
 
           token = os.environ.get("GH_TOKEN", "")
           headers = {"Authorization": f"token {token}"} if token else {}
@@ -32,8 +32,14 @@ jobs:
               with urllib.request.urlopen(req) as r:
                   return r.read().decode("utf-8")
 
-          def write_doc(path, frontmatter, content):
+          def rewrite_media(content, img_prefix):
+              # Rewrite ./medias/file and medias/file → /img/<prefix>/file
+              return re.sub(r'(?:\.\.?/)?medias/', f'/img/{img_prefix}/', content)
+
+          def write_doc(path, frontmatter, content, img_prefix=None):
               pathlib.Path(path).parent.mkdir(parents=True, exist_ok=True)
+              if img_prefix:
+                  content = rewrite_media(content, img_prefix)
               out = frontmatter + "\n\n" + content
               pathlib.Path(path).write_text(out, encoding="utf-8")
               print(f"Written: {path}")
@@ -41,69 +47,64 @@ jobs:
           BASE_IB = "https://raw.githubusercontent.com/BlessEphraem/InputBar/main/.docs"
           BASE_PC = "https://raw.githubusercontent.com/BlessEphraem/Premiere-Companion/main/.docs"
 
+          # (url, output_path, frontmatter, img_prefix_or_None)
           sources = [
               # Profile README → intro
-              (
-                  "https://raw.githubusercontent.com/BlessEphraem/BlessEphraem/main/README.md",
-                  "wiki/docs/intro.mdx",
-                  "---\nid: intro\ntitle: About\nsidebar_position: 1\n---",
-              ),
+              ("https://raw.githubusercontent.com/BlessEphraem/BlessEphraem/main/README.md",
+               "wiki/docs/intro.mdx",
+               "---\nid: intro\ntitle: About\nsidebar_position: 1\n---", None),
               # JSX Runner
-              (
-                  "https://raw.githubusercontent.com/BlessEphraem/JSX-Runner/main/README.md",
-                  "wiki/docs/plugins/jsx-runner.mdx",
-                  "---\nid: jsx-runner\ntitle: JSX Runner\nsidebar_position: 1\n---",
-              ),
+              ("https://raw.githubusercontent.com/BlessEphraem/JSX-Runner/main/README.md",
+               "wiki/docs/plugins/jsx-runner.mdx",
+               "---\nid: jsx-runner\ntitle: JSX Runner\nsidebar_position: 1\n---", None),
               # JSX Scripts
-              (
-                  "https://raw.githubusercontent.com/BlessEphraem/UXP/main/README.md",
-                  "wiki/docs/plugins/jsx-scripts.mdx",
-                  "---\nid: jsx-scripts\ntitle: JSX Scripts\nsidebar_position: 2\n---",
-              ),
+              ("https://raw.githubusercontent.com/BlessEphraem/UXP/main/README.md",
+               "wiki/docs/plugins/jsx-scripts.mdx",
+               "---\nid: jsx-scripts\ntitle: JSX Scripts\nsidebar_position: 2\n---", None),
               # InputBar
               (f"{BASE_IB}/Configuration.md", "wiki/docs/programs/inputbar/getting-started.mdx",
-               "---\nid: getting-started\ntitle: Configuration\nsidebar_position: 1\n---"),
+               "---\nid: getting-started\ntitle: Configuration\nsidebar_position: 1\n---", "inputbar"),
               (f"{BASE_IB}/Settings.md", "wiki/docs/programs/inputbar/settings.mdx",
-               "---\nid: settings\ntitle: Settings\nsidebar_position: 2\n---"),
+               "---\nid: settings\ntitle: Settings\nsidebar_position: 2\n---", "inputbar"),
               (f"{BASE_IB}/Hotkeys.md", "wiki/docs/programs/inputbar/hotkeys.mdx",
-               "---\nid: hotkeys\ntitle: Hotkeys\nsidebar_position: 3\n---"),
+               "---\nid: hotkeys\ntitle: Hotkeys\nsidebar_position: 3\n---", "inputbar"),
               (f"{BASE_IB}/Theme.md", "wiki/docs/programs/inputbar/theme.mdx",
-               "---\nid: theme\ntitle: Themes\nsidebar_position: 4\n---"),
+               "---\nid: theme\ntitle: Themes\nsidebar_position: 4\n---", "inputbar"),
               (f"{BASE_IB}/Plugins.md", "wiki/docs/programs/inputbar/plugins.mdx",
-               "---\nid: plugins\ntitle: Plugins Overview\nsidebar_position: 5\n---"),
+               "---\nid: plugins\ntitle: Plugins Overview\nsidebar_position: 5\n---", "inputbar"),
               (f"{BASE_IB}/CreatePlugins.md", "wiki/docs/programs/inputbar/create-plugins.mdx",
-               "---\nid: create-plugins\ntitle: Create a Plugin\nsidebar_position: 6\n---"),
+               "---\nid: create-plugins\ntitle: Create a Plugin\nsidebar_position: 6\n---", "inputbar"),
               (f"{BASE_IB}/IPC.md", "wiki/docs/programs/inputbar/ipc.mdx",
-               "---\nid: ipc\ntitle: IPC / External Trigger\nsidebar_position: 7\n---"),
+               "---\nid: ipc\ntitle: IPC / External Trigger\nsidebar_position: 7\n---", "inputbar"),
               (f"{BASE_IB}/Plugins/App.md", "wiki/docs/programs/inputbar/plugins/app.mdx",
-               "---\nid: app\ntitle: App Plugin\nsidebar_position: 1\n---"),
+               "---\nid: app\ntitle: App Plugin\nsidebar_position: 1\n---", "inputbar"),
               (f"{BASE_IB}/Plugins/Calc.md", "wiki/docs/programs/inputbar/plugins/calc.mdx",
-               "---\nid: calc\ntitle: Calc Plugin\nsidebar_position: 2\n---"),
+               "---\nid: calc\ntitle: Calc Plugin\nsidebar_position: 2\n---", "inputbar"),
               (f"{BASE_IB}/Plugins/System.md", "wiki/docs/programs/inputbar/plugins/system.mdx",
-               "---\nid: system\ntitle: System Plugin\nsidebar_position: 3\n---"),
+               "---\nid: system\ntitle: System Plugin\nsidebar_position: 3\n---", "inputbar"),
               (f"{BASE_IB}/Plugins/Shell.md", "wiki/docs/programs/inputbar/plugins/shell.mdx",
-               "---\nid: shell\ntitle: Shell Plugin\nsidebar_position: 4\n---"),
+               "---\nid: shell\ntitle: Shell Plugin\nsidebar_position: 4\n---", "inputbar"),
               (f"{BASE_IB}/Plugins/Everything.md", "wiki/docs/programs/inputbar/plugins/everything.mdx",
-               "---\nid: everything\ntitle: Everything Plugin\nsidebar_position: 5\n---"),
+               "---\nid: everything\ntitle: Everything Plugin\nsidebar_position: 5\n---", "inputbar"),
               # Premiere Companion
               (f"{BASE_PC}/GettingStarted.md", "wiki/docs/programs/premiere-companion/getting-started.mdx",
-               "---\nid: getting-started\ntitle: Getting Started\nsidebar_position: 1\n---"),
+               "---\nid: getting-started\ntitle: Getting Started\nsidebar_position: 1\n---", "premiere-companion"),
               (f"{BASE_PC}/SearchBar.md", "wiki/docs/programs/premiere-companion/search-bar.mdx",
-               "---\nid: search-bar\ntitle: Search Bar\nsidebar_position: 2\n---"),
+               "---\nid: search-bar\ntitle: Search Bar\nsidebar_position: 2\n---", "premiere-companion"),
               (f"{BASE_PC}/QuickApply.md", "wiki/docs/programs/premiere-companion/quick-apply.mdx",
-               "---\nid: quick-apply\ntitle: Quick Apply (Presets)\nsidebar_position: 3\n---"),
+               "---\nid: quick-apply\ntitle: Quick Apply (Presets)\nsidebar_position: 3\n---", "premiere-companion"),
               (f"{BASE_PC}/Commands.md", "wiki/docs/programs/premiere-companion/commands.mdx",
-               "---\nid: commands\ntitle: Commands\nsidebar_position: 4\n---"),
+               "---\nid: commands\ntitle: Commands\nsidebar_position: 4\n---", "premiere-companion"),
               (f"{BASE_PC}/MacrosAndHotkeys.md", "wiki/docs/programs/premiere-companion/macros-hotkeys.mdx",
-               "---\nid: macros-hotkeys\ntitle: Macros & Hotkeys\nsidebar_position: 5\n---"),
+               "---\nid: macros-hotkeys\ntitle: Macros & Hotkeys\nsidebar_position: 5\n---", "premiere-companion"),
               (f"{BASE_PC}/BetterMotion.md", "wiki/docs/programs/premiere-companion/better-motion.mdx",
-               "---\nid: better-motion\ntitle: Better Motion\nsidebar_position: 6\n---"),
+               "---\nid: better-motion\ntitle: Better Motion\nsidebar_position: 6\n---", "premiere-companion"),
           ]
 
-          for url, path, frontmatter in sources:
+          for url, path, frontmatter, img_prefix in sources:
               try:
                   content = fetch(url)
-                  write_doc(path, frontmatter, content)
+                  write_doc(path, frontmatter, content, img_prefix)
               except Exception as e:
                   print(f"ERROR fetching {url}: {e}")
 
