@@ -166,14 +166,15 @@ kbd {
 }
 
 /* Sidebar Icons (Auto) */
-[class*="sidebar-icon-"]::before {
+[class*="sidebar-icon-"] .menu__link::before {
   content: "";
   display: inline-block;
   width: 20px;
   height: 20px;
-  margin-right: 8px;
+  margin-right: 10px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   vertical-align: middle;
+  flex-shrink: 0;
 }

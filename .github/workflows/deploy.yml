@@ -208,6 +208,11 @@ jobs:
                   lambda m: '<{}{} />'.format(m.group(1), m.group(2).rstrip()),
                   content
               )
+              content = re.sub(
+                  r'src="https://www\.youtube\.com/embed/([^"]+)"',
+                  r'src="https://www.youtube-nocookie.com/embed/\1"',
+                  content
+              )
               content = re.sub(r'</(br|hr)>', lambda m: '<{} />'.format(m.group(1)), content)
               content = re.sub(r'\bframeborder=', 'frameBorder=', content, flags=re.IGNORECASE)
               content = re.sub(r'\ballowfullscreen\b', 'allowFullScreen', content, flags=re.IGNORECASE)
@@ -433,7 +438,7 @@ jobs:
                           pathlib.Path(local_path).write_bytes(icon_data)
                           
                           # Add dynamic CSS rule for this prefix using relative path for build resolution
-                          dynamic_css += f".sidebar-icon-{img_prefix}::before {{ background-image: url('../../static/img/{img_prefix}/logo_navbar.{ext}'); }}\n"
+                          dynamic_css += f".sidebar-icon-{img_prefix} .menu__link::before {{ background-image: url('../../static/img/{img_prefix}/logo_navbar.{ext}'); }}\n"
                           print(f"Icon found for {repo}: {local_path}")
                       except Exception as e:
                           print(f"Error downloading icon for {repo}: {e}")
