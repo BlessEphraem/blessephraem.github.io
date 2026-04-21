@@ -40,8 +40,28 @@ jobs:
               content = re.sub(rf'(?<!/wiki)/img/{re.escape(img_prefix)}/', f'/wiki/img/{img_prefix}/', content)
               return content
 
+          def css_to_jsx_style(css):
+              props = {}
+              for decl in css.split(';'):
+                  decl = decl.strip()
+                  if ':' not in decl:
+                      continue
+                  prop, _, val = decl.partition(':')
+                  prop = prop.strip()
+                  val = val.strip().replace("'", "\\'")
+                  parts = prop.split('-')
+                  camel = parts[0] + ''.join(p.capitalize() for p in parts[1:])
+                  props[camel] = val
+              return ', '.join("{}: '{}'".format(k, v) for k, v in props.items())
+
           def fix_html_for_mdx(content):
-              # MDX parses HTML as JSX: void elements must be self-closing
+              # Convert style="..." CSS strings to JSX style={{...}} objects
+              content = re.sub(
+                  r'style="([^"]*)"',
+                  lambda m: 'style={{' + css_to_jsx_style(m.group(1)) + '}}',
+                  content
+              )
+              # Self-close void HTML elements required by MDX/JSX
               content = re.sub(
                   r'<(img|br|hr|input|meta|link)([^>]*?)(?<!/)>',
                   lambda m: '<{}{} />'.format(m.group(1), m.group(2).rstrip()),
