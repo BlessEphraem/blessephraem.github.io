@@ -141,30 +141,54 @@ jobs:
 
           def fix_html_for_mdx(content, img_prefix=None):
               content = re.sub(r'<!--\s*embed\s*(.*?)-->', lambda m: m.group(1).strip(), content, flags=re.DOTALL)
-              def fix_readme_link(m):
-                  anchor = m.group(1) or ''
+              
+              def slugify(text):
+                  text = text.lower()
+                  text = re.sub(r'[^\w\s-]', '', text)
+                  return re.sub(r'[\s-]+', '-', text).strip('-')
+
+              def fix_link(m):
+                  prefix, text, url, suffix = m.groups()
+                  if url.startswith(('http', 'mailto:', 'tel:', '/')) or url.startswith('#'):
+                      return m.group(0)
+                  
+                  parts = url.split('#', 1)
+                  path = parts[0]
+                  anchor = parts[1] if len(parts) > 1 else None
+                  
+                  # Handle README or relative links to other .md files
+                  if path.lower().endswith('.md') or path.lower() == 'readme':
+                      if path.lower().endswith('.md'):
+                          path = path[:-3]
+                      
+                      # Transform path: ./Configuration.md -> configuration
+                      path_parts = path.split('/')
+                      new_path_parts = []
+                      for p in path_parts:
+                          if p in ('.', '..'):
+                              new_path_parts.append(p)
+                          else:
+                              new_path_parts.append(slugify(p))
+                      path = '/'.join(new_path_parts)
+                      
+                      # README becomes index (./)
+                      if path == 'readme' or path == './readme':
+                          path = './'
+                      elif path.endswith('/readme'):
+                          path = path[:-6]
+                  
+                  # Re-slugify anchor if it exists to match Docusaurus
+                  final_anchor = ""
                   if anchor:
-                      slug = anchor[1:].lower()
-                      slug = re.sub(r'[^\w\s-]', '', slug)
-                      slug = re.sub(r'[\s-]+', '-', slug)
-                      slug = slug.strip('-')
-                      anchor = '#' + slug if slug else ''
-                  return './' + anchor
-              content = re.sub(r'\.\./[Rr][Ee][Aa][Dd][Mm][Ee]\.md(#[^\s)"\'\]]*)?', fix_readme_link, content)
-              def replace_md_href(m):
-                  fname = m.group(1)
-                  if fname.startswith('http') or fname.startswith('/') or '/' in fname:
-                      return m.group(0)
-                  slug = re.sub(r'[^a-zA-Z0-9_]+', '-', fname[:-3]).strip('-').lower()
-                  return f'href="./{slug}"'
-              content = re.sub(r'href="([^"#?]+\.md)"', replace_md_href, content)
-              def replace_md_link(m):
-                  text, fname = m.group(1), m.group(2)
-                  if fname.startswith('http') or fname.startswith('/') or '/' in fname:
-                      return m.group(0)
-                  slug = re.sub(r'[^a-zA-Z0-9_]+', '-', fname[:-3]).strip('-').lower()
-                  return f'[{text}](./{slug})'
-              content = re.sub(r'\[([^\]]+)\]\(([^)#?]+\.md)\)', replace_md_link, content)
+                      final_anchor = "#" + slugify(anchor)
+                      
+                  return f'{prefix}{text}]({path}{final_anchor})' if prefix == '[' else f'{prefix}{path}{final_anchor}{suffix}'
+
+              # Match Markdown links [text](url)
+              content = re.sub(r'(\[)([^\]]+)\]\(([^)]+)\)', fix_link, content)
+              # Match HTML href="url"
+              content = re.sub(r'(href=")([^"]+)(\")', fix_link, content)
+
               content = re.sub(
                   r'(https://github\.com/[^\s)\]"]+\.(?:mp4|webm))',
                   r'<video controls width="100%"><source src="\1" /></video>',
