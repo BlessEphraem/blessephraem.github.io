@@ -148,38 +148,38 @@ jobs:
                   return re.sub(r'[\s-]+', '-', text).strip('-')
 
               def transform_url(url):
-                  if url.startswith(('http', 'mailto:', 'tel:', '/')) or url.startswith('#'):
+                  if "://" in url or url.startswith(('#', 'mailto:', 'tel:', '/')):
                       return url
                   
                   parts = url.split('#', 1)
                   path = parts[0]
                   anchor = parts[1] if len(parts) > 1 else None
                   
-                  # Handle README or relative links to other .md files
-                  if path.lower().endswith('.md') or path.lower().endswith('readme'):
-                      if path.lower().endswith('.md'):
-                          path = path[:-3]
-                      
-                      # Special case: Any README link (../README, ./README, README) points to directory index
-                      if path.lower().endswith('readme'):
-                          path = './'
-                      else:
-                          # Transform path: ./Configuration.md -> configuration
-                          path_parts = path.split('/')
-                          new_path_parts = []
-                          for p in path_parts:
-                              if p in ('.', '..'):
-                                  new_path_parts.append(p)
-                              else:
-                                  new_path_parts.append(slugify(p))
-                          path = '/'.join(new_path_parts)
+                  # Detect if it's a link to a README or another .md file
+                  is_readme = "readme.md" in path.lower() or path.lower() == "readme"
+                  is_md = path.lower().endswith(".md")
+                  
+                  if is_readme:
+                      path = "./"
+                  elif is_md:
+                      path = path[:-3] # remove .md
+                      path_parts = path.split('/')
+                      new_parts = []
+                      for p in path_parts:
+                          if p in ('.', '..'):
+                              new_parts.append(p)
+                          else:
+                              new_parts.append(slugify(p))
+                      path = "/".join(new_parts)
                   
                   if anchor:
                       return f"{path}#{slugify(anchor)}"
                   return path
 
-              # Match Markdown links [text](url)
-              content = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', lambda m: f'[{m.group(1)}]({transform_url(m.group(2))})', content)
+              # Matches [Anything including nested [] like badges] (URL)
+              content = re.sub(r'\[((?:\[[^\]]*\]|[^\]])*)\]\(([^)]+)\)', 
+                               lambda m: f'[{m.group(1)}]({transform_url(m.group(2))})', content)
+              
               # Match HTML href="url"
               content = re.sub(r'href="([^"]+)"', lambda m: f'href="{transform_url(m.group(1))}"', content)
 
