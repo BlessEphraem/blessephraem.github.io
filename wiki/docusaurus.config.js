@@ -67,7 +67,7 @@ const config = {
         },
         items: [
           {
-            to: '/programs/inputbar/getting-started',
+            to: '/programs/inputbar/configuration',
             position: 'left',
             label: 'Programs',
           },
