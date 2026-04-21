@@ -164,3 +164,10 @@ kbd {
   font-family: inherit;
   font-size: 0.85em;
 }
+
+/* Dynamic Navbar Icons */
+.navbar-icon {
+  height: 20px;
+  width: 20px;
+  object-fit: contain;
+}

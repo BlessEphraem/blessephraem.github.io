@@ -1,5 +1,11 @@
 // @ts-check
 import {themes as prismThemes} from 'prism-react-renderer';
+import fs from 'fs';
+
+let programs = [];
+try {
+  programs = JSON.parse(fs.readFileSync('./src/data/programs.json', 'utf8'));
+} catch (e) {}
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -71,11 +77,11 @@ const config = {
             position: 'left',
             label: 'Home',
           },
-          {
-            to: '/programs/inputbar/',
+          ...programs.map(p => ({
+            type: 'html',
             position: 'left',
-            label: 'Programs',
-          },
+            value: `<a class="navbar__item navbar__link" href="/wiki/programs/${p.prefix}/" style="display:flex;align-items:center;padding: 0 12px;">${p.icon ? `<img src="/wiki/${p.icon}" class="navbar-icon" style="height:20px;width:20px;margin-right:8px;vertical-align:middle" />` : ''}${p.name}</a>`,
+          })),
           {
             to: '/plugins/jsx-runner',
             position: 'left',

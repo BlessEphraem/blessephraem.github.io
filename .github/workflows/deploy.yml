@@ -412,6 +412,39 @@ jobs:
                   print(f"ERROR writing release page for {owner}/{repo}: {e}")
 
           print("Done.")
+
+          # Generate metadata for dynamic navbar
+          programs_data = []
+          for owner, repo, img_prefix in [("BlessEphraem", "InputBar", "inputbar"), ("BlessEphraem", "Premiere-Companion", "premiere-companion")]:
+              try:
+                  readme_content = fetch(f"https://raw.githubusercontent.com/{owner}/{repo}/main/README.md")
+                  first_lines = "\n".join(readme_content.split("\n")[:50])
+                  icon_match = re.search(r'<img[^>]+src=["\']([^"\']+\.(?:svg|ico|png|jpg|jpeg))["\']', first_lines)
+                  icon_path = None
+                  if icon_match:
+                      icon_url = icon_match.group(1)
+                      if not icon_url.startswith("http"):
+                          icon_url = f"https://raw.githubusercontent.com/{owner}/{repo}/main/{icon_url.lstrip('./')}"
+                      
+                      try:
+                          icon_data = fetch_binary(icon_url)
+                          ext = icon_url.split(".")[-1].split("?")[0]
+                          local_path = f"wiki/static/img/{img_prefix}/logo_navbar.{ext}"
+                          pathlib.Path(local_path).parent.mkdir(parents=True, exist_ok=True)
+                          pathlib.Path(local_path).write_bytes(icon_data)
+                          icon_path = f"img/{img_prefix}/logo_navbar.{ext}"
+                          print(f"Icon found for {repo}: {icon_path}")
+                      except Exception as e:
+                          print(f"Error downloading icon for {repo}: {e}")
+                  
+                  name = "InputBar" if "InputBar" in repo else "Premiere Companion"
+                  programs_data.append({"name": name, "prefix": img_prefix, "icon": icon_path})
+              except Exception as e:
+                  print(f"Error fetching README for metadata ({repo}): {e}")
+          
+          pathlib.Path("wiki/src/data").mkdir(parents=True, exist_ok=True)
+          pathlib.Path("wiki/src/data/programs.json").write_text(json.dumps(programs_data), encoding="utf-8")
+          print("Metadata generated.")
           PY
 
       - name: Setup Node
