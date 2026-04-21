@@ -156,25 +156,23 @@ jobs:
                   anchor = parts[1] if len(parts) > 1 else None
                   
                   # Handle README or relative links to other .md files
-                  if path.lower().endswith('.md') or path.lower() == 'readme':
+                  if path.lower().endswith('.md') or path.lower().endswith('readme'):
                       if path.lower().endswith('.md'):
                           path = path[:-3]
                       
-                      # Transform path: ./Configuration.md -> configuration
-                      path_parts = path.split('/')
-                      new_path_parts = []
-                      for p in path_parts:
-                          if p in ('.', '..'):
-                              new_path_parts.append(p)
-                          else:
-                              new_path_parts.append(slugify(p))
-                      path = '/'.join(new_path_parts)
-                      
-                      # README becomes index (./)
-                      if path == 'readme' or path == './readme':
+                      # Special case: Any README link (../README, ./README, README) points to directory index
+                      if path.lower().endswith('readme'):
                           path = './'
-                      elif path.endswith('/readme'):
-                          path = path[:-6]
+                      else:
+                          # Transform path: ./Configuration.md -> configuration
+                          path_parts = path.split('/')
+                          new_path_parts = []
+                          for p in path_parts:
+                              if p in ('.', '..'):
+                                  new_path_parts.append(p)
+                              else:
+                                  new_path_parts.append(slugify(p))
+                          path = '/'.join(new_path_parts)
                   
                   if anchor:
                       return f"{path}#{slugify(anchor)}"
