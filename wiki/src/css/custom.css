@@ -179,3 +179,22 @@ kbd {
   vertical-align: middle;
   flex-shrink: 0;
 }
+
+/* Move collapse button to top */
+[class*="sidebar_"] {
+  display: flex;
+  flex-direction: column;
+}
+
+[class*="collapseSidebarButton_"] {
+  order: -1;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+[class*="collapseSidebarButton_"] svg {
+  transform: rotate(180deg);
+}
+
+[class*="sidebarCollapsed_"] [class*="collapseSidebarButton_"] svg {
+  transform: rotate(0deg);
+}
