@@ -94,6 +94,12 @@ jobs:
               return ', '.join("{}: '{}'".format(k, v) for k, v in props.items())
 
           def fix_html_for_mdx(content):
+              content = content.replace("../README.md", "./readme").replace("../readme.md", "./readme")
+              content = re.sub(
+                  r'(https://github\.com/[^\s)\]"]+\.(?:mp4|webm))',
+                  r'<video controls width="100%"><source src="\1" /></video>',
+                  content
+              )
               content = re.sub(
                   r'style="([^"]*)"',
                   lambda m: 'style={{' + css_to_jsx_style(m.group(1)) + '}}',
@@ -111,7 +117,7 @@ jobs:
               pathlib.Path(path).parent.mkdir(parents=True, exist_ok=True)
               if img_prefix:
                   content = rewrite_media(content, img_prefix)
-              content = fix_html_for_mdx(content)
+              content = fix_html_for_mdx(content, img_prefix)
               out = frontmatter + "\n\n" + content
               pathlib.Path(path).write_text(out, encoding="utf-8")
               print(f"Written: {path}")
