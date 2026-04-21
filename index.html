@@ -1,290 +1,238 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ephraem | Portfolio</title>
-    <meta name="description" content="Portfolio de Ephraem : Éditeur Vidéo, Graphiste et Créateur 3D.">
-    
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    
+    <title>Ephraem</title>
+    <meta name="description" content="Ephraem — Video editor, developer, and open-source tool builder.">
+    <link rel="icon" type="image/x-icon" href="Portfolio/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    
-    <link rel="stylesheet" href="assets/css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff1796;
+            --secondary: #3ad0ff;
+            --bg-dark: #0f1013;
+            --bg-card: rgba(30, 32, 40, 0.6);
+            --text-main: #ffffff;
+            --text-muted: #b0b8c1;
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            --glow-pink: 0 0 40px rgba(255, 23, 150, 0.3);
+            --glow-blue: 0 0 40px rgba(58, 208, 255, 0.3);
+            --radius: 20px;
+            --transition: all 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Background glow blobs */
+        body::before {
+            content: '';
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 23, 150, 0.08) 0%, transparent 70%);
+            top: -100px;
+            left: -100px;
+            pointer-events: none;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(58, 208, 255, 0.06) 0%, transparent 70%);
+            bottom: -100px;
+            right: -100px;
+            pointer-events: none;
+        }
+
+        .landing {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Logo side */
+        .logo-side {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .logo-name {
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-tagline {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+
+        /* Divider */
+        .divider {
+            width: 1px;
+            height: 160px;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.15), transparent);
+            flex-shrink: 0;
+        }
+
+        /* Button side */
+        .btn-side {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 22px 36px;
+            border-radius: var(--radius);
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            min-width: 240px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-btn:hover::before { opacity: 1; }
+
+        .nav-btn-portfolio {
+            background: rgba(255, 23, 150, 0.12);
+            border: 1px solid rgba(255, 23, 150, 0.35);
+            box-shadow: var(--glass-shadow);
+        }
+        .nav-btn-portfolio::before {
+            background: rgba(255, 23, 150, 0.08);
+        }
+        .nav-btn-portfolio:hover {
+            border-color: rgba(255, 23, 150, 0.7);
+            box-shadow: var(--glow-pink), var(--glass-shadow);
+            transform: translateX(4px);
+        }
+
+        .nav-btn-wiki {
+            background: rgba(58, 208, 255, 0.10);
+            border: 1px solid rgba(58, 208, 255, 0.3);
+            box-shadow: var(--glass-shadow);
+        }
+        .nav-btn-wiki::before {
+            background: rgba(58, 208, 255, 0.07);
+        }
+        .nav-btn-wiki:hover {
+            border-color: rgba(58, 208, 255, 0.65);
+            box-shadow: var(--glow-blue), var(--glass-shadow);
+            transform: translateX(4px);
+        }
+
+        .btn-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .btn-label {
+            flex: 1;
+        }
+
+        .btn-arrow {
+            opacity: 0;
+            transform: translateX(-8px);
+            transition: var(--transition);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        .nav-btn:hover .btn-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Portfolio accent color on icon */
+        .nav-btn-portfolio .btn-icon { color: var(--primary); }
+        .nav-btn-wiki .btn-icon { color: var(--secondary); }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .landing {
+                flex-direction: column;
+                gap: 40px;
+                align-items: center;
+                text-align: center;
+            }
+            .logo-side { align-items: center; }
+            .divider {
+                width: 120px;
+                height: 1px;
+                background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.15), transparent);
+            }
+            .nav-btn { min-width: 200px; }
+        }
+    </style>
 </head>
 <body>
-
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="#" class="logo"><span class="accent">EPHRAEM</span></a>
-            <button class="mobile-toggle" aria-label="Menu">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <ul class="nav-links">
-                <li><a href="#home">Accueil</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#parcours">Parcours</a></li>
-                <li><a href="#portfolio">Portfolio</a></li>
-                <li><a href="#contact" class="btn-nav">Contact</a></li>
-            </ul>
+    <main class="landing">
+        <div class="logo-side">
+            <span class="logo-name">EPHRAEM</span>
+            <span class="logo-tagline">Developer &amp; Creator</span>
         </div>
-    </nav>
 
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <div class="hero-visual">
-                <div class="glow-circle"></div>
-                <img src="assets/img/avatar.png" alt="Avatar" class="avatar-img">
-            </div>
-            <h1>EPHRAEM</h1>
-            <div class="dynamic-text-wrapper">
-                <span>Je suis </span>
-                <span class="typing-text"></span>
-            </div>
-            <p class="description">
-                Créateur numérique polyvalent spécialisé dans le montage, le graphisme et la 3D.
-            </p>
-            <div class="hero-btns">
-                <a href="#contact" class="btn btn-primary">Me contacter</a>
-                <a href="#portfolio" class="btn btn-outline">Voir mon travail</a>
-            </div>
-            <div class="socials">
-                <a href="https://www.youtube.com/@Eph_raem" target="_blank"><i class="fa-brands fa-youtube"></i></a>
-                <a href="https://www.instagram.com/bless_ephraem" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-                <a href="https://github.com/BlessEphraem" target="_blank"><i class="fa-brands fa-github"></i></a>
-            </div>
+        <div class="divider"></div>
+
+        <div class="btn-side">
+            <a href="./Portfolio/" class="nav-btn nav-btn-portfolio">
+                <span class="btn-icon">🎬</span>
+                <span class="btn-label">Portfolio</span>
+                <span class="btn-arrow">→</span>
+            </a>
+            <a href="./wiki/" class="nav-btn nav-btn-wiki">
+                <span class="btn-icon">📖</span>
+                <span class="btn-label">Wiki</span>
+                <span class="btn-arrow">→</span>
+            </a>
         </div>
-    </section>
-
-    <section id="services" class="section bg-alt">
-        <div class="container">
-            <h2 class="section-title">CE QUE JE <span class="accent">PROPOSE</span></h2>
-            
-            <h3 class="category-title"><i class="fa-solid fa-film"></i> Vidéos - Format Long</h3>
-            <div class="services-wrapper">
-                
-                <article class="service-box">
-                    <div class="service-header">
-                        <h4>Le "Cut" Simple</h4>
-                        <span class="price-tag">80€ - 120€</span>
-                    </div>
-                    <p class="service-desc">Dérushage basique, coupure des blancs, synchro facecam/jeu, intro/outro simple. <strong>Pas d'effets spéciaux.</strong></p>
-                    <p class="service-meta">Pour 10-15 min de vidéo finale.</p>
-                </article>
-
-                <article class="service-box">
-                    <div class="service-header">
-                        <h4>Le Dynamique</h4>
-                        <span class="price-tag">150€ - 250€</span>
-                    </div>
-                    <p class="service-desc">Best-of avec gros travail de dérushage. Zoom, memes, SFX, musique, sous-titres animés sur les moments forts.</p>
-                    <p class="service-meta">Pour 10-20 min de vidéo finale</p>
-                </article>
-
-                <article class="service-box">
-                    <div class="service-header">
-                        <h4>Le Narratif / Review</h4>
-                        <span class="price-tag">200€ - 350€</span>
-                    </div>
-                    <p class="service-desc">Montage scripté. Insertion d'images d'illustration (B-roll), transitions soignées, étalonnage léger.</p>
-                    <p class="service-meta">Pour 15-25m de vidéo finale.</p>
-                </article>
-
-                <article class="service-box">
-                    <div class="service-header">
-                        <h4>Vlog / Lifestyle</h4>
-                        <span class="price-tag">200€ - 400€</span>
-                    </div>
-                    <p class="service-desc">Style "posé". Montage fluide, choix musicaux pertinents, stabilisation, étalonnage, transitions propres.</p>
-                    <p class="service-meta"> Jusqu'à 30 min</p>
-                </article>
-
-                <article class="service-box">
-                    <div class="service-header">
-                        <h4>Divertissement (Feat)</h4>
-                        <span class="price-tag">350€ - 600€+</span>
-                    </div>
-                    <p class="service-desc">Gestion multicam (2-3 angles), dynamisme élevé, incrustations graphiques, sound design poussé, mixage voix.</p>
-                    <p class="service-meta">Jusqu'à 45 min</p>
-                </article>
-
-                <article class="service-box highlight-box">
-                    <div class="service-header">
-                        <h4>Gros Concept</h4>
-                        <span class="price-tag">Souvent > 800€</span>
-                    </div>
-                    <p class="service-desc">Effets spéciaux (VFX), motion design, animations complexes, écriture visuelle.</p>
-                    <p class="service-meta">Jusqu'à 1h et +</p>
-                </article>
-            </div>
-
-            <h3 class="category-title" style="margin-top: 50px;"><i class="fa-solid fa-mobile-screen"></i> Shorts & Graphisme</h3>
-            <div class="services-wrapper">
-                
-                <article class="service-box">
-                    <div class="service-header">
-                        <h4>Format Cours (Shorts)</h4>
-                        <span class="price-tag">Dès 30€</span>
-                    </div>
-                    <ul class="service-list">
-                        <li><strong>À l'unité :</strong> 30€ - 50€.</li>
-                        <li><strong>Pack de 5 :</strong> 80€ </li>
-                        <li><strong>Extraction :</strong> 3 Shorts extraits d'une vidéo longue - 80€ le lot de 5 si prévenu d'avance, sinon 100€.</li>
-                    </ul>
-                </article>
-
-                <article class="service-box">
-                    <div class="service-header">
-                        <h4>Graphisme</h4>
-                        <span class="price-tag">150€ - 250€</span>
-                    </div>
-                    <p class="service-desc">Création de miniature (Thumbnail).</p>
-                </article>
-
-            </div>
-
-            <div class="options-container">
-                <h3 class="category-title">Les Ajouts & Options</h3>
-                <div class="options-grid">
-                    <div class="option-item">
-                        <i class="fa-solid fa-rotate-right"></i>
-                        <div>
-                            <strong>Modifications</strong>
-                            <p>2 allers-retours inclus. Au-delà : 50€/heure.</p>
-                        </div>
-                    </div>
-                    <div class="option-item">
-                        <i class="fa-solid fa-stopwatch"></i>
-                        <div>
-                            <strong>Livraison Express (24h)</strong>
-                            <p>Majoration à partir de +25% jusqu'a +50€/h du prix total selon le type de contenu.</p>
-                        </div>
-                    </div>
-                    <div class="option-item">
-                        <i class="fa-solid fa-file-zipper"></i>
-                        <div>
-                            <strong>Fichiers Sources</strong>
-                            <p>Inclus UNIQUEMENT si indiqué d'avance.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <section id="parcours" class="section">
-        <div class="container">
-            <h2 class="section-title"><span class="accent">Mon Parcours</span></h2>
-            <div class="timeline">
-                
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-date">2021 - Présent</div>
-                    <div class="timeline-content">
-                        <h3>ColasBim</h3>
-                        <p>Monteur au sein de l'équipe de production.</p>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-date">2019 - 2022</div>
-                    <div class="timeline-content">
-                        <h3>Tartin</h3>
-                        <p>Monteur officiel pendant 3 ans.</p>
-                    </div>
-                    <div class="timeline-content" style="margin-top: 15px;">
-                        <h3>Agence "Okamedia"</h3>
-                        <p>Prestataire pour divers clients (AyPierre, Louis San...) pendant 2 ans.</p>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-date">2019 - 2020</div>
-                    <div class="timeline-content">
-                        <h3>Sora & Kira</h3>
-                        <p>Monteur officiel et régulier pour ces chaînes.</p>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <section id="portfolio" class="section bg-alt">
-        <div class="container">
-            <h2 class="section-title">MON <span class="accent">PORTFOLIO</span></h2>
-            <!-- CAROUSEL 3D INTERACTIF -->
-            <div class="carousel-container">
-                <!-- Video Gauche -->
-                <div class="video-card pos-left" id="video-left">
-                    <div class="video-wrapper">
-                        <div class="video-overlay"></div>
-                        <iframe src="https://www.youtube.com/embed/OdECOO3hjUE" title="Video Left" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                    <h3 class="video-title"></h3>
-                </div>
-
-                <!-- Video Centre (Principale) -->
-                <div class="video-card pos-center" id="video-center">
-                    <div class="video-wrapper">
-                        <div class="video-overlay"></div>
-                        <iframe src="https://www.youtube.com/embed/kb6MKt-M79M" title="Video Center" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                    <h3 class="video-title"></h3>
-                </div>
-
-                <!-- Video Droite -->
-                <div class="video-card pos-right" id="video-right">
-                    <div class="video-wrapper">
-                        <div class="video-overlay"></div>
-                        <iframe src="https://www.youtube.com/embed/qeYhJD5uqHc" title="Video Right" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                    <h3 class="video-title"></h3>
-                </div>
-            </div>
-
-            <p class="desktop-only-hint" style="text-align: center; color: var(--text-muted); margin-top: 20px;">
-                <small>Cliquez sur une vidéo latérale pour l'afficher au centre.</small>
-            </p>
-        </div>
-    </section>
-
-    <section id="contact" class="section">
-        <div class="container">
-            <h2 class="section-title">Restons en <span class="accent">Contact</span></h2>
-            <div class="contact-wrapper">
-                <form id="contact-form" method="POST" class="glass-form">
-                    <div class="form-group">
-                        <label for="name">Votre Nom</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Votre Email</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message</label>
-                        <textarea id="message" name="message" rows="5" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Envoyer</button>
-                    <p id="form-status"></p>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <p>&copy; 2025 Ephraem.</p>
-    </footer>
-
-    <script src="assets/js/vanilla-tilt.min.js"></script>
-    <script src="assets/js/main.js"></script>
+    </main>
 </body>
 </html>
