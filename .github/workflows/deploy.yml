@@ -27,7 +27,7 @@ jobs:
 
       - name: Sync docs from upstream repos
         env:
-          GH_TOKEN: ${{ secrets.CROSS_REPO_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python3 << 'PY'
           import urllib.request, pathlib, os, re, json
