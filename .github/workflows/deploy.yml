@@ -292,11 +292,16 @@ jobs:
               content += "\n\n---\n## Documentation\nimport DocCardList from '@theme/DocCardList';\n\n<DocCardList />\n"
               write_doc(
                   "wiki/docs/programs/inputbar/index.mdx",
-                  "---\ntitle: InputBar\nhide_title: true\nunlisted: true\npagination_prev: null\npagination_next: null\n---",
+                  "---\ntitle: InputBar\nhide_title: true\npagination_prev: null\npagination_next: null\n---",
                   content, "inputbar"
               )
           except Exception as e:
               print(f"ERROR fetching InputBar README: {e}")
+          pathlib.Path("wiki/docs/programs/inputbar").mkdir(parents=True, exist_ok=True)
+          pathlib.Path("wiki/docs/programs/inputbar/_category_.json").write_text(
+              json.dumps({"label": "InputBar", "link": {"type": "doc", "id": "programs/inputbar/index"}}),
+              encoding="utf-8"
+          )
           fetch_directory_recursively("BlessEphraem", "InputBar", ".docs", "wiki/docs/programs/inputbar", "inputbar")
 
           print("Fetching Premiere-Companion docs...")
@@ -306,11 +311,16 @@ jobs:
               content += "\n\n---\n## Documentation\nimport DocCardList from '@theme/DocCardList';\n\n<DocCardList />\n"
               write_doc(
                   "wiki/docs/programs/premiere-companion/index.mdx",
-                  "---\ntitle: Premiere Companion\nhide_title: true\nunlisted: true\npagination_prev: null\npagination_next: null\n---",
+                  "---\ntitle: Premiere Companion\nhide_title: true\npagination_prev: null\npagination_next: null\n---",
                   content, "premiere-companion"
               )
           except Exception as e:
               print(f"ERROR fetching Premiere-Companion README: {e}")
+          pathlib.Path("wiki/docs/programs/premiere-companion").mkdir(parents=True, exist_ok=True)
+          pathlib.Path("wiki/docs/programs/premiere-companion/_category_.json").write_text(
+              json.dumps({"label": "Premiere Companion", "link": {"type": "doc", "id": "programs/premiere-companion/index"}}),
+              encoding="utf-8"
+          )
           fetch_directory_recursively("BlessEphraem", "Premiere-Companion", ".docs", "wiki/docs/programs/premiere-companion", "premiere-companion")
 
           release_checks = [
