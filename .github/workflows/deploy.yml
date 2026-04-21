@@ -118,6 +118,11 @@ jobs:
               pathlib.Path(path).write_text(out, encoding="utf-8")
               print(f"Written: {path}")
 
+          def fetch_binary(url):
+              req = urllib.request.Request(url, headers=headers)
+              with urllib.request.urlopen(req) as r:
+                  return r.read()
+
           def fetch_directory_recursively(owner, repo, api_path, local_base_dir, img_prefix):
               api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{api_path}"
               data = fetch_json(api_url)
@@ -131,7 +136,11 @@ jobs:
                   item_type = item.get("type", "")
 
                   if item_type == "dir":
-                      if name.lower() == "medias" or name.startswith("."):
+                      if name.startswith("."):
+                          continue
+
+                      if name.lower() in ("medias", "media"):
+                          fetch_directory_recursively(owner, repo, item["path"], local_base_dir, img_prefix)
                           continue
 
                       safe_dir_name = re.sub(r'[^a-zA-Z0-9]+', '-', name).strip('-').lower()
@@ -144,21 +153,33 @@ jobs:
 
                       fetch_directory_recursively(owner, repo, item["path"], str(new_local_dir), img_prefix)
 
-                  elif item_type == "file" and name.lower().endswith(".md"):
+                  elif item_type == "file":
                       download_url = item.get("download_url")
                       if not download_url:
                           continue
 
-                      base_name = name[:-3]
-                      safe_id = re.sub(r'[^a-zA-Z0-9]+', '-', base_name).strip('-').lower()
+                      ext = name.lower().split('.')[-1]
+                      if ext == "md":
+                          base_name = name[:-3]
+                          safe_id = re.sub(r'[^a-zA-Z0-9]+', '-', base_name).strip('-').lower()
 
-                      try:
-                          content = fetch(download_url)
-                          frontmatter = f"---\nid: {safe_id}\ntitle: {base_name}\n---"
-                          local_file_path = pathlib.Path(local_base_dir) / f"{safe_id}.mdx"
-                          write_doc(str(local_file_path), frontmatter, content, img_prefix)
-                      except Exception as e:
-                          print(f"ERROR fetching {download_url}: {e}")
+                          try:
+                              content = fetch(download_url)
+                              frontmatter = f"---\nid: {safe_id}\ntitle: {base_name}\n---"
+                              local_file_path = pathlib.Path(local_base_dir) / f"{safe_id}.mdx"
+                              write_doc(str(local_file_path), frontmatter, content, img_prefix)
+                          except Exception as e:
+                              print(f"ERROR fetching {download_url}: {e}")
+                      elif ext in ["png", "jpg", "jpeg", "gif", "svg", "webp", "ico"] and img_prefix:
+                          try:
+                              static_img_dir = pathlib.Path("wiki/static/img") / img_prefix
+                              static_img_dir.mkdir(parents=True, exist_ok=True)
+                              img_path = static_img_dir / name
+                              img_data = fetch_binary(download_url)
+                              img_path.write_bytes(img_data)
+                              print(f"Downloaded media: {img_path}")
+                          except Exception as e:
+                              print(f"ERROR downloading media {download_url}: {e}")
 
           sources = [
               ("https://raw.githubusercontent.com/BlessEphraem/BlessEphraem/main/README.md",
