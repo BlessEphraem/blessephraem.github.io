@@ -414,12 +414,12 @@ jobs:
           print("Done.")
 
           # Generate metadata for dynamic navbar
+          dynamic_css = ""
           for owner, repo, img_prefix in [("BlessEphraem", "InputBar", "inputbar"), ("BlessEphraem", "Premiere-Companion", "premiere-companion")]:
               try:
                   readme_content = fetch(f"https://raw.githubusercontent.com/{owner}/{repo}/main/README.md")
                   first_lines = "\n".join(readme_content.split("\n")[:50])
                   icon_match = re.search(r'<img[^>]+src=["\']([^"\']+\.(?:svg|ico|png|jpg|jpeg))["\']', first_lines)
-                  icon_path = None
                   if icon_match:
                       icon_url = icon_match.group(1)
                       if not icon_url.startswith("http"):
@@ -431,8 +431,10 @@ jobs:
                           local_path = f"wiki/static/img/{img_prefix}/logo_navbar.{ext}"
                           pathlib.Path(local_path).parent.mkdir(parents=True, exist_ok=True)
                           pathlib.Path(local_path).write_bytes(icon_data)
-                          icon_path = f"img/{img_prefix}/logo_navbar.{ext}"
-                          print(f"Icon found for {repo}: {icon_path}")
+                          
+                          # Add dynamic CSS rule for this prefix
+                          dynamic_css += f".sidebar-icon-{img_prefix}::before {{ background-image: url('/wiki/img/{img_prefix}/logo_navbar.{ext}'); }}\n"
+                          print(f"Icon found for {repo}: {local_path}")
                       except Exception as e:
                           print(f"Error downloading icon for {repo}: {e}")
                   
@@ -446,7 +448,11 @@ jobs:
               except Exception as e:
                   print(f"Error processing icon for {repo}: {e}")
           
-          print("Sidebar icons configuration updated.")
+          # Write the dynamic CSS file
+          css_out = pathlib.Path("wiki/src/css/icons.css")
+          css_out.parent.mkdir(parents=True, exist_ok=True)
+          css_out.write_text(dynamic_css, encoding="utf-8")
+          print("Dynamic icons.css generated.")
           PY
 
       - name: Setup Node
