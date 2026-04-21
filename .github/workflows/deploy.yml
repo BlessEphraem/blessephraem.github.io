@@ -93,7 +93,7 @@ jobs:
                   props[camel] = val
               return ', '.join("{}: '{}'".format(k, v) for k, v in props.items())
 
-          def fix_html_for_mdx(content):
+          def fix_html_for_mdx(content, img_prefix=None):
               content = content.replace("../README.md", "./readme").replace("../readme.md", "./readme")
               content = re.sub(
                   r'(https://github\.com/[^\s)\]"]+\.(?:mp4|webm))',
