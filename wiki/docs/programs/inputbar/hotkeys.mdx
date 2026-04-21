@@ -1,0 +1,131 @@
+---
+id: hotkeys
+title: Hotkeys
+sidebar_position: 3
+---
+
+# Hotkeys.json
+
+Global keyboard shortcuts.
+
+> A huge shout-out to [@vlad-samp](https://github.com/vlad-samp). Without him, implementing a low-level hook to intercept the Windows key wouldn't have been possible.
+
+```json
+{
+    "show_inputbar": "ctrl+space"
+}
+```
+
+| Key | Description |
+|---|---|
+| `show_inputbar` | Shortcut to show/hide InputBar |
+
+---
+
+## How to write a shortcut
+
+A shortcut is a string made of **one or more keys joined by `+`**.
+
+```
+{modifier} + {key}
+{modifier} + {modifier} + {key}
+{single key}
+```
+
+**Examples:**
+
+```json
+"ctrl+space"
+"ctrl+alt+p"
+"alt+f1"
+"f13"
+"win"
+"lwin+space"
+```
+
+---
+
+## Modifier keys
+
+| Value | Alias | Key |
+|---|---|---|
+| `ctrl` | | Ctrl (left or right) |
+| `lctrl` | `left ctrl` | Left Ctrl only |
+| `rctrl` | `right ctrl` | Right Ctrl only |
+| `alt` | | Alt (left or right) |
+| `lalt` | `left alt` | Left Alt only |
+| `ralt` | `right alt` | Right Alt only |
+| `shift` | | Shift (left or right) |
+| `lshift` | `left shift` | Left Shift only |
+| `rshift` | `right shift` | Right Shift only |
+| `win` | | Windows key (left or right) ⚠️ |
+| `lwin` | `left win` | Windows key (left only) ⚠️ |
+| `rwin` | `right win` | Windows key (right only) ⚠️ |
+
+> **Windows key:** When `win`, `lwin`, or `rwin` is part of the shortcut, InputBar automatically launches a background process (`winkey_hook.exe`) that intercepts the key at system level, preventing the Start Menu from opening.
+
+---
+
+## Regular keys
+
+**Letters:** `a b c d e f g h i j k l m n o p q r s t u v w x y z`
+
+**Numbers (top row):** `0 1 2 3 4 5 6 7 8 9`
+
+**Function keys:** `f1` – `f12`, `f13` – `f20` *(extended keyboards)*
+
+**Navigation & editing**
+
+| Value | Key |
+|---|---|
+| `space` | Space bar |
+| `tab` | Tab |
+| `enter` | Enter |
+| `backspace` | Backspace |
+| `delete` | Delete |
+| `insert` | Insert |
+| `home` | Home |
+| `end` | End |
+| `page up` | Page Up |
+| `page down` | Page Down |
+| `up` / `down` / `left` / `right` | Arrow keys |
+| `escape` | Escape |
+| `caps lock` | Caps Lock |
+| `print screen` | Print Screen |
+| `scroll lock` | Scroll Lock |
+| `pause` | Pause / Break |
+
+**Numpad**
+
+| Value | Alias | Key |
+|---|---|---|
+| `num0` – `num9` | `numpad0` – `numpad9` | Numpad 0 to 9 |
+| `num+` | `num +` | Numpad + |
+| `num-` | `num -` | Numpad − |
+| `num*` | `num *` | Numpad × |
+| `num/` | `num /` | Numpad ÷ |
+| `num.` | `num .` | Numpad . |
+| `num enter` | | Numpad Enter |
+
+**Media keys**
+
+| Value | Key |
+|---|---|
+| `play/pause` | Play / Pause |
+| `next track` | Next track |
+| `previous track` | Previous track |
+| `stop` | Stop |
+| `volume up` / `volume down` / `volume mute` | Volume controls |
+
+---
+
+## Recommended shortcuts
+
+| Shortcut | Notes |
+|---|---|
+| `ctrl+space` | Default. Clean, rarely conflicts |
+| `alt+space` | Common launcher convention |
+| `ctrl+alt+space` | Safe if `alt+space` is taken |
+| `f13` | Silent and conflict-free on extended keyboards |
+| `win` | Replaces the Start Menu entirely |
+| `lwin+space` | Windows key + Space — natural feel |

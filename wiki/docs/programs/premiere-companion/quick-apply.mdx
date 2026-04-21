@@ -1,0 +1,70 @@
+---
+id: quick-apply
+title: Quick Apply (Presets)
+sidebar_position: 3
+---
+
+# ⚡ Quick Apply (Presets)
+
+Quick Apply works by recording the **exact screen position** of a preset icon in Premiere Pro's effect browser. When you apply a preset from the search bar, the app automatically:
+
+1. Opens the Effects panel
+2. Types the preset name in the search box
+3. Drags the preset from its recorded position to your timeline cursor
+
+For this to work reliably, **all your presets must be stored at the same folder depth** in Premiere Pro's preset browser.
+
+<div style={{display:'flex', gap:'10px', justifyContent:'center', margin:'20px 0'}}>
+  <img src="/img/premiere-companion/sample_FolderDepthGood1.png" width="32%" title="✅ Good" />
+  <img src="/img/premiere-companion/sample_FolderDepthGood2.png" width="32%" title="✅ Good" />
+  <img src="/img/premiere-companion/sample_FolderDepthBad.png" width="32%" title="❌ Bad — mixed depths" />
+</div>
+
+---
+
+## Step 1 — Assign Keybinds
+
+Go to **Quick Apply → Configure** and make sure these shortcuts match Premiere Pro exactly:
+
+| Action | Default |
+|---|---|
+| Window > Effect | `Shift+2` |
+| Search Find Box | `Shift+F` |
+| Window > Timelines | `Shift+3` |
+
+> ⚠️ If these don't match Premiere Pro's actual keybindings, preset capture and application will fail.
+
+## Step 2 — Set Latency
+
+The **Latency** slider (50–1000 ms) controls how long the app waits between sending each keyboard shortcut.
+
+- **50–150 ms**: faster, may fail on slower machines
+- **300–500 ms**: safer for heavy Premiere sessions
+
+Default of **200 ms** works for most setups.
+
+## Step 3 — Run the Calibration Wizard
+
+1. In Premiere Pro's effect browser, search for **one specific preset** — make sure only **one result** appears.
+2. Click **"🚀 Start Calibration (5s)"**, then move your mouse cursor over the preset icon within the 5-second countdown.
+3. The app focuses the Effects panel and verifies that an `Edit` control is active.
+
+After a successful calibration, click **Test Position** to verify the saved coordinates.
+
+## Step 4 — Preset Release Mode
+
+| Mode | Behavior |
+|---|---|
+| **Release at mouse** *(default)* | Drag is released at your current cursor position — hold the mouse over the target clip before pressing Enter |
+| **Keep on mouse** | Preset stays attached to the mouse; click to drop it on the clip |
+
+## Step 5 — Start Using!
+
+Your presets appear in the search bar under the `Preset` category automatically.
+
+---
+
+## Adjusting Delay After Calibration
+
+- **Quick Apply → Configure → Latency slider** — change and save
+- **Search bar** → `/QA` → `Set Delay (N ms)` → Enter

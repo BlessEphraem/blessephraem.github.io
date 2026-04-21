@@ -1,0 +1,158 @@
+---
+id: shell
+title: Shell Plugin
+sidebar_position: 4
+---
+
+# 💠 Plugin — Shell
+
+Executes shell commands and manages named command shortcuts (favorites).
+
+> **Keywords:** `shell` · `/` · `*` *(global — active on every search)*
+
+## 📜 Default Shell — `default_shell.json`
+
+Controls which shell is used when no per-entry override is set.
+
+```json
+{
+    "default_shell": "cmd",
+    "default_icon":  "",
+    "extra_shells":  {}
+}
+```
+
+| Key | Values | Description |
+|---|---|---|
+| `default_shell` | `"cmd"`, `"pwsh"`, `"powershell"`, or any key from `extra_shells` | Shell used by default |
+| `default_icon` | `""` or absolute path to an image | Custom icon for all Shell results |
+| `extra_shells` | object | Define custom terminal emulators |
+
+### Custom terminal emulators (`extra_shells`)
+
+```json
+"extra_shells": {
+    "wezterm": ["wezterm.exe", "start", "--", "cmd.exe", "/k"]
+}
+```
+
+This runs: `wezterm.exe start -- cmd.exe /k <your_command>`
+
+---
+
+## ⭐ Favorites — `favorites.data`
+
+Define named shortcuts for shell commands.
+
+```
+# favorites.data
+
+# Format: key=command
+fastfetch=fastfetch
+btop=btop
+showFolder=ls "C:\My\Path\"
+myscript=python C:\My\Path\script.py --arg
+colorpicker=C:\Scripts\Utils\ColorPicker.pyw
+```
+
+- Lines starting with `#` are comments.
+- Keys are case-insensitive and fuzzy-matched.
+
+### Per-entry shell override
+
+Prefix any entry's value with a shell name to override the default:
+
+```
+btop=cmd btop            # runs btop in cmd
+fastfetch=pwsh fastfetch # runs fastfetch in PowerShell 7
+viewer=wezterm btop      # runs btop in WezTerm
+```
+
+---
+
+## ⚡ Direct shell commands
+
+Any input that looks like a shell command is automatically detected:
+
+```
+python C:\scripts\myscript.py --verbose
+git status
+C:\tools\mytool.exe --flag
+```
+
+Prefix with `shell` or `/` for any command:
+
+```
+shell fastfetch
+/ htop
+```
+
+### Detection rules (global mode)
+
+| Rule | Example |
+|---|---|
+| Contains `\` and at least one letter/digit | `C:\tools\mytool.exe` |
+| Contains `/` and at least one letter/digit | `./myscript.sh` |
+| Starts with a known CLI prefix **and has at least one argument** | `git status` |
+
+**Recognized CLI prefixes:** `python` `python3` `node` `npm` `npx` `git` `pip` `pip3` `cargo` `go` `java` `dotnet` `ruby` `perl` `bash` `sh` `pwsh` `powershell` `cmd` `code` `nvim` `vim`
+
+---
+
+## 💡 Examples
+
+### Open a folder in Explorer
+
+```
+projects=explorer C:\Dev\Projects
+downloads=explorer %USERPROFILE%\Downloads
+```
+
+### Run a command and auto-close the window
+
+```json
+{
+    "extra_shells": {
+        "autoclose": ["conhost.exe", "--", "cmd.exe", "/c"]
+    }
+}
+```
+
+```
+npminstall=autoclose npm install
+gitpull=autoclose git pull
+```
+
+### Run a command completely hidden
+
+```json
+{
+    "extra_shells": {
+        "silent": ["powershell.exe", "-WindowStyle", "Hidden", "-NonInteractive", "-Command"]
+    }
+}
+```
+
+```
+backup=silent robocopy C:\Dev\MyProject D:\Backup\MyProject /MIR
+```
+
+### Git quick-commit in one shot
+
+```
+quickpush=autoclose git -C C:\Dev\MyProject add . && git -C C:\Dev\MyProject commit -m "wip" && git -C C:\Dev\MyProject push
+```
+
+### Open a terminal in a specific directory
+
+```json
+{
+    "extra_shells": {
+        "here": ["conhost.exe", "--", "cmd.exe", "/k", "cd /d"]
+    }
+}
+```
+
+```
+devterm=here C:\Dev\MyProject
+```

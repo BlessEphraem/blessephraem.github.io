@@ -1,0 +1,59 @@
+---
+id: getting-started
+title: Getting Started
+sidebar_position: 1
+---
+
+# 📖 Getting Started
+
+## 📋 Prerequisites
+
+Before using Premiere Companion and the plugin, make sure you have:
+- **Adobe Premiere Pro 25.6.1** or a **Beta version** that supports **UXP plugins**.
+
+## 🚀 Installation
+
+### ✅ Recommended — Setup / Portable version
+
+Choose the `setup.exe` or the `portable.zip` from the [**Releases page**](https://github.com/BlessEphraem/Premiere-Companion/releases).
+
+<details>
+<summary><strong>🛠️ From Source — Run the `.pyw` Script</strong></summary>
+
+Clone this repository. Run your terminal as Administrator (required for global hotkeys and mouse simulation) and install the dependencies:
+
+```bash
+pip install PyQt6 pywin32 pyautogui websockets pynput
+```
+
+> **Optional:** `pip install win11toast` for native Windows 11 toast notifications.
+
+</details>
+
+---
+
+## 📡 Connect to Premiere Pro
+
+**Premiere Pro must be closed if you install/update the plugin.**
+
+1. Go to **Settings → Configure → Install Plugin**.
+2. Open Premiere Pro and load the **Premiere Companion** plugin (`Window > UXP Plugins > Premiere Companion (Listener)`).
+3. In both the plugin panel and the app, verify that the **WebSocket Port** matches exactly.
+
+When the connection is established:
+- The **console** at the bottom of the app displays a green confirmation message.
+- The **plugin panel** also indicates that it is connected.
+
+### 🧹 Recommended — Apply a Regex Clean (Transition Names)
+
+The Premiere Pro API does not expose clean formatted transition names — raw internal names often include plugin prefixes and technical identifiers (e.g., `AE.ADBE Cross Dissolve PrTr`).
+
+To fix this, go to the **Regex** page and use one of these options:
+- **🤖 Auto-Generate Rules** — Analyzes all your fetched transitions and automatically builds cleanup rules.
+- **📄 Import my personal rules file** — Use my pre-made regex ruleset for a clean effect list.
+
+Rules are applied in order and can be reordered, edited, or deleted.
+
+🎉 You can now apply any effect or transition via the search bar using **`Ctrl+Space`** while Premiere Pro is focused.
+
+By default, transitions, video effects, and audio effects work immediately once connected. To make **Presets** applicable, see [Quick Apply](./quick-apply).

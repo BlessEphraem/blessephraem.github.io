@@ -1,0 +1,61 @@
+---
+id: plugins
+title: Plugins Overview
+sidebar_position: 5
+---
+
+# 📦 Plugins
+
+Type `plugins` in InputBar to list all loaded modules and toggle them on/off, or edit `Plugins.json` directly.
+
+## 🧩 Built-in plugins
+
+| Plugin | Description |
+|---|---|
+| [App](./plugins/app) | Searches and launches installed applications |
+| [Calc](./plugins/calc) | Evaluates math expressions and copies the result |
+| [System](./plugins/system) | Lock, sleep, restart, shutdown — with confirmation |
+| [Shell](./plugins/shell) | Executes shell commands and manages named shortcuts |
+| [Everything](./plugins/everything) | Searches through your folders |
+
+---
+
+## 📜 `Plugins.json`
+
+Plugin management. Edit directly or via the `plugins` command inside InputBar.
+
+```json
+{
+    "Calc.py": {
+        "toggle": true,
+        "keyword": ["calc", "*"],
+        "limit": 15
+    },
+    "System.py": {
+        "toggle": true,
+        "keyword": ["system", "*"],
+        "limit": 15
+    },
+    "App/App.py": {
+        "toggle": true,
+        "keyword": ["app", "*"],
+        "limit": 15
+    },
+    "Shell/Shell.py": {
+        "toggle": true,
+        "keyword": ["shell", "*"],
+        "limit": 15
+    },
+    "Everything/Everything.py": {
+        "toggle": true,
+        "keyword": ["everything", "f", "*"],
+        "limit": 15
+    }
+}
+```
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `toggle` | bool | Enable or disable the plugin |
+| `keyword` | list | Keywords that trigger the plugin. `"*"` = responds to every query (global mode). Without `"*"`, the plugin only activates when the search starts with its keyword |
+| `limit` | int | Maximum number of results this plugin can return (default `15`) |

@@ -1,0 +1,116 @@
+---
+id: commands
+title: Commands
+sidebar_position: 4
+---
+
+# 🕹️ Commands
+
+Commands are special items in the search bar's `[Commands]` category. They give you direct control over the app — toggling features, running transforms, executing macros — without leaving your keyboard.
+
+---
+
+## Command Keywords
+
+Keywords are **prefix shortcuts** you type in the search bar to instantly filter results.
+
+| Keyword | Filters to |
+|---|---|
+| `/` | All effects, transitions, presets |
+| `/V` | Video effects only |
+| `/A` | Audio effects only |
+| `/T` | Video transitions only |
+| `/P` | Presets only |
+| `/QA` | Quick Apply control commands |
+| `/BM` | Better Motion transform commands |
+
+```
+/V            → show all video effects
+/V blur       → video effects matching "blur"
+/BM           → show Better Motion commands
+/QA           → show Quick Apply commands
+```
+
+> Go to **Settings → Search → Commands** to rename any keyword.
+
+---
+
+## Quick Apply Commands (`/QA`)
+
+| Command | What it does |
+|---|---|
+| `Toggle Quick Apply (ON / OFF)` | Enable or disable Quick Apply instantly |
+| `Set Delay (N ms)` | Change the preset-application delay |
+| `Start Calibration` | Re-run the 5-second calibration countdown |
+
+---
+
+## Better Motion Commands (`/BM`)
+
+| Command | What it does |
+|---|---|
+| `Better Transform` | Open the full interactive Better Motion overlay |
+| `Position` | Set or adjust clip position (X and/or Y) |
+| `Scale` | Set or adjust clip scale |
+| `Rotation` | Set or adjust clip rotation |
+| `Opacity` | Set or adjust clip opacity |
+
+### Inline value syntax
+
+| Input | Meaning |
+|---|---|
+| `50` | Set to 50 (absolute) |
+| `+10` | Add 10 to current value |
+| `-5` | Subtract 5 from current value |
+| `reset` | Reset property to its default |
+
+**Position only** — control X and Y with a `.` separator:
+
+| Input | X | Y |
+|---|---|---|
+| `100.200` | Set X=100 | Set Y=200 |
+| `.500` | (unchanged) | Set Y=500 |
+| `100.` | Set X=100 | (unchanged) |
+| `+50.-20` | Add 50 to X | Subtract 20 from Y |
+
+> Use `,` as the decimal separator for fractions (e.g. `100,5` = 100.5).
+
+---
+
+## Macros as Commands
+
+Every macro you create appears automatically in the Commands category with a `[CMD.MA]` type tag.
+
+---
+
+## Examples
+
+### Filter to video effects
+```
+/V gaussian
+```
+
+### Set opacity to 80
+```
+/BM opacity 80
+```
+
+### Nudge position right by 50 px, leave Y unchanged
+```
+/BM position +50.
+```
+
+### Set position to (960, 540)
+```
+/BM position 960.540
+```
+
+### Toggle Quick Apply off
+```
+/QA Toggle Quick Apply
+```
+
+### Re-calibrate without opening settings
+```
+/QA Start Calibration
+```

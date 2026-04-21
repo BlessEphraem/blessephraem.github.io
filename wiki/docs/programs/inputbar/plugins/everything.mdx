@@ -1,0 +1,95 @@
+---
+id: everything
+title: Everything Plugin
+sidebar_position: 5
+---
+
+# 💫 Plugin — Everything
+
+Search for files and folders on your computer instantly using the **[Everything](https://www.voidtools.com/)** search engine integration.
+
+:::warning
+Everything must be installed on your computer for this plugin to work.
+:::
+
+## 🚀 How it Works
+
+The plugin uses the **Everything SDK (DLL)** for optimal performance and real-time searching. Results are displayed incrementally without freezing the application.
+
+> **Keywords (Strict):** `f` or `everything`  
+> **Auto-detection (Global):** Triggers automatically if your search looks like a path or a file (e.g., `image.png`, `C:\`, `.pdf`).
+
+## 📁 Configuration (`Data/Plugins/Everything/`)
+
+### 1. 📜 `EverythingPath.json`
+
+```json
+{
+    "EverythingPath": "C:\Program Files\Everything\Everything.exe"
+}
+```
+
+The plugin attempts to auto-detect this on first run.
+
+### 2. 📜 `extensions.data`
+
+List of extensions that automatically trigger an Everything search in global mode.
+
+```
+.png
+.pdf
+.mkv
+```
+
+### 3. ⭐ `favorites.data`
+
+```
+# Format: name=path
+Projects=D:\Dev\CurrentProjects
+Documents=C:\Users\Name\Documents
+```
+
+Searching favorites is **fuzzy**: typing `proj` finds `Projects`.
+
+---
+
+## 🔍 Smart Trigger Rules
+
+Everything only activates in global mode if:
+1. The search contains a path separator (`\` or `/`)
+2. The search starts with a drive letter (e.g., `C:`)
+3. The search ends with an extension defined in `extensions.data`
+
+---
+
+## 💡 Tips & Tricks
+
+- Results display the file name in bold and the parent folder below it.
+- Long paths are intelligently shortened (e.g., `C:\Users\...\Documents`).
+- Type `reload` or `rebuild` in InputBar to refresh favorites and extensions without restarting.
+
+---
+
+## 📖 Examples
+
+```
+f project_report
+```
+Search for any file/folder containing "project_report" everywhere.
+
+```
+.png
+```
+List all recently modified `.png` files on your PC.
+
+```
+f size:>1gb
+```
+Advanced Everything syntax: find all files larger than 1GB.
+
+```
+f dc:today
+```
+Find all files created today.
+
+> You can use any [advanced search syntax supported by Everything](https://www.voidtools.com/support/everything/searching/)!

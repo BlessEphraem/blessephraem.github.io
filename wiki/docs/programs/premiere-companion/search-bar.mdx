@@ -1,0 +1,122 @@
+---
+id: search-bar
+title: Search Bar
+sidebar_position: 2
+---
+
+# 🔍 Search Bar
+
+## Opening & Closing
+
+| Action | Default Shortcut |
+|---|---|
+| Open search bar | `Ctrl+Space` *(while Premiere Pro is focused)* |
+| Close search bar | `Escape` *(or any click outside)* |
+
+> The trigger shortcut is fully configurable in **Settings → Search → Bar**.  
+> ⚠️ The shortcut only triggers when **Adobe Premiere Pro is the active window**.
+
+## The Interface
+
+```
+┌────────────────────────────────────────────┐
+│  Search (All)...                           │
+├────────────────────────────────────────────┤
+│  [Recent]      Cross Dissolve              │
+│  [Preset]      My Color Grade              │
+│  [FxVideo]     Lumetri Color               │
+│  [Transition]  Film Dissolve               │
+│  ...                                       │
+└────────────────────────────────────────────┘
+```
+
+### Tag Colors
+
+| Tag | Meaning |
+|---|---|
+| `[Recent]` | One of your 3 most recently applied items |
+| `[FxVideo]` | Video effect |
+| `[FxAudio]` | Audio effect |
+| `[Transition]` | Video or audio transition |
+| `[Preset]` | A saved preset from your Premiere Pro library |
+
+## Typing & Searching
+
+- The search matches against **all words in the effect name**, in any order.
+- Up to **75 results** displayed at a time, ranked by relevance.
+- **Recently used items** always appear at the top.
+
+## Keyboard Navigation
+
+| Key | Action |
+|---|---|
+| `↑` / `↓` | Move selection up/down |
+| `CTRL + ←` | Switch to previous category filter |
+| `CTRL + →` | Switch to next category filter |
+| `Enter` | Apply the selected result |
+| `Escape` | Close the search bar |
+
+## Category Filtering
+
+| Category | Shows |
+|---|---|
+| **All** | Everything — effects, transitions, presets |
+| **FxVideo** | Video effects only |
+| **FxAudio** | Audio effects only |
+| **Transition** | Video and audio transitions only |
+| **Preset** | Saved presets only |
+| **Commands** | Specific commands and custom user macros |
+
+## Applying Transitions
+
+After selecting a transition and pressing `Enter`, the bar switches to **alignment selection mode**:
+
+```
+┌──────────────────────────────────────┐
+│  Choose alignment (Enter to apply)   │
+├──────────────────────────────────────┤
+│  <  At Start                         │
+│  >  At End                           │
+│  =  Both                             │
+└──────────────────────────────────────┘
+```
+
+## Applying Presets
+
+> Requires **Quick Apply** to be configured. See [Quick Apply](./quick-apply).
+
+When Quick Apply is enabled, selecting a preset triggers an automated drag-and-drop sequence into your timeline. During the last step, **you must move the mouse to the target clip and release** — the app initiates the drag but you control where the preset lands.
+
+## Recent Items
+
+The search bar remembers your **3 most recently applied** effects, transitions, and presets. These always appear at the top with a `[Recent]` tag.
+
+---
+
+## Examples
+
+### Instant re-apply (empty field)
+```
+Ctrl+Space  →  Enter
+```
+The most recently used item applies immediately.
+
+### Find and apply a video effect
+```
+Ctrl+Space  →  gaussian  →  ↓  →  Enter
+```
+
+### Apply a transition to the end of a clip
+```
+Ctrl+Space  →  cross dissolve  →  Enter  →  ↓ (At End)  →  Enter
+```
+
+### Filter to presets only
+```
+Ctrl+Space  →  CTRL+→ (switch to Preset)  →  my grade  →  Enter
+```
+
+### Run a Better Motion command inline
+```
+Ctrl+Space  →  /BM scale 85  →  Enter
+```

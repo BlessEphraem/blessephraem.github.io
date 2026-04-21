@@ -1,0 +1,51 @@
+---
+id: create-plugins
+title: Create a Plugin
+sidebar_position: 6
+---
+
+# Writing a plugin
+
+## Clone the repository
+
+```bash
+cd "C:\Your\Folder\Path\"
+git clone https://github.com/BlessEphraem/InputBar
+```
+
+Install the required Python packages:
+
+```bash
+pip install PyQt6 rapidfuzz keyboard pywin32
+```
+
+## Write a plugin
+
+A plugin is a `.py` file in `Plugins/` that exposes an `on_search(text) -> list` function.
+
+```python
+# Plugins/MyPlugin.py
+
+def on_search(text: str) -> list:
+    if "hello" not in text.lower():
+        return []
+    return [{
+        "name": "Hello World",
+        "score": 100,
+        "action": lambda: print("Hello!"),
+        "icon_type": "settings",   # "file" | "calc" | "settings"
+    }]
+```
+
+Each returned item can have:
+
+| Field | Type | Description |
+|---|---|---|
+| `name` | str | Text displayed in the list |
+| `score` | float | Sort score (higher = listed first) |
+| `action` | str or callable | Path to open or function to call |
+| `icon_type` | str | Icon style: `"file"`, `"calc"`, `"settings"` |
+| `icon_path` | str | Path to a custom icon (optional) |
+| `item_type` | str | Set to `"app"` to enable the right-arrow submenu |
+
+If `action` returns the string `"KEEP_OPEN_AND_REFRESH"`, InputBar stays open and refreshes the results — useful for confirmation flows.
