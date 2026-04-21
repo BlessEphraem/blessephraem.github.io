@@ -151,6 +151,11 @@ jobs:
                   return re.sub(r'[\s-]+', '-', text).strip('-')
 
               def transform_url(url):
+                  # Treat absolute links to our own domain as internal links
+                  my_domain = "https://blessephraem.github.io/wiki"
+                  if url.startswith(my_domain):
+                      url = url[len("https://blessephraem.github.io"):]
+                  
                   if "://" in url or url.startswith(('#', 'mailto:', 'tel:', '/')):
                       return url
                   
