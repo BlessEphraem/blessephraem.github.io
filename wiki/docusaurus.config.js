@@ -67,6 +67,11 @@ const config = {
         },
         items: [
           {
+            to: '/',
+            position: 'left',
+            label: 'Home',
+          },
+          {
             to: '/programs/inputbar/',
             position: 'left',
             label: 'Programs',

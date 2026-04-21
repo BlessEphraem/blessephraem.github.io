@@ -74,7 +74,33 @@ jobs:
                   lines += ["", f"[View on GitHub]({html_url})"]
               return "\n".join(lines)
 
+          def extract_h1_title(content):
+              m = re.search(r'^#\s+(.+)$', content, re.MULTILINE)
+              if m:
+                  return m.group(1).strip()
+              return None
+
+          def filename_to_label(name):
+              return name.replace('_', ' ')
+
+          def rewrite_readme_absolute_paths(content, owner, repo, branch='main'):
+              raw_base = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}"
+              def replace_md_img(m):
+                  alt, path = m.group(1), m.group(2)
+                  if path.startswith(('http', '/', '#')) or 'medias/' in path or 'media/' in path:
+                      return m.group(0)
+                  return f'![{alt}]({raw_base}/{path})'
+              content = re.sub(r'!\[([^\]]*)\]\(([^)#\s]+)\)', replace_md_img, content)
+              def replace_html_src(m):
+                  src = m.group(1)
+                  if src.startswith(('http', '/', '#', 'data:')) or 'medias/' in src or 'media/' in src:
+                      return m.group(0)
+                  return f'src="{raw_base}/{src}"'
+              content = re.sub(r'\bsrc="([^"]+)"', replace_html_src, content)
+              return content
+
           def rewrite_media(content, img_prefix):
+              content = re.sub(r'\.docs/(?:\.\.?/)?medias/', f'/wiki/img/{img_prefix}/', content)
               content = re.sub(r'(?:\.\.?/)?medias/', f'/wiki/img/{img_prefix}/', content)
               content = re.sub(rf'(?<!/wiki)/img/{re.escape(img_prefix)}/', f'/wiki/img/{img_prefix}/', content)
               return content
@@ -95,6 +121,20 @@ jobs:
 
           def fix_html_for_mdx(content, img_prefix=None):
               content = content.replace("../README.md", "./").replace("../readme.md", "./")
+              def replace_md_href(m):
+                  fname = m.group(1)
+                  if fname.startswith('http') or fname.startswith('/') or '/' in fname:
+                      return m.group(0)
+                  slug = re.sub(r'[^a-zA-Z0-9_]+', '-', fname[:-3]).strip('-').lower()
+                  return f'href="./{slug}"'
+              content = re.sub(r'href="([^"#?]+\.md)"', replace_md_href, content)
+              def replace_md_link(m):
+                  text, fname = m.group(1), m.group(2)
+                  if fname.startswith('http') or fname.startswith('/') or '/' in fname:
+                      return m.group(0)
+                  slug = re.sub(r'[^a-zA-Z0-9_]+', '-', fname[:-3]).strip('-').lower()
+                  return f'[{text}](./{slug})'
+              content = re.sub(r'\[([^\]]+)\]\(([^)#?]+\.md)\)', replace_md_link, content)
               content = re.sub(
                   r'(https://github\.com/[^\s)\]"]+\.(?:mp4|webm))',
                   r'<video controls width="100%"><source src="\1" /></video>',
@@ -135,55 +175,96 @@ jobs:
               if not isinstance(data, list):
                   data = [data]
 
+              dirs = {}
+              files = {}
               for item in data:
-                  name = item.get("name", "")
-                  item_type = item.get("type", "")
+                  iname = item.get("name", "")
+                  itype = item.get("type", "")
+                  if itype == "dir":
+                      dirs[iname] = item
+                  elif itype == "file":
+                      files[iname] = item
 
-                  if item_type == "dir":
-                      if name.startswith("."):
-                          continue
+              folder_linked = {}
+              for dir_name in dirs:
+                  for fname in files:
+                      if fname.lower() == dir_name.lower() + ".md":
+                          folder_linked[dir_name] = fname
+                          break
 
-                      if name.lower() in ("medias", "media"):
-                          fetch_directory_recursively(owner, repo, item["path"], local_base_dir, img_prefix)
-                          continue
+              folder_index_files = set(folder_linked.values())
+              docs_root = pathlib.Path("wiki/docs")
 
-                      safe_dir_name = re.sub(r'[^a-zA-Z0-9]+', '-', name).strip('-').lower()
-                      new_local_dir = pathlib.Path(local_base_dir) / safe_dir_name
-                      new_local_dir.mkdir(parents=True, exist_ok=True)
+              for dir_name, dir_item in dirs.items():
+                  if dir_name.startswith("."):
+                      continue
+                  if dir_name.lower() in ("medias", "media"):
+                      fetch_directory_recursively(owner, repo, dir_item["path"], local_base_dir, img_prefix)
+                      continue
 
-                      cat_json_path = new_local_dir / "_category_.json"
-                      cat_data = {"label": name}
-                      cat_json_path.write_text(json.dumps(cat_data), encoding="utf-8")
+                  safe_dir_name = re.sub(r'[^a-zA-Z0-9_]+', '-', dir_name).strip('-').lower()
+                  new_local_dir = pathlib.Path(local_base_dir) / safe_dir_name
+                  new_local_dir.mkdir(parents=True, exist_ok=True)
 
-                      fetch_directory_recursively(owner, repo, item["path"], str(new_local_dir), img_prefix)
-
-                  elif item_type == "file":
-                      download_url = item.get("download_url")
-                      if not download_url:
-                          continue
-
-                      ext = name.lower().split('.')[-1]
-                      if ext == "md":
-                          base_name = name[:-3]
-                          safe_id = re.sub(r'[^a-zA-Z0-9]+', '-', base_name).strip('-').lower()
-
+                  if dir_name in folder_linked:
+                      md_file_name = folder_linked[dir_name]
+                      md_item = files[md_file_name]
+                      try:
+                          content = fetch(md_item["download_url"])
+                          h1_title = extract_h1_title(content)
+                          label = h1_title or filename_to_label(dir_name)
                           try:
-                              content = fetch(download_url)
-                              frontmatter = f"---\nid: {safe_id}\ntitle: {base_name}\n---"
-                              local_file_path = pathlib.Path(local_base_dir) / f"{safe_id}.mdx"
-                              write_doc(str(local_file_path), frontmatter, content, img_prefix)
-                          except Exception as e:
-                              print(f"ERROR fetching {download_url}: {e}")
-                      elif ext in ["png", "jpg", "jpeg", "gif", "svg", "webp", "ico"] and img_prefix:
-                          try:
-                              static_img_dir = pathlib.Path("wiki/static/img") / img_prefix
-                              static_img_dir.mkdir(parents=True, exist_ok=True)
-                              img_path = static_img_dir / name
-                              img_data = fetch_binary(download_url)
-                              img_path.write_bytes(img_data)
-                              print(f"Downloaded media: {img_path}")
-                          except Exception as e:
-                              print(f"ERROR downloading media {download_url}: {e}")
+                              rel_path = new_local_dir.relative_to(docs_root)
+                              doc_id = str(rel_path / "index").replace("\\", "/")
+                          except ValueError:
+                              doc_id = (new_local_dir / "index").as_posix()
+                          label_escaped = label.replace('"', '\\"')
+                          cat_data = {"label": label, "link": {"type": "doc", "id": doc_id}}
+                          (new_local_dir / "_category_.json").write_text(json.dumps(cat_data), encoding="utf-8")
+                          frontmatter = f'---\ntitle: "{label_escaped}"\n---'
+                          write_doc(str(new_local_dir / "index.mdx"), frontmatter, content, img_prefix)
+                      except Exception as e:
+                          print(f"ERROR processing folder-linked doc {md_file_name}: {e}")
+                          label = filename_to_label(dir_name)
+                          cat_data = {"label": label}
+                          (new_local_dir / "_category_.json").write_text(json.dumps(cat_data), encoding="utf-8")
+                  else:
+                      label = filename_to_label(dir_name)
+                      cat_data = {"label": label}
+                      (new_local_dir / "_category_.json").write_text(json.dumps(cat_data), encoding="utf-8")
+
+                  fetch_directory_recursively(owner, repo, dir_item["path"], str(new_local_dir), img_prefix)
+
+              for name, item in files.items():
+                  if name in folder_index_files:
+                      continue
+                  download_url = item.get("download_url")
+                  if not download_url:
+                      continue
+                  ext = name.lower().split('.')[-1]
+                  if ext == "md":
+                      base_name = name[:-3]
+                      safe_id = re.sub(r'[^a-zA-Z0-9_]+', '-', base_name).strip('-').lower()
+                      try:
+                          content = fetch(download_url)
+                          h1_title = extract_h1_title(content)
+                          label = h1_title or filename_to_label(base_name)
+                          label_escaped = label.replace('"', '\\"')
+                          frontmatter = f'---\ntitle: "{label_escaped}"\n---'
+                          local_file_path = pathlib.Path(local_base_dir) / f"{safe_id}.mdx"
+                          write_doc(str(local_file_path), frontmatter, content, img_prefix)
+                      except Exception as e:
+                          print(f"ERROR fetching {download_url}: {e}")
+                  elif ext in ["png", "jpg", "jpeg", "gif", "svg", "webp", "ico"] and img_prefix:
+                      try:
+                          static_img_dir = pathlib.Path("wiki/static/img") / img_prefix
+                          static_img_dir.mkdir(parents=True, exist_ok=True)
+                          img_path = static_img_dir / name
+                          img_data = fetch_binary(download_url)
+                          img_path.write_bytes(img_data)
+                          print(f"Downloaded media: {img_path}")
+                      except Exception as e:
+                          print(f"ERROR downloading media {download_url}: {e}")
 
           sources = [
               ("https://raw.githubusercontent.com/BlessEphraem/BlessEphraem/main/README.md",
@@ -207,8 +288,13 @@ jobs:
           print("Fetching InputBar docs...")
           try:
               content = fetch("https://raw.githubusercontent.com/BlessEphraem/InputBar/main/README.md")
+              content = rewrite_readme_absolute_paths(content, "BlessEphraem", "InputBar")
               content += "\n\n---\n## Documentation\nimport DocCardList from '@theme/DocCardList';\n\n<DocCardList />\n"
-              write_doc("wiki/docs/programs/inputbar/index.mdx", "---\nid: index\ntitle: README\nsidebar_position: 0\n---", content, "inputbar")
+              write_doc(
+                  "wiki/docs/programs/inputbar/index.mdx",
+                  "---\ntitle: InputBar\nhide_title: true\nunlisted: true\npagination_prev: null\npagination_next: null\n---",
+                  content, "inputbar"
+              )
           except Exception as e:
               print(f"ERROR fetching InputBar README: {e}")
           fetch_directory_recursively("BlessEphraem", "InputBar", ".docs", "wiki/docs/programs/inputbar", "inputbar")
@@ -216,18 +302,24 @@ jobs:
           print("Fetching Premiere-Companion docs...")
           try:
               content = fetch("https://raw.githubusercontent.com/BlessEphraem/Premiere-Companion/main/README.md")
+              content = rewrite_readme_absolute_paths(content, "BlessEphraem", "Premiere-Companion")
               content += "\n\n---\n## Documentation\nimport DocCardList from '@theme/DocCardList';\n\n<DocCardList />\n"
-              write_doc("wiki/docs/programs/premiere-companion/index.mdx", "---\nid: index\ntitle: README\nsidebar_position: 0\n---", content, "premiere-companion")
+              write_doc(
+                  "wiki/docs/programs/premiere-companion/index.mdx",
+                  "---\ntitle: Premiere Companion\nhide_title: true\nunlisted: true\npagination_prev: null\npagination_next: null\n---",
+                  content, "premiere-companion"
+              )
           except Exception as e:
               print(f"ERROR fetching Premiere-Companion README: {e}")
           fetch_directory_recursively("BlessEphraem", "Premiere-Companion", ".docs", "wiki/docs/programs/premiere-companion", "premiere-companion")
+
           release_checks = [
               ("BlessEphraem", "InputBar",
                "wiki/docs/programs/inputbar/releases.mdx",
-               "releases", "Download / Releases"),
+               "releases", "Releases"),
               ("BlessEphraem", "Premiere-Companion",
                "wiki/docs/programs/premiere-companion/releases.mdx",
-               "releases", "Download / Releases"),
+               "releases", "Releases"),
           ]
 
           for owner, repo, path, doc_id, title in release_checks:
@@ -241,7 +333,7 @@ jobs:
                   print(f"No latest release for {owner}/{repo} (skipping).")
                   continue
               content = build_release_markdown(data)
-              frontmatter = f"---\nid: {doc_id}\ntitle: {title}\nsidebar_position: 0\n---"
+              frontmatter = f"---\nid: {doc_id}\ntitle: {title}\nsidebar_position: 0\npagination_prev: null\n---"
               try:
                   write_doc(path, frontmatter, content)
               except Exception as e:
