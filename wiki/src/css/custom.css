@@ -16,7 +16,7 @@
   --ifm-code-font-size: 90%;
   --ifm-font-family-base: 'Satoshi-Regular', system-ui, sans-serif;
   --ifm-heading-font-family: 'Satoshi-Black', sans-serif;
-  --ifm-heading-font-weight: normal;
+  --ifm-heading-font-weight: unset;
   --docusaurus-highlighted-code-line-bg: rgba(255, 23, 150, 0.1);
   --secondary: #3ad0ff;
   --glass-border: rgba(255, 255, 255, 0.08);
