@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ephraem</title>
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" rel="stylesheet">
     <meta name="description" content="Ephraem — Video editor, developer, and open-source tool builder.">
     <link rel="icon" type="image/x-icon" href="Portfolio/favicon.ico">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #ff1796;
@@ -25,12 +23,16 @@
             --transition: all 0.3s ease;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Satoshi', sans-serif !important; 
+        }
 
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
-            font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;

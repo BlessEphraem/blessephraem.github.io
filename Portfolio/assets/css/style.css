@@ -35,8 +35,8 @@
     /* --- DIMENSIONS & FONTS --- */
     --radius: 16px;
     --max-width: 1200px;
-    --font-heading: 'Inter', sans-serif;
-    --font-body: 'Inter', sans-serif;
+    --font-heading: 'Satoshi', sans-serif;
+    --font-body: 'Satoshi', sans-serif;
 }
 
 /* Reset & Base */
