@@ -172,10 +172,11 @@ code {
   color: #ff1796;
 }
 
-/* Hide Table of Contents */
+/* Hide Table of Contents and remove its column space */
 .table-of-contents,
 .theme-doc-toc-desktop,
-.theme-doc-toc-mobile {
+.theme-doc-toc-mobile,
+.col.col--3:not(.theme-doc-sidebar-container) {
   display: none !important;
 }
 
@@ -183,7 +184,8 @@ code {
 [class*="docItemCol_"] {
   max-width: 1000px !important;
   margin: 0 auto !important;
-  flex: 1 1 100% !important;
+  flex: 0 0 100% !important;
+  width: 100% !important;
 }
 
 [class*="docRoot_"] .row {
