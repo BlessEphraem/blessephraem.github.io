@@ -23,11 +23,15 @@
             --transition: all 0.3s ease;
         }
 
-        * { 
+        *:not(i) { 
             margin: 0; 
             padding: 0; 
             box-sizing: border-box; 
             font-family: 'Satoshi', sans-serif !important; 
+        }
+
+        i {
+            font-family: inherit; /* Laisse Font Awesome gérer ses classes */
         }
 
         body {

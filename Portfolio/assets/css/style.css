@@ -40,12 +40,16 @@
 }
 
 /* Reset & Base */
-* { 
+*:not(i) { 
     margin: 0; 
     padding: 0; 
     box-sizing: border-box; 
     scroll-behavior: smooth; 
     font-family: 'Satoshi', sans-serif !important;
+}
+
+i {
+    font-family: inherit; /* Laisse Font Awesome gérer ses classes */
 }
 
 body {
