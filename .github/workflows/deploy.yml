@@ -343,9 +343,6 @@ jobs:
                           print(f"ERROR downloading media {download_url}: {e}")
 
           sources = [
-              ("https://raw.githubusercontent.com/BlessEphraem/BlessEphraem/main/README.md",
-               "wiki/docs/intro.mdx",
-               "---\nid: intro\ntitle: About\nsidebar_position: 1\ndisplayed_sidebar: null\n---", None),
               ("https://raw.githubusercontent.com/BlessEphraem/JSX-Runner/main/README.md",
                "wiki/docs/plugins/jsx-runner.mdx",
                "---\nid: jsx-runner\ntitle: JSX Runner\nsidebar_position: 1\n---", None),
