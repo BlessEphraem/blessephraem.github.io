@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ephraem</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" rel="stylesheet">
     <meta name="description" content="Ephraem — Video editor, developer, and open-source tool builder.">
     <link rel="icon" type="image/x-icon" href="Portfolio/favicon.ico">
@@ -42,6 +43,26 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+        }
+
+        /* Socials */
+        .socials {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 15px;
+            font-size: 1.8rem;
+        }
+
+        .socials a {
+            color: var(--text-muted);
+            transition: var(--transition);
+            display: inline-block;
+        }
+
+        .socials a:hover {
+            color: var(--primary);
+            transform: translateY(-5px);
         }
 
         /* Background glow blobs */
@@ -238,6 +259,11 @@
                 <span class="btn-label">Wiki</span>
                 <span class="btn-arrow">→</span>
             </a>
+            <div class="socials">
+                <a href="https://www.youtube.com/@Eph_raem" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                <a href="https://www.instagram.com/bless_eph_raem" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://github.com/BlessEphraem" target="_blank"><i class="fa-brands fa-github"></i></a>
+            </div>
         </div>
     </main>
 </body>
