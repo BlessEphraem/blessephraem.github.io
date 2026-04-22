@@ -46,15 +46,15 @@
   border-bottom: 1px solid var(--glass-border);
   box-shadow: none;
   z-index: 100;
-  font-weight: 900;
+  font-family: 'Satoshi-Black', sans-serif;
 }
 
 .navbar__item, .navbar__link, .navbar__title {
-  font-weight: 900 !important;
+  font-family: 'Satoshi-Black', sans-serif !important;
 }
 
 .navbar__brand .navbar__title {
-  font-weight: 900;
+  font-family: 'Satoshi-Black', sans-serif !important;
   font-size: 1.15rem;
   background: linear-gradient(135deg, #ff1796, #3ad0ff);
   -webkit-background-clip: text;
