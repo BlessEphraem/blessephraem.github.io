@@ -179,6 +179,17 @@ code {
   display: none !important;
 }
 
+/* Center content by overriding Docusaurus grid */
+[class*="docItemCol_"] {
+  max-width: 1000px !important;
+  margin: 0 auto !important;
+  flex: 1 1 100% !important;
+}
+
+[class*="docRoot_"] .row {
+  justify-content: center !important;
+}
+
 /* Pagination */
 .pagination-nav__link:hover {
   border-color: #ff1796;
