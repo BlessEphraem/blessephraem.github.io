@@ -54,6 +54,10 @@
 }
 
 /* Sidebar */
+.menu {
+  padding: .5rem !important;
+}
+
 .menu__link--active {
   color: #ff1796 !important;
   background: rgba(255, 23, 150, 0.1) !important;
