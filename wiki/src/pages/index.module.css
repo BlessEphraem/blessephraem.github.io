@@ -11,7 +11,7 @@
 
 .heroTitle {
   font-size: clamp(2rem, 5vw, 3.2rem);
-  font-weight: 900;
+  font-family: 'Satoshi-Black', sans-serif;
   margin-bottom: 16px;
   color: #ffffff;
 }
@@ -46,7 +46,7 @@
   background: rgba(255, 23, 150, 0.15);
   border: 1px solid rgba(255, 23, 150, 0.4);
   color: #ffffff !important;
-  font-weight: 700;
+  font-family: 'Satoshi-Bold', sans-serif;
   text-decoration: none !important;
   transition: all 0.25s ease;
 }
@@ -64,7 +64,7 @@
   background: rgba(58, 208, 255, 0.1);
   border: 1px solid rgba(58, 208, 255, 0.3);
   color: #ffffff !important;
-  font-weight: 700;
+  font-family: 'Satoshi-Bold', sans-serif;
   text-decoration: none !important;
   transition: all 0.25s ease;
 }
@@ -126,7 +126,7 @@
 
 .cardName {
   font-size: 1.15rem;
-  font-weight: 800;
+  font-family: 'Satoshi-Black', sans-serif;
   margin: 0;
   color: var(--card-color);
   position: relative;
@@ -146,7 +146,7 @@
 .cardArrow {
   font-size: 0.85rem;
   color: #b0b8c1;
-  font-weight: 600;
+  font-family: 'Satoshi-Bold', sans-serif;
   position: relative;
   z-index: 1;
   margin-top: 4px;
