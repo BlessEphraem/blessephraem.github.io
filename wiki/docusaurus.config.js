@@ -14,6 +14,10 @@ const config = {
   url: 'https://blessephraem.github.io',
   baseUrl: '/wiki/',
 
+  stylesheets: [
+    'https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap',
+  ],
+
   organizationName: 'BlessEphraem',
   projectName: 'blessephraem.github.io',
 
