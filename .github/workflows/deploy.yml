@@ -58,8 +58,10 @@ jobs:
               return re.sub(r'[\s-]+', '-', text).strip('-')
 
           PROGRAMS = [
-              {"owner": "BlessEphraem", "repo": "InputBar", "display_name": "InputBar"},
-              {"owner": "BlessEphraem", "repo": "Premiere-Companion", "display_name": "Premiere Companion"},
+              {"owner": "BlessEphraem", "repo": "InputBar", "display_name": "InputBar", "category": "programs"},
+              {"owner": "BlessEphraem", "repo": "Premiere-Companion", "display_name": "Premiere Companion", "category": "programs"},
+              {"owner": "BlessEphraem", "repo": "JSX-Runner", "display_name": "JSX Runner", "category": "plugins"},
+              {"owner": "BlessEphraem", "repo": "UXP", "display_name": "JSX Scripts", "category": "plugins"},
           ]
 
           def build_release_markdown(data):
@@ -342,26 +344,14 @@ jobs:
                       except Exception as e:
                           print(f"ERROR downloading media {download_url}: {e}")
 
-          sources = [
-              ("https://raw.githubusercontent.com/BlessEphraem/JSX-Runner/main/README.md",
-               "wiki/docs/plugins/jsx-runner.mdx",
-               "---\nid: jsx-runner\ntitle: JSX Runner\nsidebar_position: 1\n---", None),
-              ("https://raw.githubusercontent.com/BlessEphraem/UXP/main/README.md",
-               "wiki/docs/plugins/jsx-scripts.mdx",
-               "---\nid: jsx-scripts\ntitle: JSX Scripts\nsidebar_position: 2\n---", None),
-          ]
+          # No more manual sources, all automated via PROGRAMS loop
 
-          for url, path, frontmatter, img_prefix in sources:
-              try:
-                  content = fetch(url)
-                  write_doc(path, frontmatter, content, img_prefix)
-              except Exception as e:
-                  print(f"ERROR fetching {url}: {e}")
 
           for prog in PROGRAMS:
               owner = prog["owner"]
               repo = prog["repo"]
               display_name = prog["display_name"]
+              category = prog["category"]
               slug = slugify(repo)
               
               print(f"Fetching {display_name} docs...")
@@ -370,17 +360,17 @@ jobs:
                   content = rewrite_readme_absolute_paths(content, owner, repo)
                   content += "\n\n---\n## Documentation\nimport DocCardList from '@theme/DocCardList';\n\n<DocCardList />\n"
                   write_doc(
-                      f"wiki/docs/programs/{slug}/index.mdx",
+                      f"wiki/docs/{category}/{slug}/index.mdx",
                       f"---\ntitle: {display_name}\nhide_title: true\npagination_prev: null\npagination_next: null\n---",
                       content, slug
                   )
               except Exception as e:
                   print(f"ERROR fetching {display_name} README: {e}")
               
-              prog_dir = pathlib.Path(f"wiki/docs/programs/{slug}")
+              prog_dir = pathlib.Path(f"wiki/docs/{category}/{slug}")
               prog_dir.mkdir(parents=True, exist_ok=True)
               (prog_dir / "_category_.json").write_text(
-                  json.dumps({"label": display_name, "link": {"type": "doc", "id": f"programs/{slug}/index"}}),
+                  json.dumps({"label": display_name, "link": {"type": "doc", "id": f"{category}/{slug}/index"}}),
                   encoding="utf-8"
               )
               fetch_directory_recursively(owner, repo, ".docs", str(prog_dir), slug)
@@ -388,8 +378,9 @@ jobs:
           for prog in PROGRAMS:
               owner = prog["owner"]
               repo = prog["repo"]
+              category = prog["category"]
               slug = slugify(repo)
-              path = f"wiki/docs/programs/{slug}/releases.mdx"
+              path = f"wiki/docs/{category}/{slug}/releases.mdx"
               doc_id = "releases"
               title = "📥 Releases"
               
@@ -403,7 +394,7 @@ jobs:
                   print(f"No latest release for {owner}/{repo} (skipping).")
                   continue
               content = build_release_markdown(data)
-              next_id = f"programs/{slug}/index"
+              next_id = f"{category}/{slug}/index"
               frontmatter = f"---\nid: {doc_id}\ntitle: {title}\nsidebar_position: 0\npagination_prev: null\npagination_next: {next_id}\n---"
               try:
                   write_doc(path, frontmatter, content, slug)
@@ -445,7 +436,7 @@ jobs:
                           print(f"Error downloading icon for {repo}: {e}")
                   
                   # Inject className into the root _category_.json for sidebar icons
-                  cat_path = pathlib.Path(f"wiki/docs/programs/{img_prefix}/_category_.json")
+                  cat_path = pathlib.Path(f"wiki/docs/{prog['category']}/{img_prefix}/_category_.json")
                   if cat_path.exists():
                       cat_data = json.loads(cat_path.read_text(encoding="utf-8"))
                       cat_data["className"] = f"sidebar-icon-{img_prefix}"
