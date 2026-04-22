@@ -42,6 +42,7 @@
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--glass-border);
   box-shadow: none;
+  z-index: 100;
 }
 
 .navbar__brand .navbar__title {
@@ -184,6 +185,11 @@ kbd {
   flex-shrink: 0;
 }
 
+[class*="docSidebarContainer_"] {
+  border-right: 1px solid var(--glass-border) !important;
+  border-top: none !important;
+}
+
 /* Move collapse button to top */
 [class*="sidebar_"] {
   display: flex;
@@ -193,6 +199,7 @@ kbd {
 [class*="collapseSidebarButton_"] {
   order: -1;
   border-bottom: 1px solid var(--glass-border);
+  border-top: none !important;
 }
 
 [class*="collapseSidebarButton_"] svg {
