@@ -172,6 +172,13 @@ code {
   color: #ff1796;
 }
 
+/* Hide Table of Contents */
+.table-of-contents,
+.theme-doc-toc-desktop,
+.theme-doc-toc-mobile {
+  display: none !important;
+}
+
 /* Pagination */
 .pagination-nav__link:hover {
   border-color: #ff1796;
