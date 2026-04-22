@@ -397,10 +397,10 @@ jobs:
           release_checks = [
               ("BlessEphraem", "InputBar",
                "wiki/docs/programs/inputbar/releases.mdx",
-               "releases", "Releases"),
+               "releases", "📥 Releases"),
               ("BlessEphraem", "Premiere-Companion",
                "wiki/docs/programs/premiere-companion/releases.mdx",
-               "releases", "Releases"),
+               "releases", "📥 Releases"),
           ]
 
           for owner, repo, path, doc_id, title in release_checks:
@@ -414,9 +414,10 @@ jobs:
                   print(f"No latest release for {owner}/{repo} (skipping).")
                   continue
               content = build_release_markdown(data)
-              frontmatter = f"---\nid: {doc_id}\ntitle: {title}\nsidebar_position: 0\npagination_prev: null\n---"
+              prefix = "inputbar" if repo.lower() == "inputbar" else "premiere-companion"
+              next_id = f"programs/{prefix}/index"
+              frontmatter = f"---\nid: {doc_id}\ntitle: {title}\nsidebar_position: 0\npagination_prev: null\npagination_next: {next_id}\n---"
               try:
-                  prefix = "inputbar" if repo.lower() == "inputbar" else "premiere-companion"
                   write_doc(path, frontmatter, content, prefix)
               except Exception as e:
                   print(f"ERROR writing release page for {owner}/{repo}: {e}")
