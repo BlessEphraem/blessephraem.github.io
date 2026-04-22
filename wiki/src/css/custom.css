@@ -14,9 +14,9 @@
   --ifm-navbar-background-color: rgba(15, 16, 19, 0.92);
   --ifm-footer-background-color: #0a0b0d;
   --ifm-code-font-size: 90%;
-  --ifm-font-family-base: 'Satoshi-Regular', system-ui, sans-serif;
-  --ifm-heading-font-family: 'Satoshi-Black', sans-serif;
-  --ifm-heading-font-weight: unset;
+  --ifm-font-family-base: 'Satoshi', system-ui, sans-serif;
+  --ifm-heading-font-family: 'Satoshi', sans-serif;
+  --ifm-heading-font-weight: 900;
   --docusaurus-highlighted-code-line-bg: rgba(255, 23, 150, 0.1);
   --secondary: #3ad0ff;
   --glass-border: rgba(255, 255, 255, 0.08);
@@ -26,7 +26,8 @@
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Satoshi-Black', sans-serif !important;
+  font-family: 'Satoshi', sans-serif !important;
+  font-weight: 900 !important;
 }
 
 [data-theme='dark'] {
