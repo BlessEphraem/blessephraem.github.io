@@ -43,6 +43,11 @@
   border-bottom: 1px solid var(--glass-border);
   box-shadow: none;
   z-index: 100;
+  font-weight: 900;
+}
+
+.navbar__item, .navbar__link, .navbar__title {
+  font-weight: 900 !important;
 }
 
 .navbar__brand .navbar__title {
