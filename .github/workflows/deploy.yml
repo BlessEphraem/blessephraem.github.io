@@ -52,6 +52,16 @@ jobs:
                       return None
                   raise
 
+          def slugify(text):
+              text = text.lower()
+              text = re.sub(r'[^\w\s-]', '', text)
+              return re.sub(r'[\s-]+', '-', text).strip('-')
+
+          PROGRAMS = [
+              {"owner": "BlessEphraem", "repo": "InputBar", "display_name": "InputBar"},
+              {"owner": "BlessEphraem", "repo": "Premiere-Companion", "display_name": "Premiere Companion"},
+          ]
+
           def build_release_markdown(data):
               tag = data.get("tag_name") or data.get("name") or "Latest Release"
               name = data.get("name") or ""
@@ -145,11 +155,6 @@ jobs:
               
               content = re.sub(r'<!--\s*embed\s*(.*?)-->', lambda m: m.group(1).strip(), content, flags=re.DOTALL)
               
-              def slugify(text):
-                  text = text.lower()
-                  text = re.sub(r'[^\w\s-]', '', text)
-                  return re.sub(r'[\s-]+', '-', text).strip('-')
-
               def transform_url(url):
                   # Treat absolute links to our own domain as internal links
                   my_domain = "https://blessephraem.github.io/wiki"
@@ -356,54 +361,41 @@ jobs:
               except Exception as e:
                   print(f"ERROR fetching {url}: {e}")
 
-          print("Fetching InputBar docs...")
-          try:
-              content = fetch("https://raw.githubusercontent.com/BlessEphraem/InputBar/main/README.md")
-              content = rewrite_readme_absolute_paths(content, "BlessEphraem", "InputBar")
-              content += "\n\n---\n## Documentation\nimport DocCardList from '@theme/DocCardList';\n\n<DocCardList />\n"
-              write_doc(
-                  "wiki/docs/programs/inputbar/index.mdx",
-                  "---\ntitle: InputBar\nhide_title: true\npagination_prev: null\npagination_next: null\n---",
-                  content, "inputbar"
+          for prog in PROGRAMS:
+              owner = prog["owner"]
+              repo = prog["repo"]
+              display_name = prog["display_name"]
+              slug = slugify(repo)
+              
+              print(f"Fetching {display_name} docs...")
+              try:
+                  content = fetch(f"https://raw.githubusercontent.com/{owner}/{repo}/main/README.md")
+                  content = rewrite_readme_absolute_paths(content, owner, repo)
+                  content += "\n\n---\n## Documentation\nimport DocCardList from '@theme/DocCardList';\n\n<DocCardList />\n"
+                  write_doc(
+                      f"wiki/docs/programs/{slug}/index.mdx",
+                      f"---\ntitle: {display_name}\nhide_title: true\npagination_prev: null\npagination_next: null\n---",
+                      content, slug
+                  )
+              except Exception as e:
+                  print(f"ERROR fetching {display_name} README: {e}")
+              
+              prog_dir = pathlib.Path(f"wiki/docs/programs/{slug}")
+              prog_dir.mkdir(parents=True, exist_ok=True)
+              (prog_dir / "_category_.json").write_text(
+                  json.dumps({"label": display_name, "link": {"type": "doc", "id": f"programs/{slug}/index"}}),
+                  encoding="utf-8"
               )
-          except Exception as e:
-              print(f"ERROR fetching InputBar README: {e}")
-          pathlib.Path("wiki/docs/programs/inputbar").mkdir(parents=True, exist_ok=True)
-          pathlib.Path("wiki/docs/programs/inputbar/_category_.json").write_text(
-              json.dumps({"label": "InputBar", "link": {"type": "doc", "id": "programs/inputbar/index"}}),
-              encoding="utf-8"
-          )
-          fetch_directory_recursively("BlessEphraem", "InputBar", ".docs", "wiki/docs/programs/inputbar", "inputbar")
+              fetch_directory_recursively(owner, repo, ".docs", str(prog_dir), slug)
 
-          print("Fetching Premiere-Companion docs...")
-          try:
-              content = fetch("https://raw.githubusercontent.com/BlessEphraem/Premiere-Companion/main/README.md")
-              content = rewrite_readme_absolute_paths(content, "BlessEphraem", "Premiere-Companion")
-              content += "\n\n---\n## Documentation\nimport DocCardList from '@theme/DocCardList';\n\n<DocCardList />\n"
-              write_doc(
-                  "wiki/docs/programs/premiere-companion/index.mdx",
-                  "---\ntitle: Premiere Companion\nhide_title: true\npagination_prev: null\npagination_next: null\n---",
-                  content, "premiere-companion"
-              )
-          except Exception as e:
-              print(f"ERROR fetching Premiere-Companion README: {e}")
-          pathlib.Path("wiki/docs/programs/premiere-companion").mkdir(parents=True, exist_ok=True)
-          pathlib.Path("wiki/docs/programs/premiere-companion/_category_.json").write_text(
-              json.dumps({"label": "Premiere Companion", "link": {"type": "doc", "id": "programs/premiere-companion/index"}}),
-              encoding="utf-8"
-          )
-          fetch_directory_recursively("BlessEphraem", "Premiere-Companion", ".docs", "wiki/docs/programs/premiere-companion", "premiere-companion")
-
-          release_checks = [
-              ("BlessEphraem", "InputBar",
-               "wiki/docs/programs/inputbar/releases.mdx",
-               "releases", "📥 Releases"),
-              ("BlessEphraem", "Premiere-Companion",
-               "wiki/docs/programs/premiere-companion/releases.mdx",
-               "releases", "📥 Releases"),
-          ]
-
-          for owner, repo, path, doc_id, title in release_checks:
+          for prog in PROGRAMS:
+              owner = prog["owner"]
+              repo = prog["repo"]
+              slug = slugify(repo)
+              path = f"wiki/docs/programs/{slug}/releases.mdx"
+              doc_id = "releases"
+              title = "📥 Releases"
+              
               api_url = f"https://api.github.com/repos/{owner}/{repo}/releases/latest"
               try:
                   data = fetch_json(api_url)
@@ -414,11 +406,10 @@ jobs:
                   print(f"No latest release for {owner}/{repo} (skipping).")
                   continue
               content = build_release_markdown(data)
-              prefix = "inputbar" if repo.lower() == "inputbar" else "premiere-companion"
-              next_id = f"programs/{prefix}/index"
+              next_id = f"programs/{slug}/index"
               frontmatter = f"---\nid: {doc_id}\ntitle: {title}\nsidebar_position: 0\npagination_prev: null\npagination_next: {next_id}\n---"
               try:
-                  write_doc(path, frontmatter, content, prefix)
+                  write_doc(path, frontmatter, content, slug)
               except Exception as e:
                   print(f"ERROR writing release page for {owner}/{repo}: {e}")
 
@@ -426,7 +417,10 @@ jobs:
 
           # Generate metadata for dynamic navbar
           dynamic_css = ""
-          for owner, repo, img_prefix in [("BlessEphraem", "InputBar", "inputbar"), ("BlessEphraem", "Premiere-Companion", "premiere-companion")]:
+          for prog in PROGRAMS:
+              owner = prog["owner"]
+              repo = prog["repo"]
+              img_prefix = slugify(repo)
               try:
                   readme_content = fetch(f"https://raw.githubusercontent.com/{owner}/{repo}/main/README.md")
                   first_lines = "\n".join(readme_content.split("\n")[:50])
