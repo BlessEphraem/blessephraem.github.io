@@ -14,14 +14,18 @@
   --ifm-navbar-background-color: rgba(15, 16, 19, 0.92);
   --ifm-footer-background-color: #0a0b0d;
   --ifm-code-font-size: 90%;
-  --ifm-font-family-base: 'Satoshi', system-ui, sans-serif;
-  --ifm-heading-font-weight: 800;
+  --ifm-font-family-base: 'Satoshi-Regular', system-ui, sans-serif;
+  --ifm-heading-font-weight: normal;
   --docusaurus-highlighted-code-line-bg: rgba(255, 23, 150, 0.1);
   --secondary: #3ad0ff;
   --glass-border: rgba(255, 255, 255, 0.08);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Satoshi-Black', sans-serif !important;
 }
 
 [data-theme='dark'] {
@@ -67,6 +71,10 @@
   padding: .5rem !important;
 }
 
+.menu__link {
+  font-family: 'Satoshi-Bold', sans-serif;
+}
+
 .menu__link--active {
   color: #ff1796 !important;
   background: rgba(255, 23, 150, 0.1) !important;
@@ -103,7 +111,7 @@
 .markdown th {
   background: rgba(255, 23, 150, 0.12);
   color: #ff1796;
-  font-weight: 700;
+  font-family: 'Satoshi-Black', sans-serif;
   border: 1px solid rgba(255, 23, 150, 0.25);
 }
 
@@ -138,7 +146,7 @@ code {
 
 .footer__title {
   color: #ff1796;
-  font-weight: 700;
+  font-family: 'Satoshi-Black', sans-serif;
 }
 
 .footer__link-item:hover {
