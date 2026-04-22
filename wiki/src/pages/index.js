@@ -47,9 +47,6 @@ export default function Home() {
             Documentation for my open-source tools. Built to fix creative workflows.
           </p>
           <div className={styles.heroBtns}>
-            <Link className={styles.btnPrimary} to="/intro">
-              About Me
-            </Link>
             <a
               className={styles.btnSecondary}
               href="https://github.com/BlessEphraem"
