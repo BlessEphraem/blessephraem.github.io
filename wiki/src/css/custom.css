@@ -132,12 +132,6 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 8px;
 }
 
-/* Inline code */
-code {
-  padding: 1px 6px;
-  font-size: 0.88em;
-}
-
 /* Footer */
 .footer {
   border-top: 1px solid var(--glass-border);
