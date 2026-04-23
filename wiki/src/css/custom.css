@@ -122,6 +122,12 @@ h1, h2, h3, h4, h5, h6 {
   border: 0px;
 }
 
+/* Cards */
+
+.markdown a.theme-doc-card-container:hover {
+  text-decoration: none;
+}
+
 .markdown tr:nth-child(even) td {
   background: rgba(255, 255, 255, 0.02);
 }
