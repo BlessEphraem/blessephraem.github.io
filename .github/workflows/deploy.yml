@@ -441,7 +441,7 @@ jobs:
               prog_dir = pathlib.Path(f"wiki/docs/{category}/{slug}")
               prog_dir.mkdir(parents=True, exist_ok=True)
               (prog_dir / "_category_.json").write_text(
-                  json.dumps({"label": display_name, "collapsed": False, "link": {"type": "doc", "id": f"{category}/{slug}/index"}}),
+                  json.dumps({"label": display_name, "link": {"type": "doc", "id": f"{category}/{slug}/index"}}),
                   encoding="utf-8"
               )
               fetch_directory_recursively(owner, repo, ".docs", str(prog_dir), slug)
