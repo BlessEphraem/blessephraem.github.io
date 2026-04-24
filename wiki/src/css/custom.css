@@ -240,7 +240,7 @@ kbd {
 }
 
 /* Move collapse button to top */
-[class*="sidebar_"] {
+aside[class*="sidebar_"] {
   display: flex;
   flex-direction: column;
 }
