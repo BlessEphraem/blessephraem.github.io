@@ -106,8 +106,16 @@ jobs:
                   "repo": _repo["name"],
                   "display_name": _repo["name"].replace("-", " "),
                   "category": _category,
+                  "description": _repo.get("description") or "",
               })
               print(f"[INCLUDE] {_repo['name']} → {_category}")
+
+          category_color = {item["category"]: item.get("color", "#ffffff") for item in _topic_config["mappings"]}
+          category_first_slug = {}
+          for _p in PROGRAMS:
+              _cat = _p["category"]
+              if _cat not in category_first_slug:
+                  category_first_slug[_cat] = slugify(_p["repo"])
 
           def build_release_markdown(data):
               tag = data.get("tag_name") or data.get("name") or "Latest Release"
@@ -462,14 +470,14 @@ jobs:
                       icon_url = icon_match.group(1)
                       if not icon_url.startswith("http"):
                           icon_url = f"https://raw.githubusercontent.com/{owner}/{repo}/main/{icon_url.lstrip('./')}"
-                      
+
                       try:
                           icon_data = fetch_binary(icon_url)
                           ext = icon_url.split(".")[-1].split("?")[0]
                           local_path = f"wiki/static/img/{img_prefix}/logo_navbar.{ext}"
                           pathlib.Path(local_path).parent.mkdir(parents=True, exist_ok=True)
                           pathlib.Path(local_path).write_bytes(icon_data)
-                          
+
                           # Add dynamic CSS rule for this prefix using specific selectors to avoid inheritance
                           selectors = [
                               f".sidebar-icon-{img_prefix} > .menu__link::before",
@@ -479,7 +487,18 @@ jobs:
                           print(f"Icon found for {repo}: {local_path}")
                       except Exception as e:
                           print(f"Error downloading icon for {repo}: {e}")
-                  
+                  else:
+                      selectors = [
+                          f".sidebar-icon-{img_prefix} > .menu__link::before",
+                          f".sidebar-icon-{img_prefix} > .menu__list-item-collapsible > .menu__link::before"
+                      ]
+                      dynamic_css += (
+                          f"{', '.join(selectors)} {{"
+                          f" content: '📦'; background-image: none;"
+                          f" width: auto; height: auto; }}\n"
+                      )
+                      print(f"No icon found for {repo}, using emoji fallback")
+
                   # Inject className into the root _category_.json for sidebar icons
                   cat_path = pathlib.Path(f"wiki/docs/{prog['category']}/{img_prefix}/_category_.json")
                   if cat_path.exists():
@@ -495,6 +514,56 @@ jobs:
           css_out.parent.mkdir(parents=True, exist_ok=True)
           css_out.write_text(dynamic_css, encoding="utf-8")
           print("Dynamic icons.css generated.")
+
+          # Generate tools.json for the wiki home page
+          tools_data = []
+          for prog in PROGRAMS:
+              slug = slugify(prog["repo"])
+              cat = prog["category"]
+              icon_img = None
+              for ext in ["svg", "png", "ico", "jpg", "jpeg", "webp"]:
+                  candidate = pathlib.Path(f"wiki/static/img/{slug}/logo_navbar.{ext}")
+                  if candidate.exists():
+                      icon_img = f"/wiki/img/{slug}/logo_navbar.{ext}"
+                      break
+              tools_data.append({
+                  "name": prog["display_name"],
+                  "desc": prog["description"],
+                  "link": f"/{cat}/{slug}/",
+                  "iconImg": icon_img,
+                  "iconEmoji": None if icon_img else "📦",
+                  "color": category_color.get(cat, "#ffffff"),
+              })
+          pathlib.Path("wiki/src/pages/tools.json").write_text(
+              json.dumps(tools_data, ensure_ascii=False, indent=2), encoding="utf-8"
+          )
+          print("Generated tools.json")
+
+          # Generate generated-navbar.json for dynamic navbar ordering
+          seen_cats = []
+          for item in _topic_config["mappings"]:
+              cat = item["category"]
+              if cat not in seen_cats:
+                  seen_cats.append(cat)
+
+          nav_items = [{"to": "/", "position": "left", "label": "Home"}]
+          for cat in seen_cats:
+              if cat not in category_first_slug:
+                  continue
+              nav_items.append({
+                  "type": "html",
+                  "value": "<span class='navbar__separator'>|</span>",
+                  "position": "left"
+              })
+              nav_items.append({
+                  "to": f"/{cat}/{category_first_slug[cat]}/",
+                  "position": "left",
+                  "label": cat.capitalize()
+              })
+          pathlib.Path("wiki/generated-navbar.json").write_text(
+              json.dumps(nav_items, indent=2), encoding="utf-8"
+          )
+          print("Generated generated-navbar.json")
           PY
 
       - name: Setup Node

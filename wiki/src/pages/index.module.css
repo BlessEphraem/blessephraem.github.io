@@ -125,6 +125,15 @@
   z-index: 1;
 }
 
+.cardIcon {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
 .cardName {
   font-size: 1.15rem;
   font-family: 'Satoshi', sans-serif !important;

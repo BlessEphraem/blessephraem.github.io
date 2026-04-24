@@ -1,5 +1,8 @@
 // @ts-check
 import {themes as prismThemes} from 'prism-react-renderer';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const generatedNav = require('./generated-navbar.json');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -76,21 +79,7 @@ const config = {
           style: { height: '36px', width: '36px' },
         },
         items: [
-          {
-            to: '/',
-            position: 'left',
-            label: 'Home',
-          },
-          {
-            to: '/programs/inputbar/',
-            position: 'left',
-            label: 'Programs',
-          },
-          {
-            to: '/plugins/jsx-runner',
-            position: 'left',
-            label: 'Plugins',
-          },
+          ...generatedNav,
           {
             href: 'https://blessephraem.github.io',
             label: 'Menu',

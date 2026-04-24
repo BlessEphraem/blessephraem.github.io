@@ -205,6 +205,15 @@ kbd {
   font-size: 0.85em;
 }
 
+/* Navbar category separator */
+.navbar__separator {
+  color: rgba(255, 255, 255, 0.2);
+  padding: 0 6px;
+  font-weight: 300;
+  user-select: none;
+  pointer-events: none;
+}
+
 /* Sidebar Icons (Auto) - Target only the top-level category link */
 [class*="sidebar-icon-"] > .menu__link::before,
 [class*="sidebar-icon-"] > .menu__list-item-collapsible > .menu__link::before {
