@@ -625,6 +625,11 @@ jobs:
         run: npm run build
         working-directory: wiki
 
+      - name: Generate Portfolio videos.json
+        run: |
+          pip install yt-dlp
+          python .github/scripts/update_portfolio.py
+
       - name: Assemble site
         run: |
           mkdir -p _site/wiki
