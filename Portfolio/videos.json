@@ -1,4 +1,26 @@
 {
-  "videos": [],
-  "seen_ids": []
+  "videos": [
+    {
+      "url": "https://www.youtube.com/watch?v=XbWg5KfTPLs",
+      "published": "2026-04-22"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=RKsKR4pNq2g",
+      "published": "2026-04-15"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=XL-DNin7msc",
+      "published": "2026-04-08"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=zxZiXyFmvV4",
+      "published": "2026-02-18"
+    }
+  ],
+  "seen_ids": [
+    "RKsKR4pNq2g",
+    "XL-DNin7msc",
+    "XbWg5KfTPLs",
+    "zxZiXyFmvV4"
+  ]
 }
