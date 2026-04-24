@@ -256,8 +256,8 @@ aside[class*="theme-doc-sidebar-container"],
 /* Base style for BOTH Collapse and Expand buttons */
 [class*="collapseSidebarButton_"],
 [class*="expandButton_"] {
-  width: 32px !important;
-  height: 32px !important;
+  width: 30px !important; /* Slightly smaller to perfectly fit the 30px hidden sidebar */
+  height: 30px !important;
   border-radius: 50% !important; /* Circle shape */
   background: var(--ifm-background-surface-color) !important;
   border: 1px solid var(--glass-border) !important;
@@ -277,16 +277,17 @@ aside[class*="theme-doc-sidebar-container"],
 [class*="collapseSidebarButton_"] {
   position: absolute !important;
   top: 80px !important;
-  right: -16px !important;
+  right: -15px !important; /* Perfectly overlaps the border (half of 30px) */
   left: auto !important;
   bottom: auto !important;
 }
 
-/* Expand Button: Positioned on the left edge of the screen */
+/* Expand Button: Centered inside the remaining 30px hidden sidebar */
 [class*="expandButton_"] {
-  position: fixed !important;
+  position: absolute !important;
   top: 80px !important;
-  left: 16px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
   bottom: auto !important;
 }
 
