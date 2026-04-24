@@ -215,7 +215,7 @@ kbd {
 }
 
 /* Hide separators in mobile hamburger menu */
-.navbar-sidebar .navbar__item:has(.navbar__separator) {
+.navbar-sidebar .menu__list-item:has(.navbar__separator) {
   display: none !important;
 }
 
