@@ -10,6 +10,11 @@
 .docusaurus
 .cache-loader
 docs/**/*.mdx
+Portfolio/videos.json
+scan_full_history.py
+portfolio-registry.json
+portfolio-archive.json
+portfolio-recent.json
 
 # Misc
 .DS_Store

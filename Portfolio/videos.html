@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ephraem | Toutes les Vidéos</title>
-    
+
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    
+
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    
+
     <link rel="stylesheet" href="assets/css/style.css">
 
     <style>
@@ -17,7 +17,7 @@
             padding-top: 120px;
             min-height: 100vh;
         }
-        
+
         .videos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -27,7 +27,7 @@
 
         .video-item {
             position: relative;
-            padding-bottom: 56.25%; /* Ratio 16:9 */
+            padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
             border-radius: 12px;
@@ -50,6 +50,56 @@
             height: 100%;
             border: none;
         }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: background 0.2s ease, border-color 0.2s ease;
+            min-width: 38px;
+        }
+
+        .pagination button:hover {
+            background: rgba(255, 23, 150, 0.15);
+            border-color: #ff1796;
+        }
+
+        .pagination button.active {
+            background: #ff1796;
+            border-color: #ff1796;
+            font-weight: 700;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.3;
+            cursor: default;
+        }
+
+        .pagination button:disabled:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .page-info {
+            text-align: center;
+            margin-top: 16px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.85rem;
+        }
     </style>
 </head>
 <body>
@@ -70,9 +120,9 @@
     <section class="section videos-page bg-alt">
         <div class="container">
             <h2 class="section-title">TOUTES MES <span class="accent">VIDÉOS</span></h2>
-            <div class="videos-grid" id="videos-container">
-                <!-- Les vidéos seront injectées ici par le Javascript -->
-            </div>
+            <div class="videos-grid" id="videos-container"></div>
+            <div class="pagination" id="pagination"></div>
+            <p class="page-info" id="page-info"></p>
         </div>
     </section>
 
@@ -81,57 +131,89 @@
     </footer>
 
     <script>
-        // Fonction pour extraire l'ID de la vidéo YouTube depuis n'importe quel lien YouTube
+        const PER_PAGE = 12;
+        let allVideos = [];
+        let currentPage = 1;
+
         function getYouTubeId(url) {
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : null;
+            const m = url.match(/[?&]v=([A-Za-z0-9_-]{11})/);
+            return m ? m[1] : null;
         }
 
-        // Charger le fichier videos.json et générer la grille
+        function renderPage(page) {
+            currentPage = page;
+            const container = document.getElementById('videos-container');
+            const start = (page - 1) * PER_PAGE;
+            const slice = allVideos.slice(start, start + PER_PAGE);
+
+            container.innerHTML = slice.map(video => {
+                const id = getYouTubeId(video.url);
+                if (!id) return '';
+                return `<div class="video-item">
+                    <iframe src="https://www.youtube-nocookie.com/embed/${id}"
+                        title="YouTube video player"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>`;
+            }).join('');
+
+            renderPagination();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderPagination() {
+            const total = Math.ceil(allVideos.length / PER_PAGE);
+            const nav = document.getElementById('pagination');
+            const info = document.getElementById('page-info');
+
+            info.textContent = `Page ${currentPage} sur ${total} — ${allVideos.length} vidéos`;
+
+            if (total <= 1) { nav.innerHTML = ''; return; }
+
+            const buttons = [];
+
+            buttons.push(`<button ${currentPage === 1 ? 'disabled' : ''} onclick="renderPage(${currentPage - 1})">&#8592;</button>`);
+
+            for (let i = 1; i <= total; i++) {
+                if (
+                    i === 1 || i === total ||
+                    (i >= currentPage - 2 && i <= currentPage + 2)
+                ) {
+                    buttons.push(`<button class="${i === currentPage ? 'active' : ''}" onclick="renderPage(${i})">${i}</button>`);
+                } else if (i === currentPage - 3 || i === currentPage + 3) {
+                    buttons.push(`<button disabled>…</button>`);
+                }
+            }
+
+            buttons.push(`<button ${currentPage === total ? 'disabled' : ''} onclick="renderPage(${currentPage + 1})">&#8594;</button>`);
+
+            nav.innerHTML = buttons.join('');
+        }
+
         fetch('videos.json')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Erreur lors du chargement de videos.json");
-                }
-                return response.json();
-            })
+            .then(r => { if (!r.ok) throw new Error(); return r.json(); })
             .then(data => {
-                const container = document.getElementById('videos-container');
-                
-                if (data.videos && data.videos.length > 0) {
-                    data.videos.forEach(video => {
-                        const videoId = getYouTubeId(video.url);
-                        if (videoId) {
-                            const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}`;
-                            const html = `
-                                <div class="video-item">
-                                    <iframe src="${embedUrl}" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                </div>
-                            `;
-                            container.innerHTML += html;
-                        }
-                    });
-                } else {
-                    container.innerHTML = '<p style="text-align: center; grid-column: 1 / -1;">Aucune vidéo disponible pour le moment.</p>';
+                allVideos = (data.videos || []).filter(v => getYouTubeId(v.url));
+                if (allVideos.length === 0) {
+                    document.getElementById('videos-container').innerHTML =
+                        '<p style="text-align:center;grid-column:1/-1;">Aucune vidéo disponible pour le moment.</p>';
+                    return;
                 }
+                renderPage(1);
             })
-            .catch(error => {
-                console.error(error);
-                document.getElementById('videos-container').innerHTML = '<p style="text-align: center; color: red; grid-column: 1 / -1;">Erreur lors du chargement des vidéos.</p>';
+            .catch(() => {
+                document.getElementById('videos-container').innerHTML =
+                    '<p style="text-align:center;color:red;grid-column:1/-1;">Erreur lors du chargement des vidéos.</p>';
             });
 
-        // Gestion du menu mobile
         const mobileBtn = document.querySelector('.mobile-toggle');
         const navLinks = document.querySelector('.nav-links');
-        if(mobileBtn) {
+        if (mobileBtn) {
             mobileBtn.addEventListener('click', () => {
                 navLinks.classList.toggle('active');
-                if(navLinks.classList.contains('active')){
-                    mobileBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-                } else {
-                    mobileBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
-                }
+                mobileBtn.innerHTML = navLinks.classList.contains('active')
+                    ? '<i class="fa-solid fa-xmark"></i>'
+                    : '<i class="fa-solid fa-bars"></i>';
             });
         }
     </script>
