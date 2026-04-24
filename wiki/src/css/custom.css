@@ -241,20 +241,21 @@ aside[class*="theme-doc-sidebar-container"],
   border-top: none !important;
 }
 
-/* Ensure the sidebar collapsed state hides the border and width */
+/* Let Docusaurus hide the sidebar naturally, but ensure we remove the border and don't clip fixed elements. */
+[class*="sidebarViewport_"] {
+  overflow: visible !important;
+}
+
+/* Ensure the sidebar collapsed state hides the border */
 [class*="docSidebarContainer_"][class*="sidebarCollapsed_"],
 [class*="docSidebarContainerHidden_"],
 [class*="sidebarHidden_"] {
   border-right: none !important;
-  width: 0 !important;
-  min-width: 0 !important;
 }
 
 /* Base style for BOTH Collapse and Expand buttons */
 [class*="collapseSidebarButton_"],
 [class*="expandButton_"] {
-  position: fixed !important;
-  top: 80px !important; /* Float near the top for better visibility */
   width: 32px !important;
   height: 32px !important;
   border-radius: 50% !important; /* Circle shape */
@@ -274,12 +275,19 @@ aside[class*="theme-doc-sidebar-container"],
 
 /* Collapse Button: Positioned on the right edge of the sidebar */
 [class*="collapseSidebarButton_"] {
-  left: calc(var(--doc-sidebar-width, 300px) - 16px) !important;
+  position: absolute !important;
+  top: 80px !important;
+  right: -16px !important;
+  left: auto !important;
+  bottom: auto !important;
 }
 
 /* Expand Button: Positioned on the left edge of the screen */
 [class*="expandButton_"] {
+  position: fixed !important;
+  top: 80px !important;
   left: 16px !important;
+  bottom: auto !important;
 }
 
 /* Hide on mobile */
@@ -299,27 +307,40 @@ aside[class*="theme-doc-sidebar-container"],
   box-shadow: 0 0 10px var(--ifm-color-primary-alpha-10) !important;
 }
 
-/* Icon rotations */
-[class*="collapseSidebarButton_"] svg {
-  transform: rotate(180deg);
-  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
-  width: 16px !important;
-  height: 16px !important;
-}
-
+/* Replace complex SVG with clean Mask Icons */
+[class*="collapseSidebarButton_"] svg,
 [class*="expandButton_"] svg {
-  transform: rotate(0deg);
-  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
-  width: 16px !important;
-  height: 16px !important;
+  display: none !important;
 }
 
-[class*="collapseSidebarButton_"] svg g,
-[class*="expandButton_"] svg g {
-  fill: currentColor !important;
-  transition: fill 0.3s ease !important;
+[class*="collapseSidebarButton_"]::before {
+  content: "";
+  display: block;
+  width: 14px;
+  height: 14px;
+  background-color: currentColor;
+  mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M15 18l-6-6 6-6"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M15 18l-6-6 6-6"/></svg>');
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
 }
 
-[class*="sidebarCollapsed_"] [class*="collapseSidebarButton_"] svg {
-  transform: rotate(0deg);
+[class*="expandButton_"]::before {
+  content: "";
+  display: block;
+  width: 14px;
+  height: 14px;
+  background-color: currentColor;
+  mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 18l6-6-6-6"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 18l6-6-6-6"/></svg>');
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
 }
