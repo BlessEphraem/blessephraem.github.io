@@ -239,8 +239,6 @@ aside[class*="theme-doc-sidebar-container"],
 [class*="sidebar_"] {
   border-right: 1px solid var(--glass-border) !important;
   border-top: none !important;
-  position: relative !important;
-  overflow: visible !important;
 }
 
 /* Ensure the sidebar collapsed state hides the border */
@@ -250,11 +248,16 @@ aside[class*="theme-doc-sidebar-container"],
   border-right: none !important;
 }
 
-/* Float collapse button on the right edge */
-[class*="collapseSidebarButton_"] {
-  position: absolute !important;
-  top: 32px !important;
-  right: -16px !important; /* Sticking half outside the sidebar */
+/* Style BOTH Collapse and Expand buttons */
+[title="Collapse sidebar"], 
+[aria-label="Collapse sidebar"],
+[title="Expand sidebar"], 
+[aria-label="Expand sidebar"],
+[class*="collapseSidebarButton_"],
+[class*="expandSidebarButton_"] {
+  position: fixed !important; /* Fixed to viewport so it never hides */
+  bottom: 32px !important;
+  left: calc(var(--doc-sidebar-width, 300px) - 16px) !important; /* Floating on the right edge of sidebar */
   width: 32px !important;
   height: 32px !important;
   border-radius: 50% !important; /* Circle shape */
@@ -265,26 +268,46 @@ aside[class*="theme-doc-sidebar-container"],
   align-items: center !important;
   justify-content: center !important;
   padding: 0 !important;
-  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, right 0.3s ease !important;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
   cursor: pointer !important;
-  z-index: 99999 !important; /* Make sure it's above the main content */
+  z-index: 999999 !important; /* Make sure it's above the main content */
   opacity: 1 !important; /* Force visible */
+}
+
+/* When sidebar is collapsed, the Expand button appears. Move it to the left edge! */
+[title="Expand sidebar"], 
+[aria-label="Expand sidebar"],
+[class*="expandSidebarButton_"] {
+  left: 16px !important;
+  bottom: 32px !important;
 }
 
 /* Hide on mobile if Docusaurus uses the same button class */
 @media (max-width: 996px) {
-  [class*="collapseSidebarButton_"] {
+  [title="Collapse sidebar"], 
+  [aria-label="Collapse sidebar"],
+  [title="Expand sidebar"], 
+  [aria-label="Expand sidebar"],
+  [class*="collapseSidebarButton_"],
+  [class*="expandSidebarButton_"] {
     display: none !important;
   }
 }
 
-[class*="collapseSidebarButton_"]:hover {
+[title="Collapse sidebar"]:hover, 
+[aria-label="Collapse sidebar"]:hover,
+[title="Expand sidebar"]:hover, 
+[aria-label="Expand sidebar"]:hover,
+[class*="collapseSidebarButton_"]:hover,
+[class*="expandSidebarButton_"]:hover {
   background: var(--ifm-background-color) !important;
   border-color: var(--ifm-color-primary) !important;
   color: var(--ifm-color-primary) !important;
   box-shadow: 0 0 10px var(--ifm-color-primary-alpha-10) !important;
 }
 
+[title="Collapse sidebar"] svg, 
+[aria-label="Collapse sidebar"] svg,
 [class*="collapseSidebarButton_"] svg {
   transform: rotate(180deg);
   transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
@@ -292,7 +315,21 @@ aside[class*="theme-doc-sidebar-container"],
   height: 16px !important;
 }
 
-[class*="collapseSidebarButton_"] svg g {
+[title="Expand sidebar"] svg, 
+[aria-label="Expand sidebar"] svg,
+[class*="expandSidebarButton_"] svg {
+  transform: rotate(0deg);
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+[title="Collapse sidebar"] svg g, 
+[aria-label="Collapse sidebar"] svg g,
+[title="Expand sidebar"] svg g, 
+[aria-label="Expand sidebar"] svg g,
+[class*="collapseSidebarButton_"] svg g,
+[class*="expandSidebarButton_"] svg g {
   fill: currentColor !important;
   transition: fill 0.3s ease !important;
 }
