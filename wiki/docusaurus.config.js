@@ -37,6 +37,8 @@ const config = {
     locales: ['en'],
   },
 
+  clientModules: ['./src/clientModules/categoryTheme.js'],
+
   presets: [
     [
       'classic',
