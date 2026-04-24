@@ -26,6 +26,7 @@ def get_videos_matching_keywords(channel_url: str, date_limit: str, keywords: li
         '--dateafter', date_str,
         '--dump-json',
         '--ignore-errors',
+        '--js-runtimes', 'nodejs',
         f'https://www.youtube.com/@{channel}/videos',
     ], capture_output=True, text=True, timeout=600)
 
