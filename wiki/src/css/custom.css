@@ -237,43 +237,56 @@ kbd {
 [class*="docSidebarContainer_"] {
   border-right: 1px solid var(--glass-border) !important;
   border-top: none !important;
+  position: relative !important;
+  overflow: visible !important;
 }
 
-/* Move collapse button to top */
-aside[class*="sidebar_"] {
-  display: flex;
-  flex-direction: column;
-}
-
-[class*="collapseSidebarButton_"] {
-  order: -1;
-  border-top: none !important;
+/* Ensure the sidebar collapsed state hides the border */
+[class*="docSidebarContainer_"][class*="sidebarCollapsed_"],
+[class*="sidebarCollapsed_"] {
   border-right: none !important;
-  border-left: none !important;
-  border-bottom: 1px solid var(--glass-border) !important;
-  border-radius: 0 !important;
-  background: transparent !important;
+}
+
+/* Float collapse button on the right edge */
+[class*="collapseSidebarButton_"] {
+  position: absolute !important;
+  top: 32px !important;
+  right: -16px !important; /* Sticking half outside the sidebar */
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important; /* Circle shape */
+  background: var(--ifm-background-surface-color) !important;
+  border: 1px solid var(--glass-border) !important;
   color: rgba(255, 255, 255, 0.4) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  height: 48px !important;
-  width: 100% !important;
   padding: 0 !important;
-  transition: background 0.3s ease, color 0.3s ease !important;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, right 0.3s ease !important;
   cursor: pointer !important;
+  z-index: 100 !important;
+  opacity: 1 !important; /* Force visible */
+}
+
+/* Hide on mobile if Docusaurus uses the same button class */
+@media (max-width: 996px) {
+  [class*="collapseSidebarButton_"] {
+    display: none !important;
+  }
 }
 
 [class*="collapseSidebarButton_"]:hover {
-  background: var(--ifm-color-primary-alpha-07) !important;
+  background: var(--ifm-background-color) !important;
+  border-color: var(--ifm-color-primary) !important;
   color: var(--ifm-color-primary) !important;
+  box-shadow: 0 0 10px var(--ifm-color-primary-alpha-10) !important;
 }
 
 [class*="collapseSidebarButton_"] svg {
   transform: rotate(180deg);
   transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
-  width: 20px !important;
-  height: 20px !important;
+  width: 16px !important;
+  height: 16px !important;
 }
 
 [class*="collapseSidebarButton_"] svg g {
