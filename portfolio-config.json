@@ -2,11 +2,14 @@
   "date_limit": "2025-01-01",
   "keywords": [
     "https://www.instagram.com/bless_ephraem/",
-    "bless_ephraem"
+    "bless_ephraem",
+    "montage : Kame",
+    "monteur : Kame",
+    "Ephraem",
+    "Kame"
   ],
   "channels": [
-    {
-      "url": "https://www.youtube.com/@COLAS."
-    }
+    {"url": "https://www.youtube.com/@COLAS."},
+    {"url": "https://www.youtube.com/@LordMakira"}
   ]
 }
