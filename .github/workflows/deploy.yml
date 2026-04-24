@@ -631,7 +631,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install yt-dlp
-        run: pip install yt-dlp
+        run: pip install yt-dlp requests
 
       - name: Generate Portfolio videos.json
         run: python .github/scripts/update_portfolio.py
