@@ -57,12 +57,57 @@ jobs:
               text = re.sub(r'[^\w\s-]', '', text)
               return re.sub(r'[\s-]+', '-', text).strip('-')
 
-          PROGRAMS = [
-              {"owner": "BlessEphraem", "repo": "InputBar", "display_name": "InputBar", "category": "programs"},
-              {"owner": "BlessEphraem", "repo": "Premiere-Companion", "display_name": "Premiere Companion", "category": "programs"},
-              {"owner": "BlessEphraem", "repo": "JSX-Runner", "display_name": "JSX Runner", "category": "plugins"},
-              {"owner": "BlessEphraem", "repo": "UXP", "display_name": "JSX Scripts", "category": "plugins"},
-          ]
+          with open(".github/topic-map.json", encoding="utf-8") as _f:
+              _topic_config = json.load(_f)
+
+          TOPIC_PRIORITY = {
+              item["topic"]: (item["category"], idx)
+              for idx, item in enumerate(_topic_config["mappings"])
+          }
+
+          def _assign_category(topics):
+              best = None
+              for topic in topics:
+                  if topic in TOPIC_PRIORITY:
+                      cat, priority = TOPIC_PRIORITY[topic]
+                      if best is None or priority < best[1]:
+                          best = (cat, priority)
+              return best[0] if best else None
+
+          def _fetch_all_repos(username):
+              all_repos = []
+              page = 1
+              while True:
+                  url = f"https://api.github.com/users/{username}/repos?type=owner&per_page=100&page={page}"
+                  data = fetch_json(url)
+                  if not data:
+                      break
+                  all_repos.extend(data)
+                  if len(data) < 100:
+                      break
+                  page += 1
+              return all_repos
+
+          OWNER = "BlessEphraem"
+          print("Fetching all public repos...")
+          _all_repos = _fetch_all_repos(OWNER)
+
+          PROGRAMS = []
+          for _repo in _all_repos:
+              if _repo.get("private") or _repo.get("archived") or _repo.get("fork"):
+                  continue
+              _topics = _repo.get("topics", [])
+              _category = _assign_category(_topics)
+              if _category is None:
+                  print(f"[SKIP] {_repo['name']} — topics: {_topics}")
+                  continue
+              PROGRAMS.append({
+                  "owner": OWNER,
+                  "repo": _repo["name"],
+                  "display_name": _repo["name"].replace("-", " "),
+                  "category": _category,
+              })
+              print(f"[INCLUDE] {_repo['name']} → {_category}")
 
           def build_release_markdown(data):
               tag = data.get("tag_name") or data.get("name") or "Latest Release"
