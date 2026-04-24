@@ -247,12 +247,38 @@ aside[class*="sidebar_"] {
 
 [class*="collapseSidebarButton_"] {
   order: -1;
-  border-bottom: 1px solid var(--glass-border);
   border-top: none !important;
+  border-right: none !important;
+  border-left: none !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 48px !important;
+  width: 100% !important;
+  padding: 0 !important;
+  transition: background 0.3s ease, color 0.3s ease !important;
+  cursor: pointer !important;
+}
+
+[class*="collapseSidebarButton_"]:hover {
+  background: var(--ifm-color-primary-alpha-07) !important;
+  color: var(--ifm-color-primary) !important;
 }
 
 [class*="collapseSidebarButton_"] svg {
   transform: rotate(180deg);
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+
+[class*="collapseSidebarButton_"] svg g {
+  fill: currentColor !important;
+  transition: fill 0.3s ease !important;
 }
 
 [class*="sidebarCollapsed_"] [class*="collapseSidebarButton_"] svg {
