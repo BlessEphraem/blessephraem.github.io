@@ -8,7 +8,7 @@ const generatedNav = require('./generated-navbar.json');
 const config = {
   title: 'Ephraem — Dev Wiki',
   tagline: 'Documentation for my open-source tools.',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon-white.ico',
 
   future: {
     v4: true,
@@ -75,7 +75,7 @@ const config = {
         title: '',
         logo: {
           alt: 'Ephraem',
-          src: 'img/avatar.png',
+          src: 'img/avatar-white.png',
           href: '/wiki/',
           target: '_self',
           style: { height: '36px', width: '36px' },
