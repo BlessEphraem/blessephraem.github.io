@@ -15,39 +15,57 @@ def load_config():
         return json.load(f)
 
 
-def get_all_video_ids(channel_url: str, date_limit: str) -> list:
-    try:
-        channel = channel_url.split('@')[-1].rstrip('/')
-        date_str = date_limit.replace('-', '')  # '2025-01-01' -> '20250101'
-        result = subprocess.run([
-            'yt-dlp', '--flat-playlist', '--print', '%(id)s',
-            '--dateafter', date_str,
-            f'https://www.youtube.com/@{channel}/videos',
-            '--playlist-end', '500'
-        ], capture_output=True, text=True, timeout=180)
+def get_videos_matching_keywords(channel_url: str, date_limit: str, keywords: list) -> list:
+    channel = channel_url.split('@')[-1].rstrip('/')
+    date_str = date_limit.replace('-', '')  # '2025-01-01' -> '20250101'
 
-        if result.returncode != 0:
-            print(f"yt-dlp error: {result.stderr}")
-            return []
+    print(f"Lancement yt-dlp sur @{channel} depuis {date_limit}...")
+    result = subprocess.run([
+        'yt-dlp',
+        '--no-download',
+        '--dateafter', date_str,
+        '--dump-json',
+        '--ignore-errors',
+        f'https://www.youtube.com/@{channel}/videos',
+    ], capture_output=True, text=True, timeout=600)
 
-        video_ids = [line.strip() for line in result.stdout.strip().split('\n') if line.strip()]
-        print(f"Vidéos depuis {date_limit}: {len(video_ids)}")
-        return video_ids
-    except Exception as e:
-        print(f"Erreur: {e}")
+    if result.returncode != 0 and not result.stdout.strip():
+        print(f"yt-dlp stderr: {result.stderr[:500]}")
         return []
 
+    found = []
+    checked = 0
 
-def get_video_description(video_id: str) -> str:
-    try:
-        result = subprocess.run([
-            'yt-dlp', '--skip-download',
-            '--print', '%(description)s',
-            f'https://www.youtube.com/watch?v={video_id}'
-        ], capture_output=True, text=True, timeout=30)
-        return result.stdout.strip() if result.returncode == 0 else ''
-    except Exception:
-        return ''
+    for line in result.stdout.strip().split('\n'):
+        if not line.strip():
+            continue
+        try:
+            info = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+
+        # Skip playlist-level entries
+        if info.get('_type') == 'playlist':
+            continue
+
+        video_id = info.get('id', '')
+        if not video_id:
+            continue
+
+        description = (info.get('description') or '')
+        desc_lower = description.lower()
+        checked += 1
+
+        # Debug: show first 120 chars of each description
+        print(f"[{video_id}] desc[:120]: {description[:120]!r}")
+
+        if any(kw in desc_lower for kw in keywords):
+            video_url = f"https://www.youtube.com/watch?v={video_id}"
+            print(f"[TROUVÉ] {video_url}")
+            found.append({"url": video_url})
+
+    print(f"Vidéos vérifiées: {checked} — trouvées: {len(found)}")
+    return found
 
 
 def update_portfolio():
@@ -61,38 +79,25 @@ def update_portfolio():
         print("Erreur: 'keywords' ou 'urls' manquant dans la config.")
         sys.exit(1)
 
+    print(f"Keywords: {keywords}")
     found_videos = []
-    print(f"Recherche de vidéos depuis {date_limit}...")
 
     for channel_url in channel_urls:
-        print(f"\nAnalyse de la chaîne : {channel_url}")
+        print(f"\nAnalyse: {channel_url}")
         try:
-            all_video_ids = get_all_video_ids(channel_url, date_limit)
-            print(f"Analyse des descriptions...")
-
-            for i, video_id in enumerate(all_video_ids):
-                print(f"[{i+1}/{len(all_video_ids)}] Check video {video_id}")
-
-                description = get_video_description(video_id)
-
-                if any(kw in description.lower() for kw in keywords):
-                    video_url = f"https://www.youtube.com/watch?v={video_id}"
-                    print(f"[TROUVÉ] {video_url}")
-                    found_videos.append({"url": video_url})
-
+            found_videos.extend(
+                get_videos_matching_keywords(channel_url, date_limit, keywords)
+            )
         except Exception as e:
             print(f"Erreur lors de l'analyse de {channel_url}: {e}")
 
     print("\nRecherche terminée.")
 
-    output_data = {"videos": found_videos}
-
     os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
-
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-        json.dump(output_data, f, indent=2, ensure_ascii=False)
+        json.dump({"videos": found_videos}, f, indent=2, ensure_ascii=False)
 
-    print(f"\nFichier {OUTPUT_FILE} mis à jour avec {len(found_videos)} vidéos.")
+    print(f"Fichier {OUTPUT_FILE} mis à jour avec {len(found_videos)} vidéos.")
 
 
 if __name__ == "__main__":
