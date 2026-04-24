@@ -4,7 +4,9 @@
     "https://www.instagram.com/bless_ephraem/",
     "bless_ephraem"
   ],
-  "urls": [
-    "https://www.youtube.com/@COLAS."
+  "channels": [
+    {
+      "url": "https://www.youtube.com/@COLAS."
+    }
   ]
 }
