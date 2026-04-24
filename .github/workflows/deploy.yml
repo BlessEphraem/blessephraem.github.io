@@ -534,7 +534,21 @@ jobs:
                       cat_path.write_text(json.dumps(cat_data), encoding="utf-8")
                       print(f"Injected className into {cat_path}")
               except Exception as e:
-                  print(f"Error processing icon for {repo}: {e}")
+                  print(f"Error processing icon for {repo}: {e} — using emoji fallback")
+                  selectors = [
+                      f".sidebar-icon-{img_prefix} > .menu__link::before",
+                      f".sidebar-icon-{img_prefix} > .menu__list-item-collapsible > .menu__link::before"
+                  ]
+                  dynamic_css += (
+                      f"{', '.join(selectors)} {{"
+                      f" content: '📦'; background-image: none;"
+                      f" width: auto; height: auto; }}\n"
+                  )
+                  cat_path = pathlib.Path(f"wiki/docs/{prog['category']}/{img_prefix}/_category_.json")
+                  if cat_path.exists():
+                      cat_data = json.loads(cat_path.read_text(encoding="utf-8"))
+                      cat_data["className"] = f"sidebar-icon-{img_prefix}"
+                      cat_path.write_text(json.dumps(cat_data), encoding="utf-8")
           
           # Write the dynamic CSS file
           css_out = pathlib.Path("wiki/src/css/icons.css")
