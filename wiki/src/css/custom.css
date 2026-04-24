@@ -241,23 +241,20 @@ aside[class*="theme-doc-sidebar-container"],
   border-top: none !important;
 }
 
-/* Ensure the sidebar collapsed state hides the border */
+/* Ensure the sidebar collapsed state hides the border and width */
 [class*="docSidebarContainer_"][class*="sidebarCollapsed_"],
-[class*="sidebarCollapsed_"],
-[class*="sidebarCollapsed_"] [class*="sidebar_"] {
+[class*="docSidebarContainerHidden_"],
+[class*="sidebarHidden_"] {
   border-right: none !important;
+  width: 0 !important;
+  min-width: 0 !important;
 }
 
-/* Style BOTH Collapse and Expand buttons */
-[title="Collapse sidebar"], 
-[aria-label="Collapse sidebar"],
-[title="Expand sidebar"], 
-[aria-label="Expand sidebar"],
+/* Base style for BOTH Collapse and Expand buttons */
 [class*="collapseSidebarButton_"],
-[class*="expandSidebarButton_"] {
-  position: fixed !important; /* Fixed to viewport so it never hides */
-  bottom: 32px !important;
-  left: calc(var(--doc-sidebar-width, 300px) - 16px) !important; /* Floating on the right edge of sidebar */
+[class*="expandButton_"] {
+  position: fixed !important;
+  top: 80px !important; /* Float near the top for better visibility */
   width: 32px !important;
   height: 32px !important;
   border-radius: 50% !important; /* Circle shape */
@@ -270,44 +267,39 @@ aside[class*="theme-doc-sidebar-container"],
   padding: 0 !important;
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
   cursor: pointer !important;
-  z-index: 999999 !important; /* Make sure it's above the main content */
-  opacity: 1 !important; /* Force visible */
+  z-index: 999999 !important; /* Above everything */
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
-/* When sidebar is collapsed, the Expand button appears. Move it to the left edge! */
-[title="Expand sidebar"], 
-[aria-label="Expand sidebar"],
-[class*="expandSidebarButton_"] {
+/* Collapse Button: Positioned on the right edge of the sidebar */
+[class*="collapseSidebarButton_"] {
+  left: calc(var(--doc-sidebar-width, 300px) - 16px) !important;
+}
+
+/* Expand Button: Positioned on the left edge of the screen */
+[class*="expandButton_"] {
   left: 16px !important;
-  bottom: 32px !important;
 }
 
-/* Hide on mobile if Docusaurus uses the same button class */
+/* Hide on mobile */
 @media (max-width: 996px) {
-  [title="Collapse sidebar"], 
-  [aria-label="Collapse sidebar"],
-  [title="Expand sidebar"], 
-  [aria-label="Expand sidebar"],
   [class*="collapseSidebarButton_"],
-  [class*="expandSidebarButton_"] {
+  [class*="expandButton_"] {
     display: none !important;
   }
 }
 
-[title="Collapse sidebar"]:hover, 
-[aria-label="Collapse sidebar"]:hover,
-[title="Expand sidebar"]:hover, 
-[aria-label="Expand sidebar"]:hover,
+/* Hover glow effects */
 [class*="collapseSidebarButton_"]:hover,
-[class*="expandSidebarButton_"]:hover {
+[class*="expandButton_"]:hover {
   background: var(--ifm-background-color) !important;
   border-color: var(--ifm-color-primary) !important;
   color: var(--ifm-color-primary) !important;
   box-shadow: 0 0 10px var(--ifm-color-primary-alpha-10) !important;
 }
 
-[title="Collapse sidebar"] svg, 
-[aria-label="Collapse sidebar"] svg,
+/* Icon rotations */
 [class*="collapseSidebarButton_"] svg {
   transform: rotate(180deg);
   transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
@@ -315,21 +307,15 @@ aside[class*="theme-doc-sidebar-container"],
   height: 16px !important;
 }
 
-[title="Expand sidebar"] svg, 
-[aria-label="Expand sidebar"] svg,
-[class*="expandSidebarButton_"] svg {
+[class*="expandButton_"] svg {
   transform: rotate(0deg);
   transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
   width: 16px !important;
   height: 16px !important;
 }
 
-[title="Collapse sidebar"] svg g, 
-[aria-label="Collapse sidebar"] svg g,
-[title="Expand sidebar"] svg g, 
-[aria-label="Expand sidebar"] svg g,
 [class*="collapseSidebarButton_"] svg g,
-[class*="expandSidebarButton_"] svg g {
+[class*="expandButton_"] svg g {
   fill: currentColor !important;
   transition: fill 0.3s ease !important;
 }
