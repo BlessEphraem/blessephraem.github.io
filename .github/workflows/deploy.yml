@@ -411,7 +411,6 @@ jobs:
               try:
                   content = fetch(f"https://raw.githubusercontent.com/{owner}/{repo}/main/README.md")
                   content = rewrite_readme_absolute_paths(content, owner, repo)
-                  content += "\n\n---\n## Documentation\nimport DocCardList from '@theme/DocCardList';\n\n<DocCardList />\n"
                   write_doc(
                       f"wiki/docs/{category}/{slug}/index.mdx",
                       f"---\ntitle: {display_name}\nhide_title: true\npagination_prev: null\npagination_next: null\n---",
@@ -419,7 +418,7 @@ jobs:
                   )
               except Exception as e:
                   print(f"ERROR fetching {display_name} README: {e}")
-              
+
               prog_dir = pathlib.Path(f"wiki/docs/{category}/{slug}")
               prog_dir.mkdir(parents=True, exist_ok=True)
               (prog_dir / "_category_.json").write_text(
@@ -427,6 +426,15 @@ jobs:
                   encoding="utf-8"
               )
               fetch_directory_recursively(owner, repo, ".docs", str(prog_dir), slug)
+
+              # Append DocCardList only if child docs exist (prevents crash on empty categories)
+              child_docs = [f for f in prog_dir.rglob("*.mdx") if f.name != "index.mdx"]
+              index_path = prog_dir / "index.mdx"
+              if child_docs and index_path.exists():
+                  existing = index_path.read_text(encoding="utf-8")
+                  if "<DocCardList" not in existing:
+                      existing += "\n\n---\n## Documentation\nimport DocCardList from '@theme/DocCardList';\n\n<DocCardList />\n"
+                      index_path.write_text(existing, encoding="utf-8")
 
           for prog in PROGRAMS:
               owner = prog["owner"]
