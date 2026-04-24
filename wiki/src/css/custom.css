@@ -276,19 +276,19 @@ aside[class*="theme-doc-sidebar-container"],
 /* Collapse Button: Positioned on the right edge of the sidebar */
 [class*="collapseSidebarButton_"] {
   position: absolute !important;
-  top: 80px !important;
+  bottom: 80px !important;
   right: -15px !important; /* Perfectly overlaps the border (half of 30px) */
   left: auto !important;
-  bottom: auto !important;
+  top: auto !important;
 }
 
 /* Expand Button: Centered inside the remaining 30px hidden sidebar */
 [class*="expandButton_"] {
   position: absolute !important;
-  top: 80px !important;
+  bottom: 80px !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
-  bottom: auto !important;
+  top: auto !important;
 }
 
 /* Hide on mobile */
