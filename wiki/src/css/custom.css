@@ -214,6 +214,11 @@ kbd {
   pointer-events: none;
 }
 
+/* Hide separators in mobile hamburger menu */
+.navbar-sidebar .navbar__item:has(.navbar__separator) {
+  display: none !important;
+}
+
 /* Sidebar Icons (Auto) - Target only the top-level category link */
 [class*="sidebar-icon-"] > .menu__link::before,
 [class*="sidebar-icon-"] > .menu__list-item-collapsible > .menu__link::before {

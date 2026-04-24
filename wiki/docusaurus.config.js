@@ -62,7 +62,7 @@ const config = {
       docs: {
         sidebar: {
           hideable: true,
-          autoCollapseCategories: true,
+          autoCollapseCategories: false,
         },
       },
       image: 'img/docusaurus-social-card.jpg',
