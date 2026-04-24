@@ -76,7 +76,7 @@ const config = {
         logo: {
           alt: 'Ephraem',
           src: 'img/avatar.png',
-          href: 'https://blessephraem.github.io',
+          href: '/wiki/',
           target: '_self',
           style: { height: '36px', width: '36px' },
         },

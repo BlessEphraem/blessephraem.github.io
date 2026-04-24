@@ -587,20 +587,23 @@ jobs:
               if cat not in seen_cats:
                   seen_cats.append(cat)
 
-          nav_items = [{"to": "/", "position": "left", "label": "Home"}]
+          nav_items = []
+          first_cat = True
           for cat in seen_cats:
               if cat not in category_first_slug:
                   continue
-              nav_items.append({
-                  "type": "html",
-                  "value": "<span class='navbar__separator'>|</span>",
-                  "position": "left"
-              })
+              if not first_cat:
+                  nav_items.append({
+                      "type": "html",
+                      "value": "<span class='navbar__separator'>|</span>",
+                      "position": "left"
+                  })
               nav_items.append({
                   "to": f"/{cat}/{category_first_slug[cat]}/",
                   "position": "left",
                   "label": cat.capitalize()
               })
+              first_cat = False
           pathlib.Path("wiki/generated-navbar.json").write_text(
               json.dumps(nav_items, indent=2), encoding="utf-8"
           )
