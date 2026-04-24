@@ -33,7 +33,6 @@ def update_portfolio():
         sys.exit(1)
 
     ydl_opts = {
-        'extract_flat': 'in_playlist', # Don't download videos, just extract info
         'quiet': True,
         'no_warnings': True,
         'ignoreerrors': True,
@@ -72,27 +71,7 @@ def update_portfolio():
                         # Reached videos older than the limit
                         continue
 
-                    # yt-dlp flat extraction sometimes misses descriptions.
-                    # We might need to fetch full info for the specific video if description is missing.
                     description = entry.get('description', '')
-                    if not description:
-                         # Fetch full info for this single video to get the description
-                         video_url = entry.get('url') or entry.get('webpage_url')
-                         if not video_url: continue
-                         if not video_url.startswith('http'):
-                             video_url = f"https://www.youtube.com/watch?v={entry.get('id')}"
-                         
-                         # Print progress without newline
-                         print(".", end="", flush=True)
-                         
-                         try:
-                             with yt_dlp.YoutubeDL({'quiet': True, 'no_warnings': True}) as ydl_single:
-                                 video_info = ydl_single.extract_info(video_url, download=False)
-                                 if video_info:
-                                     description = video_info.get('description', '')
-                         except Exception:
-                             pass
-
                     desc_lower = description.lower() if description else ""
                     
                     matched = False
