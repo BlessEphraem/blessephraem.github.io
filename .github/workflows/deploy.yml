@@ -107,6 +107,7 @@ jobs:
                   "display_name": _repo["name"].replace("-", " "),
                   "category": _category,
                   "description": _repo.get("description") or "",
+                  "default_branch": _repo.get("default_branch", "main"),
               })
               print(f"[INCLUDE] {_repo['name']} → {_category}")
 
@@ -408,12 +409,13 @@ jobs:
               repo = prog["repo"]
               display_name = prog["display_name"]
               category = prog["category"]
+              branch = prog["default_branch"]
               slug = slugify(repo)
-              
+
               print(f"Fetching {display_name} docs...")
               try:
-                  content = fetch(f"https://raw.githubusercontent.com/{owner}/{repo}/main/README.md")
-                  content = rewrite_readme_absolute_paths(content, owner, repo)
+                  content = fetch(f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/README.md")
+                  content = rewrite_readme_absolute_paths(content, owner, repo, branch)
                   write_doc(
                       f"wiki/docs/{category}/{slug}/index.mdx",
                       f"---\ntitle: {display_name}\nhide_title: true\npagination_prev: null\npagination_next: null\n---",
@@ -474,13 +476,13 @@ jobs:
               repo = prog["repo"]
               img_prefix = slugify(repo)
               try:
-                  readme_content = fetch(f"https://raw.githubusercontent.com/{owner}/{repo}/main/README.md")
+                  readme_content = fetch(f"https://raw.githubusercontent.com/{owner}/{repo}/{prog['default_branch']}/README.md")
                   first_lines = "\n".join(readme_content.split("\n")[:50])
                   icon_match = re.search(r'<img[^>]+src=["\']([^"\']+\.(?:svg|ico|png|jpg|jpeg))["\']', first_lines)
                   if icon_match:
                       icon_url = icon_match.group(1)
                       if not icon_url.startswith("http"):
-                          icon_url = f"https://raw.githubusercontent.com/{owner}/{repo}/main/{icon_url.lstrip('./')}"
+                          icon_url = f"https://raw.githubusercontent.com/{owner}/{repo}/{prog['default_branch']}/{icon_url.lstrip('./')}"
 
                       try:
                           icon_data = fetch_binary(icon_url)
