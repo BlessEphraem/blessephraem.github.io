@@ -422,7 +422,21 @@ jobs:
                       content, slug
                   )
               except Exception as e:
-                  print(f"ERROR fetching {display_name} README: {e}")
+                  print(f"[NO README] {display_name}: {e} — generating placeholder")
+                  _desc_line = f"\n\n{prog['description']}" if prog['description'] else ""
+                  _placeholder = (
+                      f"# {display_name}{_desc_line}\n\n"
+                      ":::info No documentation available yet\n"
+                      "This project does not have a wiki page yet. "
+                      "You can follow the repository on GitHub for updates.\n"
+                      ":::\n\n"
+                      f"[View on GitHub](https://github.com/{owner}/{repo})\n"
+                  )
+                  write_doc(
+                      f"wiki/docs/{category}/{slug}/index.mdx",
+                      f"---\ntitle: {display_name}\nhide_title: true\npagination_prev: null\npagination_next: null\n---",
+                      _placeholder
+                  )
 
               prog_dir = pathlib.Path(f"wiki/docs/{category}/{slug}")
               prog_dir.mkdir(parents=True, exist_ok=True)
