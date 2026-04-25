@@ -134,14 +134,6 @@
     </footer>
 
     <script>
-        // Fade-in on page load
-        (function() {
-            const overlay = document.getElementById('page-transition');
-            if (overlay) {
-                requestAnimationFrame(() => { overlay.classList.add('hidden'); });
-            }
-        })();
-
         const PER_PAGE = 9;
         let allVideos = [];
         let currentPage = 1;
@@ -257,9 +249,10 @@
         function leaveAndNavigate(url) {
             const overlay = document.getElementById('page-transition');
             if (overlay) {
-                overlay.classList.remove('hidden');
-                overlay.classList.add('visible');
-                setTimeout(() => { window.location.href = url; }, 420);
+                overlay.style.animation = 'none';
+                overlay.offsetHeight;
+                overlay.style.animation = 'overlayLeave 0.35s ease-in both';
+                setTimeout(() => { window.location.href = url; }, 340);
             } else {
                 window.location.href = url;
             }

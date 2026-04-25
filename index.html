@@ -48,17 +48,22 @@
             text-rendering: optimizeLegibility;
         }
 
+        @keyframes overlayEnter {
+            from { opacity: 1; }
+            to   { opacity: 0; }
+        }
+        @keyframes overlayLeave {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
         #page-transition {
             position: fixed;
             inset: 0;
             background: var(--bg-dark);
-            z-index: 9999;
+            z-index: 999;
             pointer-events: none;
-            opacity: 1;
-            transition: opacity 0.45s ease;
+            animation: overlayEnter 0.55s ease-out both;
         }
-        #page-transition.hidden { opacity: 0; }
-        #page-transition.visible { opacity: 1; }
 
         /* Socials */
         .socials {
@@ -288,18 +293,12 @@
         (function() {
             const overlay = document.getElementById('page-transition');
 
-            // Fade in on page load
-            if (overlay) {
-                requestAnimationFrame(() => {
-                    overlay.classList.add('hidden');
-                });
-            }
-
             function leaveAndNavigate(url) {
                 if (overlay) {
-                    overlay.classList.remove('hidden');
-                    overlay.classList.add('visible');
-                    setTimeout(() => { window.location.href = url; }, 420);
+                    overlay.style.animation = 'none';
+                    overlay.offsetHeight;
+                    overlay.style.animation = 'overlayLeave 0.35s ease-in both';
+                    setTimeout(() => { window.location.href = url; }, 340);
                 } else {
                     window.location.href = url;
                 }

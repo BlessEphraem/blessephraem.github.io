@@ -1,23 +1,14 @@
 function leaveAndNavigate(url) {
     const overlay = document.getElementById('page-transition');
     if (overlay) {
-        overlay.classList.remove('hidden');
-        overlay.classList.add('visible');
-        setTimeout(() => { window.location.href = url; }, 420);
+        overlay.style.animation = 'none';
+        overlay.offsetHeight; // force reflow to restart animation
+        overlay.style.animation = 'overlayLeave 0.35s ease-in both';
+        setTimeout(() => { window.location.href = url; }, 340);
     } else {
         window.location.href = url;
     }
 }
-
-// Fade-in on page load: overlay starts opaque, dissolves on first paint
-(function() {
-    const overlay = document.getElementById('page-transition');
-    if (overlay) {
-        requestAnimationFrame(() => {
-            overlay.classList.add('hidden');
-        });
-    }
-})();
 
 document.addEventListener('DOMContentLoaded', () => {
 
