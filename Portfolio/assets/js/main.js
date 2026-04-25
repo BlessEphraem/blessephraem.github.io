@@ -213,30 +213,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // 5. 3D Tilt Effect (VanillaTilt Library)
-    // Documentation: https://micku7zu.github.io/vanilla-tilt.js/
-    const tiltCard = document.querySelector(".highlight-box");
-    if (tiltCard && typeof VanillaTilt !== 'undefined' && window.innerWidth > 768) {
-        VanillaTilt.init(tiltCard, {
-            max: 15,          // Angle max d'inclinaison
-            speed: 400,       // Vitesse de transition
-            glare: true,      // Activer l'effet de brillance
-            "max-glare": 0.2, // Opacité max de la brillance
-            scale: 1.05,      // Zoom au survol
-            perspective: 1000 // Perspective 3D
-        });
-    }
-
-    // 6. Gestion du Spotlight (Lumière blanche sous la souris)
-    if (tiltCard && window.innerWidth > 768) {
-        tiltCard.addEventListener('mousemove', (e) => {
-            const rect = tiltCard.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            tiltCard.style.setProperty('--mouse-x', `${x}px`);
-            tiltCard.style.setProperty('--mouse-y', `${y}px`);
-        });
-    }
 
 });
