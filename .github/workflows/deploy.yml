@@ -629,8 +629,8 @@ jobs:
         run: |
           # 1. Fetch current data state from portfolio-data branch
           git fetch origin portfolio-data
-          git show origin/portfolio-data:portfolio-archive.json > portfolio-archive.json || echo '{"videos": []}' > portfolio-archive.json
-          git show origin/portfolio-data:portfolio-recent.json > portfolio-recent.json || echo '{"videos": []}' > portfolio-recent.json
+          git show origin/portfolio-data:portfolio-archive.json > portfolio-archive.json 2>/dev/null || echo '{"videos": []}' > portfolio-archive.json
+          git show origin/portfolio-data:portfolio-recent.json > portfolio-recent.json 2>/dev/null || echo '{"videos": []}' > portfolio-recent.json
           
           # 2. Install dependencies and run update script
           pip install yt-dlp
