@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 navbar.classList.remove('scrolled');
             }
         });
+        if (window.scrollY > 100) navbar.classList.add('scrolled');
     }
 
     // 1. Menu Mobile
