@@ -362,6 +362,36 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
         animation: highlight-box-auto-tilt 5s ease-in-out infinite;
         transform-style: preserve-3d;
         transition: none;
+        box-shadow: 0 0 30px #e6a800, inset 0 0 20px rgba(255, 255, 255, 0.5);
+        border: 1px solid #fff;
+    }
+
+    .highlight-box::before {
+        opacity: 1;
+    }
+
+    .highlight-box::after {
+        background: linear-gradient(45deg, #FFD700, #FFC107, #FFB300, #FFD700);
+        background-size: 200% 200%;
+        animation: none;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    }
+
+    .highlight-box h4,
+    .highlight-box .service-desc,
+    .highlight-box .service-meta {
+        color: #2e1c00;
+        text-shadow: none;
+        position: relative;
+        z-index: 2;
+    }
+
+    .highlight-box .price-tag {
+        background-color: #2e1c00;
+        color: #e6a800;
+        box-shadow: 0 0 15px #e6a800;
+        position: relative;
+        z-index: 2;
     }
 }
 
@@ -641,7 +671,6 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
     overflow: hidden;
     background: black;
     box-shadow: var(--glass-shadow);
-    border: var(--glass-border);
     position: relative;
 }
 
