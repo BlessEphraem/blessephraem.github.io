@@ -625,19 +625,37 @@ jobs:
         run: npm run build
         working-directory: wiki
 
-      - name: Generate Portfolio videos.json
-        run: python .github/scripts/update_portfolio.py
-
-      - name: Commit portfolio-archive.json and portfolio-recent.json
+      - name: Update Portfolio Data
         run: |
+          # 1. Fetch current data state from portfolio-data branch
+          git fetch origin portfolio-data
+          git show origin/portfolio-data:portfolio-archive.json > portfolio-archive.json || echo '{"videos": []}' > portfolio-archive.json
+          git show origin/portfolio-data:portfolio-recent.json > portfolio-recent.json || echo '{"videos": []}' > portfolio-recent.json
+          
+          # 2. Install dependencies and run update script
+          pip install yt-dlp
+          python .github/scripts/update_portfolio.py
+          
+          # 3. Push updated state back to portfolio-data branch using plumbing
+          # This avoids any merge/rebase issues on the main branch
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add portfolio-archive.json portfolio-recent.json
-          if git diff --staged --quiet; then
-            echo "Aucun changement, pas de commit."
+          
+          ARCHIVE_BLOB=$(git hash-object -w portfolio-archive.json)
+          RECENT_BLOB=$(git hash-object -w portfolio-recent.json)
+          
+          # Create a new tree from the blobs
+          TREE_HASH=$(printf "100644 blob $ARCHIVE_BLOB\tportfolio-archive.json\n100644 blob $RECENT_BLOB\tportfolio-recent.json" | git mktree)
+          
+          # Create a new commit with the previous one as parent
+          PARENT_COMMIT=$(git rev-parse origin/portfolio-data)
+          
+          # Check if content changed
+          if [ "$(git rev-parse $PARENT_COMMIT^{tree})" = "$TREE_HASH" ]; then
+            echo "Aucun changement dans les données."
           else
-            git commit -m "chore: update portfolio archive/recent [skip ci]"
-            git push
+            COMMIT_HASH=$(git commit-tree $TREE_HASH -p $PARENT_COMMIT -m "auto: update portfolio data [skip ci]")
+            git push origin $COMMIT_HASH:refs/heads/portfolio-data
           fi
 
       - name: Assemble site

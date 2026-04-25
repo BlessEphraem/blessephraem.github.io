@@ -3,154 +3,154 @@ import os
 import re
 import sys
 import urllib.request
-import xml.etree.ElementTree as ET
+from datetime import datetime
 
 CONFIG_FILE = "portfolio-config.json"
 ARCHIVE_FILE = "portfolio-archive.json"
 RECENT_FILE = "portfolio-recent.json"
 OUTPUT_FILE = "Portfolio/videos.json"
 
-NS = {
-    "atom":  "http://www.w3.org/2005/Atom",
-    "yt":    "http://www.youtube.com/xml/schemas/2015",
-    "media": "http://search.yahoo.com/mrss/",
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+    'Accept-Language': 'en-US,en;q=0.9',
 }
-
-HEADERS = {"User-Agent": "Mozilla/5.0"}
-
 
 def load_json(path: str, default: dict) -> dict:
     if not os.path.exists(path):
         return default
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
-
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return default
 
 def save_json(path: str, data: dict) -> None:
     os.makedirs(os.path.dirname(path) if os.path.dirname(path) else ".", exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
-
-def resolve_channel_id(channel_url: str) -> str | None:
-    req = urllib.request.Request(channel_url, headers=HEADERS)
+def get_video_description(video_url: str) -> str:
+    """Fetches the description from the video page using lightweight scraping."""
     try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            html = resp.read().decode("utf-8", errors="ignore")
+        req = urllib.request.Request(video_url, headers=HEADERS)
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            # Read first 100KB which contains the metadata and short description
+            html = resp.read(100000).decode("utf-8", errors="ignore")
+            
+            # Try to find the shortDescription in the JSON data inside HTML
+            m = re.search(r'"shortDescription":"(.*?)"', html)
+            if m:
+                # Basic unescape for JSON string
+                desc = m.group(1).replace('\\n', ' ').replace('\\"', '"')
+                return desc
+            
+            # Fallback to meta tag
+            m = re.search(r'<meta name="description" content="(.*?)"', html)
+            if m:
+                return m.group(1)
     except Exception as e:
-        print(f"Erreur fetch {channel_url}: {e}")
-        return None
-    m = re.search(r'channel_id=(UC[\w-]+)', html)
-    if m:
-        return m.group(1)
-    print(f"channel_id introuvable dans {channel_url}")
-    return None
-
-
-def fetch_rss(channel_id: str) -> list[dict]:
-    url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
-    print(f"Fetch RSS: {url}")
-    req = urllib.request.Request(url, headers=HEADERS)
-    try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            xml_bytes = resp.read()
-    except Exception as e:
-        print(f"Erreur fetch RSS {channel_id}: {e}")
-        return []
-
-    root = ET.fromstring(xml_bytes)
-    entries = []
-    for entry in root.findall("atom:entry", NS):
-        video_id_el = entry.find("yt:videoId", NS)
-        published_el = entry.find("atom:published", NS)
-        desc_el = entry.find("media:group/media:description", NS)
-
-        if video_id_el is None or published_el is None:
-            continue
-
-        entries.append({
-            "video_id": video_id_el.text.strip(),
-            "published": published_el.text.strip()[:10],
-            "description": (desc_el.text or "") if desc_el is not None else "",
-            "url": f"https://www.youtube.com/watch?v={video_id_el.text.strip()}",
-        })
-    return entries
-
+        print(f"  [ERROR] fetch desc {video_url}: {e}")
+    return ""
 
 def update_portfolio() -> None:
     config = load_json(CONFIG_FILE, {})
     keywords = [kw.lower() for kw in config.get("keywords", [])]
-    channels = config.get("channels", [])
+    channels = config.get("channels", []) # Note: user config uses "urls" in his example, I'll support both
+    channel_urls = config.get("urls", []) or [c.get("url") for c in channels]
 
-    if not keywords or not channels:
-        print("Erreur: 'keywords' ou 'channels' manquant dans portfolio-config.json")
+    if not keywords or not channel_urls:
+        print("Erreur: 'keywords' ou 'urls' manquant dans portfolio-config.json")
         sys.exit(1)
 
+    # Load existing state
     archive = load_json(ARCHIVE_FILE, {"videos": []})
-    old_recent = load_json(RECENT_FILE, {"videos": []})
-
     archive_videos = archive.get("videos", [])
-    old_recent_videos = old_recent.get("videos", [])
-
     archive_urls = {v["url"] for v in archive_videos}
-    old_recent_urls = {v["url"] for v in old_recent_videos}
 
-    # fetch current RSS keyword matches across all channels
+    import yt_dlp
+    # extract_flat is fast and avoids bot detection on channel pages
+    ydl_opts = {
+        'quiet': True, 
+        'extract_flat': True, 
+        'playlist_items': '1-50', # Check last 50 videos per channel
+    }
+
     current_matches: dict[str, dict] = {}
-    for channel in channels:
-        channel_url = channel.get("url", "")
-        if not channel_url:
-            continue
-        print(f"\nRésolution: {channel_url}")
-        channel_id = resolve_channel_id(channel_url)
-        if not channel_id:
-            print(f"[SKIP] impossible de résoudre {channel_url}")
-            continue
-        print(f"channel_id: {channel_id}")
-        entries = fetch_rss(channel_id)
-        print(f"Entrées RSS: {len(entries)}")
+    
+    print(f"Recherche de nouvelles vidéos (Keywords: {keywords})...")
 
-        for entry in entries:
-            desc_lower = entry["description"].lower()
-            print(f"[CHECK] [{entry['video_id']}] desc[:80]: {entry['description'][:80]!r}")
-            if any(kw in desc_lower for kw in keywords):
-                print(f"[MATCH] {entry['url']}")
-                current_matches[entry["url"]] = {
-                    "url": entry["url"],
-                    "published": entry["published"],
-                }
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        for channel_url in channel_urls:
+            if not channel_url: continue
+            print(f"\nAnalyse: {channel_url}")
+            try:
+                # Ensure /videos tab
+                target = channel_url.rstrip('/') + "/videos"
+                info = ydl.extract_info(target, download=False)
+                if not info or 'entries' not in info:
+                    print(f"  Impossible de lister les vidéos.")
+                    continue
 
-    current_urls = set(current_matches.keys())
-    print(f"\nMatches RSS actuels: {len(current_matches)}")
+                for entry in info['entries']:
+                    if not entry: continue
+                    video_id = entry.get('id')
+                    video_url = f"https://www.youtube.com/watch?v={video_id}"
+                    
+                    if video_url in archive_urls:
+                        # Already archived, stop scanning this channel (assuming chronological order)
+                        # Actually we continue a bit just in case, but archive is our "stop" sign
+                        continue
 
-    # videos that were in recent but are no longer in RSS → archive them
-    newly_archived = [v for v in old_recent_videos if v["url"] not in current_urls]
-    if newly_archived:
-        print(f"Migration vers archive: {len(newly_archived)} vidéo(s)")
-        for v in newly_archived:
-            if v["url"] not in archive_urls:
-                archive_videos.append(v)
-                archive_urls.add(v["url"])
+                    print(f"  Vérif: {entry.get('title')[:50]}...", end=" ", flush=True)
+                    
+                    description = get_video_description(video_url)
+                    desc_lower = description.lower()
+                    
+                    if any(kw in desc_lower for kw in keywords):
+                        print(" [MATCH]")
+                        current_matches[video_url] = {
+                            "url": video_url,
+                            "published": entry.get("upload_date", "00000000"), # YYYYMMDD
+                            "title": entry.get("title")
+                        }
+                    else:
+                        print(" [SKIP]")
 
-    # new recent = current RSS matches not already in archive
-    new_recent_videos = [v for url, v in current_matches.items() if url not in archive_urls]
+            except Exception as e:
+                print(f"  Erreur canal {channel_url}: {e}")
 
-    # sort archive by date desc
-    archive_videos = sorted(archive_videos, key=lambda v: v.get("published", ""), reverse=True)
-    new_recent_videos = sorted(new_recent_videos, key=lambda v: v.get("published", ""), reverse=True)
+    # Add new matches to archive
+    new_count = 0
+    for url, data in current_matches.items():
+        if url not in archive_urls:
+            # Reformat published date for display if needed, but keeping YYYYMMDD for sorting
+            # We'll use YYYY-MM-DD for consistency with old archive
+            raw_date = data["published"]
+            formatted_date = f"{raw_date[:4]}-{raw_date[4:6]}-{raw_date[6:8]}" if len(raw_date) == 8 else raw_date
+            
+            archive_videos.append({
+                "url": url,
+                "published": formatted_date
+            })
+            archive_urls.add(url)
+            new_count += 1
 
-    save_json(ARCHIVE_FILE, {"videos": archive_videos})
-    save_json(RECENT_FILE, {"videos": new_recent_videos})
+    if new_count > 0:
+        print(f"\n{new_count} nouvelle(s) vidéo(s) ajoutée(s) à l'archive.")
+        # Sort archive by date desc
+        archive_videos = sorted(archive_videos, key=lambda v: v.get("published", ""), reverse=True)
+        save_json(ARCHIVE_FILE, {"videos": archive_videos})
+    else:
+        print("\nAucune nouvelle vidéo trouvée.")
 
-    # generate Portfolio/videos.json = recent + archive, sorted
-    all_videos = sorted(
-        new_recent_videos + archive_videos,
-        key=lambda v: v.get("published", ""),
-        reverse=True,
-    )
-    save_json(OUTPUT_FILE, {"videos": all_videos})
+    # Always generate the final output for the site
+    # This combines everything in archive_videos
+    save_json(OUTPUT_FILE, {"videos": archive_videos})
+    
+    # Also save a dummy recent file to maintain the CI plumbing logic
+    save_json(RECENT_FILE, {"videos": []})
 
-    print(f"\nArchive: {len(archive_videos)} | Récent: {len(new_recent_videos)} | Total site: {len(all_videos)}")
+    print(f"Total vidéos portfolio: {len(archive_videos)}")
 
 
 if __name__ == "__main__":
