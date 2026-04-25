@@ -27,8 +27,8 @@
     --gradient-section: linear-gradient(180deg, transparent, rgba(255,255,255,0.02), transparent);
     
     /* --- EFFETS & BORDURES --- */
-    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
-    --glass-border-light: 1px solid rgba(255, 255, 255, 0.05);
+    --glass-border: 2px solid rgba(255, 255, 255, 0.1);
+    --glass-border-light: 2px solid rgba(255, 255, 255, 0.05);
     --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     --glow-shadow: 0 0 15px rgba(var(--primary-rgb), 0.4);
     --backdrop: blur(10px);
@@ -163,7 +163,7 @@ ul { list-style: none; }
     color: var(--secondary);
     background: rgba(58, 208, 255, 0.06);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
 }
 .btn-lg { padding: 12px 30px; font-size: 1.1rem; }
 .btn:hover { transform: scale(1.05); }
@@ -248,7 +248,7 @@ ul { list-style: none; }
     padding: 4px 12px;
     border-radius: 20px;
     background: rgba(58, 208, 255, 0.08);
-    border: 1px solid rgba(58, 208, 255, 0.22);
+    border: 2px solid rgba(58, 208, 255, 0.22);
 }
 
 .timeline-card {
@@ -287,7 +287,7 @@ ul { list-style: none; }
 
 .timeline-divider {
     border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 2px solid rgba(255, 255, 255, 0.06);
     margin: 18px 0;
 }
 
@@ -295,7 +295,7 @@ ul { list-style: none; }
     font-size: 0.68rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     padding: 2px 8px;
     border-radius: 4px;
 }
@@ -303,7 +303,7 @@ ul { list-style: none; }
 .timeline-tag.active {
     background: rgba(0, 255, 127, 0.1);
     color: var(--green);
-    border: 1px solid rgba(0, 255, 127, 0.3);
+    border: 2px solid rgba(0, 255, 127, 0.3);
 }
 
 /* Contact Form */
@@ -485,7 +485,7 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
     /* Effets visuels */
     filter: blur(8px);
     z-index: -1; /* Derrière la carte */
-    transform: translateZ(-1px); /* Profondeur 3D */
+    transform: translateZ(-2px); /* Profondeur 3D */
     
     /* Animation */
     animation: rgb-flow 6s linear infinite;
@@ -541,7 +541,7 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
 /* On garde les effets de bordure/ombre sur la boite principale */
 .highlight-box:hover {
     box-shadow: 0 0 30px #e6a800, inset 0 0 20px rgba(255, 255, 255, 0.5);
-    border: 1px solid #fff;
+    border: 2px solid #fff;
 }
 
 /* Le texte passe en NOIR */
