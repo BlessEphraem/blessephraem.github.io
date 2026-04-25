@@ -126,8 +126,8 @@ ul { list-style: none; }
 .glow-circle {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
     width: 260px; height: 260px; 
-    background: var(--primary); 
-    border-radius: 50%; filter: blur(40px); opacity: 0.4; z-index: 1;
+    background: radial-gradient(circle, var(--primary) 0%, var(--secondary) 100%);
+    border-radius: 50%; filter: blur(40px); opacity: 0.25; z-index: 1;
 }
 
 .hero h1 { 
@@ -192,7 +192,7 @@ ul { list-style: none; }
     top: 0;
     bottom: 0;
     width: 2px;
-    background: linear-gradient(to bottom, var(--primary), var(--secondary), var(--primary));
+    background: linear-gradient(to bottom, rgba(var(--primary-rgb), 0.7), var(--secondary));
     border-radius: 2px;
 }
 
@@ -245,7 +245,7 @@ ul { list-style: none; }
 .timeline-card {
     background: var(--bg-card);
     border: var(--glass-border);
-    border-left: 2px solid var(--primary);
+    border-left: 2px solid rgba(255, 255, 255, 0.12);
     border-radius: var(--radius);
     padding: 22px 26px;
     backdrop-filter: var(--backdrop);
@@ -254,8 +254,9 @@ ul { list-style: none; }
 
 .timeline-card:hover {
     transform: translateX(6px);
-    border-color: var(--primary);
-    box-shadow: 0 8px 32px rgba(var(--primary-rgb), 0.15), -4px 0 20px rgba(var(--primary-rgb), 0.08);
+    border-color: var(--secondary);
+    border-left-color: var(--secondary);
+    box-shadow: 0 8px 32px rgba(58, 208, 255, 0.12), -4px 0 16px rgba(58, 208, 255, 0.07);
 }
 
 .timeline-entry h3 {
