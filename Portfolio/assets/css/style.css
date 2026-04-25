@@ -476,6 +476,7 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
     width: 100%;
     max-width: 1000px;
     height: 480px; /* Augmenté pour laisser la place au titre */
+    margin: 40px auto;
     perspective: 1000px;
     display: flex;
     justify-content: center;
