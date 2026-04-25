@@ -161,6 +161,10 @@ ul { list-style: none; }
 
 
 /* Services Generic */
+.container .section-title {
+    margin-bottom: none;
+}
+
 .services-wrapper { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; }
 .service-box {
     flex: 1; min-width: 280px; background: var(--bg-card); padding: 40px;
