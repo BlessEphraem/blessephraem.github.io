@@ -407,6 +407,7 @@ small {
     text-align: center;
     color: var(--text-muted);
     margin-bottom: 20px;
+    font-size: 0.95rem;
 }
 
 footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 0.9rem; border-top: var(--glass-border); margin-top: 50px;}
