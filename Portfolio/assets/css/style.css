@@ -72,7 +72,7 @@ ul { list-style: none; }
 
 /* Utilities */
 .container { max-width: var(--max-width); margin: 0 auto; padding: 0 20px; }
-.accent { color: var(--primary); font-weight: 900;}
+.accent { color: var(--primary); font-weight: 900; letter-spacing: var(--letter-spacing);}
 .section { padding: 80px 0; }
 .section-title { font-size: 2.5rem; text-align: center; margin-bottom: 3rem; font-family: 'Satoshi', sans-serif; font-weight: 900; }
 .bg-alt { background: var(--gradient-section); }
@@ -359,37 +359,37 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
     .service-header { flex-direction: column; gap: 10px; }
 
     .highlight-box {
-        animation: highlight-box-auto-tilt 5s ease-in-out infinite;
-        transform-style: preserve-3d;
-        transition: none;
-        box-shadow: 0 0 30px #e6a800, inset 0 0 20px rgba(255, 255, 255, 0.5);
-        border: 1px solid #fff;
+        animation: highlight-box-auto-tilt 5s ease-in-out infinite !important;
+        transform-style: preserve-3d !important;
+        transition: none !important;
+        box-shadow: 0 0 30px #e6a800, inset 0 0 20px rgba(255, 255, 255, 0.5) !important;
+        border: 1px solid #fff !important;
     }
 
     .highlight-box::before {
-        opacity: 1;
+        opacity: 1 !important;
     }
 
     .highlight-box::after {
-        background: linear-gradient(45deg, #FFD700, #FFC107, #FFB300, #FFD700);
-        background-size: 200% 200%;
-        animation: none;
-        box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        background: linear-gradient(45deg, #FFD700, #FFC107, #FFB300, #FFD700) !important;
+        background-size: 200% 200% !important;
+        animation: none !important;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.6) !important;
     }
 
-    .highlight-box h4,
+    .highlight-box .service-header h4,
     .highlight-box .service-desc,
     .highlight-box .service-meta {
-        color: #2e1c00;
-        text-shadow: none;
+        color: #2e1c00 !important;
+        text-shadow: none !important;
         position: relative;
         z-index: 2;
     }
 
     .highlight-box .price-tag {
-        background-color: #2e1c00;
-        color: #e6a800;
-        box-shadow: 0 0 15px #e6a800;
+        background-color: #2e1c00 !important;
+        color: #e6a800 !important;
+        box-shadow: 0 0 15px #e6a800 !important;
         position: relative;
         z-index: 2;
     }
