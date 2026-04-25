@@ -156,7 +156,7 @@ ul { list-style: none; }
     transition: var(--transition); 
 }
 .btn-primary { background: var(--primary); color: white; box-shadow: var(--glow-shadow); border: 2px solid transparent}
-.btn-outline { border: 2px solid var(--primary); color: white; background: transparent;}
+.btn-outline { border: 2px solid var(--secondary); color: white; background: transparent;}
 .btn:hover { transform: scale(1.05); }
 
 
@@ -311,7 +311,7 @@ ul { list-style: none; }
     border-radius: 8px; color: white; font-family: inherit; transition: var(--transition);
 }
 .form-group input:focus, .form-group textarea:focus { 
-    outline: none; border-color: var(--primary); background: var(--bg-input-focus); 
+    outline: none; border-color: var(--secondary); background: var(--bg-input-focus);
 }
 #form-status { margin-top: 15px; font-family: 'Satoshi', sans-serif; font-weight: 700; text-align: center; }
 
@@ -638,12 +638,12 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
     margin-top: 20px;
     font-size: 1.5rem;
     font-family: 'Satoshi', sans-serif; font-weight: 900;
-    color: var(--primary); /* Rose */
+    color: white;
     text-transform: uppercase;
     letter-spacing: 2px;
     opacity: 0; /* Invisible par défaut */
     text-align: center;
-    text-shadow: 0 0 10px rgba(var(--primary-rgb), 0.5);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
 }
 
 /* Animation d'apparition */
@@ -668,7 +668,7 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
 /* Le wrapper prend le style "actif" */
 .pos-center .video-wrapper {
     box-shadow: 0 0 30px rgba(var(--primary-rgb), 0.3);
-    border-color: var(--primary);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 /* POSITION: GAUCHE */
