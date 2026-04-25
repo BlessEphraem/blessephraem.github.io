@@ -1,5 +1,19 @@
+function leaveAndNavigate(url) {
+    document.body.classList.add('is-leaving');
+    setTimeout(() => { window.location.href = url; }, 260);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    
+
+    // Page transition: VOIR PLUS → videos.html
+    const voirPlusBtn = document.querySelector('a[href="videos.html"]');
+    if (voirPlusBtn) {
+        voirPlusBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            leaveAndNavigate('videos.html');
+        });
+    }
+
     // 0. Navbar dynamique au scroll
     const navbar = document.querySelector('.navbar');
     if (navbar && !navbar.classList.contains('scrolled')) {

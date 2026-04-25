@@ -59,11 +59,25 @@ i {
     font-family: inherit; /* Laisse Font Awesome gérer ses classes */
 }
 
+@keyframes pageIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
 body {
     background-color: var(--bg-dark);
     color: var(--text-main);
     line-height: 1.6;
     overflow-x: hidden;
+    animation: pageIn 0.4s ease both;
+}
+
+body.is-leaving {
+    animation: none;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
 }
 
 h1, h2, h3, .btn { font-family: 'Satoshi', sans-serif; letter-spacing: var(--letter-spacing); }
@@ -669,7 +683,7 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
     aspect-ratio: 16/9;
     border-radius: var(--radius);
     overflow: hidden;
-    background: black;
+    background: transparent;
     box-shadow: var(--glass-shadow);
     position: relative;
 }
