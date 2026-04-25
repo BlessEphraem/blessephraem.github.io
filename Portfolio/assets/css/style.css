@@ -48,7 +48,7 @@
     box-sizing: border-box; 
     scroll-behavior: smooth; 
     font-family: 'Satoshi', sans-serif !important;
-    font-weight: 900;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
