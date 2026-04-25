@@ -96,8 +96,8 @@ ul { list-style: none; }
     max-width: var(--max-width); margin: 0 auto; padding: 0 20px;
 }
 .logo { font-size: 1.5rem; font-family: 'Satoshi', sans-serif;}
-.nav-links { display: flex; gap: 2rem; align-items: center; font-weight:700;}
-.nav-links a { font-family: 'Satoshi', sans-serif;}
+.nav-links { display: flex; gap: 2rem; align-items: center;}
+.nav-links a { font-family: 'Satoshi', sans-serif; font-weight:700;}
 .nav-links a:hover { color: var(--primary); }
 .btn-nav {
     background: var(--primary); padding: 0.5rem 1.5rem; border-radius: 50px;
