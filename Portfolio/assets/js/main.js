@@ -10,6 +10,14 @@ function leaveAndNavigate(url) {
     }
 }
 
+window.addEventListener('pageshow', () => {
+    const overlay = document.getElementById('page-transition');
+    if (!overlay) return;
+    overlay.style.animation = 'none';
+    overlay.offsetHeight;
+    overlay.style.animation = 'overlayEnter 0.55s ease-out both';
+});
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // Page transition: VOIR PLUS → videos.html

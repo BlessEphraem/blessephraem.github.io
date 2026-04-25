@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="Portfolio/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" rel="stylesheet">
-    <meta name="description" content="Ephraem — Éditeur Vidéo, Graphiste et Motion Designer.">
+    <meta name="description" content="Ephraem — Video Editor, Motion Designer and Developer.">
     <style>
         :root {
             --primary: #ff1796;
@@ -252,30 +252,30 @@
         .card:hover::after { left: 130%; }
 
         .card-portfolio {
-            background: rgba(255, 23, 150, 0.055);
-            border: 1px solid rgba(255, 23, 150, 0.18);
+            background: rgba(255, 36, 36, 0.07);
+            border: 1px solid rgba(255, 36, 36, 0.2);
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 40px rgba(0,0,0,0.45);
         }
         .card-portfolio:hover {
             transform: translateY(-7px) scale(1.02);
-            border-color: rgba(255, 23, 150, 0.55);
+            border-color: rgba(255, 36, 36, 0.6);
             box-shadow:
                 inset 0 1px 0 rgba(255,255,255,0.08),
-                0 0 45px rgba(255, 23, 150, 0.18),
+                0 0 45px rgba(255, 36, 36, 0.18),
                 0 24px 60px rgba(0,0,0,0.5);
         }
 
         .card-wiki {
-            background: rgba(58, 208, 255, 0.045);
-            border: 1px solid rgba(58, 208, 255, 0.16);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 40px rgba(0,0,0,0.45);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 40px rgba(0,0,0,0.45);
         }
         .card-wiki:hover {
             transform: translateY(-7px) scale(1.02);
-            border-color: rgba(58, 208, 255, 0.5);
+            border-color: rgba(255, 255, 255, 0.35);
             box-shadow:
-                inset 0 1px 0 rgba(255,255,255,0.08),
-                0 0 45px rgba(58, 208, 255, 0.15),
+                inset 0 1px 0 rgba(255,255,255,0.1),
+                0 0 45px rgba(255, 255, 255, 0.07),
                 0 24px 60px rgba(0,0,0,0.5);
         }
 
@@ -290,8 +290,8 @@
             border-radius: 14px;
             line-height: 1;
         }
-        .card-portfolio .card-icon { background: rgba(255, 23, 150, 0.12); }
-        .card-wiki     .card-icon { background: rgba(58, 208, 255, 0.10); }
+        .card-portfolio .card-icon { background: rgba(255, 36, 36, 0.12); }
+        .card-wiki     .card-icon { background: rgba(255, 255, 255, 0.07); }
 
         .card-body { flex: 1; }
 
@@ -302,8 +302,8 @@
             text-transform: uppercase;
             margin-bottom: 5px;
         }
-        .card-portfolio .card-body h2 { color: var(--primary); }
-        .card-wiki      .card-body h2 { color: var(--secondary); }
+        .card-portfolio .card-body h2 { color: #ff2424; }
+        .card-wiki      .card-body h2 { color: rgba(255, 255, 255, 0.88); }
 
         .card-body p {
             font-size: 0.8rem;
@@ -362,9 +362,9 @@
 
     <div class="wrapper">
         <section class="hero">
-            <span class="badge">Créateur Numérique</span>
+            <span class="badge">Digital Creator</span>
             <h1 class="name">EPHRAEM</h1>
-            <p class="tagline">Éditeur Vidéo &nbsp;·&nbsp; Graphiste &nbsp;·&nbsp; Motion Designer</p>
+            <p class="tagline">Video Editor &nbsp;·&nbsp; Graphic &nbsp;·&nbsp; Motion Designer</p>
             <nav class="socials">
                 <a href="https://www.youtube.com/@Eph_raem" target="_blank" rel="noopener" aria-label="YouTube">
                     <i class="fa-brands fa-youtube"></i>
@@ -383,7 +383,7 @@
                 <div class="card-icon">🎬</div>
                 <div class="card-body">
                     <h2>Portfolio</h2>
-                    <p>Montage vidéo, graphisme &amp; 3D</p>
+                    <p>Video Editing, 3D, Graphic & Motion Design</p>
                 </div>
                 <span class="card-arrow">→</span>
             </a>
@@ -391,7 +391,7 @@
                 <div class="card-icon">📖</div>
                 <div class="card-body">
                     <h2>Wiki</h2>
-                    <p>Notes, ressources &amp; docs</p>
+                    <p>Notes, Resources & Documents</p>
                 </div>
                 <span class="card-arrow">→</span>
             </a>
@@ -425,6 +425,13 @@
                         leaveAndNavigate(href);
                     }
                 });
+            });
+
+            window.addEventListener('pageshow', function () {
+                if (!overlay) return;
+                overlay.style.animation = 'none';
+                overlay.offsetHeight;
+                overlay.style.animation = 'overlayEnter 0.55s ease-out both';
             });
         })();
     </script>
