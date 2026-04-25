@@ -161,7 +161,10 @@ ul { list-style: none; }
     /* Flex alignment pour les textes longs */
     text-align: left; display: flex; flex-direction: column; justify-content: flex-start;
 }
-.service-box:hover { transform: translateY(-5px); border-color: var(--secondary); }
+.service-box:hover { 
+    transform: scale(1.02); 
+    border-color: var(--secondary); 
+}
 .icon-box { font-size: 2rem; color: var(--primary); margin-bottom: 20px; }
 
 /* Timeline */
@@ -233,7 +236,9 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
 .service-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
     margin-bottom: 15px;
     border-bottom: var(--glass-border-light);
     padding-bottom: 10px;
