@@ -6,6 +6,7 @@ import urllib.request
 from datetime import datetime
 
 CONFIG_FILE = "portfolio-config.json"
+EXCLUDE_FILE = "config-exclude.json"
 ARCHIVE_FILE = "portfolio-archive.json"
 RECENT_FILE = "portfolio-recent.json"
 OUTPUT_FILE = "Portfolio/videos.json"
@@ -28,6 +29,18 @@ def save_json(path: str, data: dict) -> None:
     os.makedirs(os.path.dirname(path) if os.path.dirname(path) else ".", exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
+
+def normalize_youtube_url(url: str) -> str:
+    """Normalizes various YouTube URL formats to the standard watch?v= format."""
+    video_id = None
+    if "v=" in url:
+        video_id = url.split("v=")[1].split("&")[0]
+    elif "youtu.be/" in url:
+        video_id = url.split("youtu.be/")[1].split("?")[0].split("/")[0]
+    
+    if video_id:
+        return f"https://www.youtube.com/watch?v={video_id}"
+    return url
 
 def get_video_description(video_url: str) -> str:
     """Fetches the description from the video page using lightweight scraping."""
@@ -54,6 +67,9 @@ def get_video_description(video_url: str) -> str:
 
 def update_portfolio() -> None:
     config = load_json(CONFIG_FILE, {})
+    exclude_config = load_json(EXCLUDE_FILE, {"urls": []})
+    excluded_urls = {normalize_youtube_url(url) for url in exclude_config.get("urls", [])}
+
     keywords = [kw.lower() for kw in config.get("keywords", [])]
     channels = config.get("channels", []) # Note: user config uses "urls" in his example, I'll support both
     channel_urls = config.get("urls", []) or [c.get("url") for c in channels]
@@ -65,6 +81,14 @@ def update_portfolio() -> None:
     # Load existing state
     archive = load_json(ARCHIVE_FILE, {"videos": []})
     archive_videos = archive.get("videos", [])
+    
+    # Filter out excluded videos from current archive immediately
+    if excluded_urls:
+        initial_count = len(archive_videos)
+        archive_videos = [v for v in archive_videos if v["url"] not in excluded_urls]
+        if len(archive_videos) < initial_count:
+            print(f"Nettoyage : {initial_count - len(archive_videos)} vidéo(s) exclue(s) retirée(s) de l'archive.")
+
     archive_urls = {v["url"] for v in archive_videos}
 
     import yt_dlp
@@ -96,6 +120,10 @@ def update_portfolio() -> None:
                     video_id = entry.get('id')
                     video_url = f"https://www.youtube.com/watch?v={video_id}"
                     
+                    if video_url in excluded_urls:
+                        print(f"  Vérif: {entry.get('title')[:50]}... [EXCLUE]")
+                        continue
+
                     if video_url in archive_urls:
                         # Already archived, stop scanning this channel (assuming chronological order)
                         # Actually we continue a bit just in case, but archive is our "stop" sign
@@ -135,22 +163,20 @@ def update_portfolio() -> None:
             archive_urls.add(url)
             new_count += 1
 
-    if new_count > 0:
-        print(f"\n{new_count} nouvelle(s) vidéo(s) ajoutée(s) à l'archive.")
+    # Save archive if changed (new videos added or old ones excluded)
+    # Note: we compare with the filtered archive at the beginning
+    if new_count > 0 or (excluded_urls and len(archive_videos) != initial_count):
+        if new_count > 0:
+            print(f"\n{new_count} nouvelle(s) vidéo(s) ajoutée(s) à l'archive.")
         # Sort archive by date desc
         archive_videos = sorted(archive_videos, key=lambda v: v.get("published", ""), reverse=True)
         save_json(ARCHIVE_FILE, {"videos": archive_videos})
     else:
-        print("\nAucune nouvelle vidéo trouvée.")
+        print("\nAucune nouvelle vidéo trouvée et aucun changement d'exclusion.")
 
     # Always generate the final output for the site
     # This combines everything in archive_videos
     save_json(OUTPUT_FILE, {"videos": archive_videos})
-    
-    # Also save a dummy recent file to maintain the CI plumbing logic
-    save_json(RECENT_FILE, {"videos": []})
-
-    print(f"Total vidéos portfolio: {len(archive_videos)}")
 
 
 if __name__ == "__main__":
