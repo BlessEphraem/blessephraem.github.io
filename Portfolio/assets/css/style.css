@@ -83,6 +83,12 @@ ul { list-style: none; }
     backdrop-filter: var(--backdrop);
     border-bottom: var(--glass-border);
     padding: 1rem 0;
+    transform: translateY(-100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.navbar.scrolled {
+    transform: translateY(0);
+    box-shadow: var(--glass-shadow);
 }
 .nav-container {
     display: flex; justify-content: space-between; align-items: center;
@@ -470,7 +476,6 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
     width: 100%;
     max-width: 1000px;
     height: 480px; /* Augmenté pour laisser la place au titre */
-    margin: 40px auto;
     perspective: 1000px;
     display: flex;
     justify-content: center;

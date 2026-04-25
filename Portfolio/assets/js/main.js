@@ -1,5 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     
+    // 0. Navbar dynamique au scroll
+    const navbar = document.querySelector('.navbar');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 100) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
     // 1. Menu Mobile
     const mobileBtn = document.querySelector('.mobile-toggle');
     const navLinks = document.querySelector('.nav-links');
