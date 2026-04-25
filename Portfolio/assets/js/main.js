@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 5. 3D Tilt Effect (VanillaTilt Library)
     // Documentation: https://micku7zu.github.io/vanilla-tilt.js/
     const tiltCard = document.querySelector(".highlight-box");
-    if (tiltCard && typeof VanillaTilt !== 'undefined') {
+    if (tiltCard && typeof VanillaTilt !== 'undefined' && window.innerWidth > 768) {
         VanillaTilt.init(tiltCard, {
             max: 15,          // Angle max d'inclinaison
             speed: 400,       // Vitesse de transition
@@ -195,12 +195,10 @@ document.addEventListener('DOMContentLoaded', () => {
             scale: 1.05,      // Zoom au survol
             perspective: 1000 // Perspective 3D
         });
-    } else if (tiltCard) {
-        console.warn("VanillaTilt not loaded. Check script inclusion.");
     }
 
     // 6. Gestion du Spotlight (Lumière blanche sous la souris)
-    if (tiltCard) {
+    if (tiltCard && window.innerWidth > 768) {
         tiltCard.addEventListener('mousemove', (e) => {
             const rect = tiltCard.getBoundingClientRect();
             const x = e.clientX - rect.left;

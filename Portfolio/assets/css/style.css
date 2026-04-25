@@ -156,7 +156,15 @@ ul { list-style: none; }
     transition: var(--transition); 
 }
 .btn-primary { background: var(--primary); color: white; box-shadow: var(--glow-shadow); border: 2px solid transparent}
-.btn-outline { border: 2px solid var(--secondary); color: white; background: transparent;}
+.btn-outline {
+    border: 1px solid rgba(58, 208, 255, 0.3);
+    border-radius: 50px;
+    color: var(--secondary);
+    background: rgba(58, 208, 255, 0.06);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.btn-lg { padding: 12px 30px; font-size: 1.1rem; }
 .btn:hover { transform: scale(1.05); }
 
 
@@ -325,11 +333,20 @@ small {
 footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 0.9rem; border-top: var(--glass-border); margin-top: 50px;}
 
 /* Mobile Responsive */
+@keyframes highlight-box-auto-tilt {
+    0%   { transform: perspective(1000px) rotateX(0deg)  rotateY(0deg); }
+    20%  { transform: perspective(1000px) rotateX(6deg)  rotateY(-8deg); }
+    45%  { transform: perspective(1000px) rotateX(-3deg) rotateY(10deg); }
+    65%  { transform: perspective(1000px) rotateX(5deg)  rotateY(4deg); }
+    80%  { transform: perspective(1000px) rotateX(-4deg) rotateY(-7deg); }
+    100% { transform: perspective(1000px) rotateX(0deg)  rotateY(0deg); }
+}
+
 @media (max-width: 768px) {
     .hero h1 { font-size: 2.5rem; }
     .hero-visual { width: 180px; height: 180px; }
     .glow-circle { width: 190px; height: 190px; }
-    
+
     .nav-links {
         position: fixed; top: 60px; right: -100%; width: 100%; height: calc(100vh - 60px);
         background: var(--bg-dark); flex-direction: column; justify-content: center; transition: var(--transition);
@@ -339,6 +356,12 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
     .mobile-toggle { display: block; }
     .glass-form { padding: 20px; }
     .service-header { flex-direction: column; gap: 10px; }
+
+    .highlight-box {
+        animation: highlight-box-auto-tilt 5s ease-in-out infinite;
+        transform-style: preserve-3d;
+        transition: none;
+    }
 }
 
 /* --- NEW SERVICES STYLES --- */
@@ -353,6 +376,8 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
     width: 100%;
     font-family: 'Satoshi', sans-serif; font-weight: 900;
 }
+
+.services-wrapper + .category-title { margin-top: 50px; }
 
 .service-header {
     display: flex;
@@ -419,15 +444,13 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
 
 /* Style spécial pour la box "Gros Concept" (RGB TILT EFFECT) */
 .highlight-box {
-    /* Base style */
-    background: rgba(20, 20, 25, 0.95); /* Plus opaque pour cacher le centre du RGB */
-    border: none; /* On enlève la bordure classique car on a le RGB */
+    background: rgba(20, 20, 25, 0.95);
+    border: none;
     box-shadow: 0 0 15px rgba(0,0,0,0.5);
-    
-    /* 3D Transform Setup */
     position: relative;
     transform-style: preserve-3d;
     transform: perspective(1000px);
+    transition: background 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
 }
 
 /* L'animation des couleurs */
@@ -484,11 +507,6 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
 /* OVERRIDE: Le glare reste BLANC (lumière pure) */
 .highlight-box .js-tilt-glare-inner {
     background-image: linear-gradient(0deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 100%) ;
-}
-
-/* La carte elle-même devient DORÉE au survol */
-.highlight-box {
-    transition: background 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
 }
 
 /* NOUVEAU : Calque doré invisible par défaut pour transition fluide */
