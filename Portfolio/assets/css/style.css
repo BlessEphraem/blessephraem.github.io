@@ -96,8 +96,9 @@ ul { list-style: none; }
     background: var(--primary); padding: 0.5rem 1.5rem; border-radius: 50px;
     color: white ; transition: var(--transition);
     font-family: 'Satoshi', sans-serif;
+    display: inline-block;
 }
-.btn-nav:hover { 
+.nav-links a.btn-nav:hover { 
     box-shadow: var(--glow-shadow); 
     color: var(--text-main);
     transform: scale(1.05);
