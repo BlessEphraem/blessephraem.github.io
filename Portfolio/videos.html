@@ -7,7 +7,6 @@
 
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 
-    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <link rel="stylesheet" href="assets/css/style.css">
@@ -104,7 +103,7 @@
 </head>
 <body>
 
-    <nav class="navbar">
+    <nav class="navbar scrolled">
         <div class="nav-container">
             <a href="index.html" class="logo"><span class="accent">EPHRAEM</span></a>
             <button class="mobile-toggle" aria-label="Menu">
@@ -171,20 +170,45 @@
             if (total <= 1) { nav.innerHTML = ''; return; }
 
             const buttons = [];
-
+            // Bouton Précédent
             buttons.push(`<button ${currentPage === 1 ? 'disabled' : ''} onclick="renderPage(${currentPage - 1})">&#8592;</button>`);
 
-            for (let i = 1; i <= total; i++) {
-                if (
-                    i === 1 || i === total ||
-                    (i >= currentPage - 2 && i <= currentPage + 2)
-                ) {
+            if (total <= 7) {
+                // Si peu de pages, on affiche tout
+                for (let i = 1; i <= total; i++) {
                     buttons.push(`<button class="${i === currentPage ? 'active' : ''}" onclick="renderPage(${i})">${i}</button>`);
-                } else if (i === currentPage - 3 || i === currentPage + 3) {
+                }
+            } else {
+                // Logique de fenêtre glissante (toujours max ~7 slots numériques)
+                
+                // Toujours la première
+                buttons.push(`<button class="${1 === currentPage ? 'active' : ''}" onclick="renderPage(1)">1</button>`);
+
+                if (currentPage > 3) {
                     buttons.push(`<button disabled>…</button>`);
                 }
+
+                // Bloc central
+                let start = Math.max(2, currentPage - 1);
+                let end = Math.min(total - 1, currentPage + 1);
+
+                // Ajustement si on est au début ou à la fin pour garder le même nombre de boutons
+                if (currentPage <= 3) end = 4;
+                if (currentPage >= total - 2) start = total - 3;
+
+                for (let i = start; i <= end; i++) {
+                    buttons.push(`<button class="${i === currentPage ? 'active' : ''}" onclick="renderPage(${i})">${i}</button>`);
+                }
+
+                if (currentPage < total - 2) {
+                    buttons.push(`<button disabled>…</button>`);
+                }
+
+                // Toujours la dernière
+                buttons.push(`<button class="${total === currentPage ? 'active' : ''}" onclick="renderPage(${total})">${total}</button>`);
             }
 
+            // Bouton Suivant
             buttons.push(`<button ${currentPage === total ? 'disabled' : ''} onclick="renderPage(${currentPage + 1})">&#8594;</button>`);
 
             nav.innerHTML = buttons.join('');
