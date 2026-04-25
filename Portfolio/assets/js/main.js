@@ -1,7 +1,23 @@
 function leaveAndNavigate(url) {
-    document.body.classList.add('is-leaving');
-    setTimeout(() => { window.location.href = url; }, 260);
+    const overlay = document.getElementById('page-transition');
+    if (overlay) {
+        overlay.classList.remove('hidden');
+        overlay.classList.add('visible');
+        setTimeout(() => { window.location.href = url; }, 420);
+    } else {
+        window.location.href = url;
+    }
 }
+
+// Fade-in on page load: overlay starts opaque, dissolves on first paint
+(function() {
+    const overlay = document.getElementById('page-transition');
+    if (overlay) {
+        requestAnimationFrame(() => {
+            overlay.classList.add('hidden');
+        });
+    }
+})();
 
 document.addEventListener('DOMContentLoaded', () => {
 

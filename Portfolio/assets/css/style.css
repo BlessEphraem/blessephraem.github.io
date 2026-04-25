@@ -59,25 +59,30 @@ i {
     font-family: inherit; /* Laisse Font Awesome gérer ses classes */
 }
 
-@keyframes pageIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
 body {
     background-color: var(--bg-dark);
     color: var(--text-main);
     line-height: 1.6;
     overflow-x: hidden;
-    animation: pageIn 0.4s ease both;
 }
 
-body.is-leaving {
-    animation: none;
-    opacity: 0;
-    transform: translateY(-8px);
-    transition: opacity 0.25s ease, transform 0.25s ease;
+/* Page Transition Overlay */
+#page-transition {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-dark);
+    z-index: 9999;
     pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.45s ease;
+}
+
+#page-transition.visible {
+    opacity: 1;
+}
+
+#page-transition.hidden {
+    opacity: 0;
 }
 
 h1, h2, h3, .btn { font-family: 'Satoshi', sans-serif; letter-spacing: var(--letter-spacing); }

@@ -35,11 +35,6 @@
             font-family: inherit; /* Laisse Font Awesome gérer ses classes */
         }
 
-        @keyframes pageIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
@@ -51,16 +46,19 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
-            animation: pageIn 0.4s ease both;
         }
 
-        body.is-leaving {
-            animation: none;
-            opacity: 0;
-            transform: translateY(-8px);
-            transition: opacity 0.25s ease, transform 0.25s ease;
+        #page-transition {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-dark);
+            z-index: 9999;
             pointer-events: none;
+            opacity: 1;
+            transition: opacity 0.45s ease;
         }
+        #page-transition.hidden { opacity: 0; }
+        #page-transition.visible { opacity: 1; }
 
         /* Socials */
         .socials {
@@ -259,6 +257,7 @@
     </style>
 </head>
 <body>
+    <div id="page-transition"></div>
     <main class="landing">
         <div class="logo-side">
             <span class="logo-name">EPHRAEM</span>
@@ -286,12 +285,31 @@
         </div>
     </main>
     <script>
-        document.querySelector('.nav-btn-portfolio')?.addEventListener('click', function(e) {
-            e.preventDefault();
-            const url = this.getAttribute('href');
-            document.body.classList.add('is-leaving');
-            setTimeout(() => { window.location.href = url; }, 260);
-        });
+        (function() {
+            const overlay = document.getElementById('page-transition');
+
+            // Fade in on page load
+            if (overlay) {
+                requestAnimationFrame(() => {
+                    overlay.classList.add('hidden');
+                });
+            }
+
+            function leaveAndNavigate(url) {
+                if (overlay) {
+                    overlay.classList.remove('hidden');
+                    overlay.classList.add('visible');
+                    setTimeout(() => { window.location.href = url; }, 420);
+                } else {
+                    window.location.href = url;
+                }
+            }
+
+            document.querySelector('.nav-btn-portfolio')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                leaveAndNavigate(this.getAttribute('href'));
+            });
+        })();
     </script>
 </body>
 </html>

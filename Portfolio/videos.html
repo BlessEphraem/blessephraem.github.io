@@ -102,6 +102,8 @@
 </head>
 <body>
 
+    <div id="page-transition"></div>
+
     <nav class="navbar scrolled">
         <div class="nav-container">
             <a href="https://blessephraem.github.io/" class="logo"><span class="accent">EPHRAEM</span></a>
@@ -132,6 +134,14 @@
     </footer>
 
     <script>
+        // Fade-in on page load
+        (function() {
+            const overlay = document.getElementById('page-transition');
+            if (overlay) {
+                requestAnimationFrame(() => { overlay.classList.add('hidden'); });
+            }
+        })();
+
         const PER_PAGE = 9;
         let allVideos = [];
         let currentPage = 1;
@@ -245,8 +255,14 @@
 
         // Page transitions: navbar → portfolio
         function leaveAndNavigate(url) {
-            document.body.classList.add('is-leaving');
-            setTimeout(() => { window.location.href = url; }, 260);
+            const overlay = document.getElementById('page-transition');
+            if (overlay) {
+                overlay.classList.remove('hidden');
+                overlay.classList.add('visible');
+                setTimeout(() => { window.location.href = url; }, 420);
+            } else {
+                window.location.href = url;
+            }
         }
         document.querySelectorAll('.nav-links a[href^="index.html"]').forEach(link => {
             link.addEventListener('click', (e) => {
