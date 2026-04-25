@@ -71,7 +71,7 @@ ul { list-style: none; }
 
 /* Utilities */
 .container { max-width: var(--max-width); margin: 0 auto; padding: 0 20px; }
-.accent { color: var(--primary); }
+.accent { color: var(--primary); font-weight: 900;}
 .section { padding: 80px 0; }
 .section-title { font-size: 2.5rem; text-align: center; margin-bottom: 3rem; font-family: 'Satoshi', sans-serif; font-weight: 900; }
 .bg-alt { background: var(--gradient-section); }
@@ -97,7 +97,11 @@ ul { list-style: none; }
     color: white ; transition: var(--transition);
     font-family: 'Satoshi', sans-serif;
 }
-.btn-nav:hover { box-shadow: var(--glow-shadow); }
+.btn-nav:hover { 
+    box-shadow: var(--glow-shadow); 
+    color: var(--text-main);
+    transform: scale(1.05);
+}
 .mobile-toggle { display: none; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
 
 /* Hero Section */
@@ -121,7 +125,6 @@ ul { list-style: none; }
 .hero h1 { 
     font-size: 3.5rem; margin: 10px 0; 
     background: var(--gradient-text); 
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
     font-family: 'Satoshi', sans-serif; font-weight: 900;
 }
 .dynamic-text-wrapper { font-size: 1.2rem; color: var(--secondary); margin-bottom: 20px; font-family: 'Satoshi', sans-serif; font-weight: 700; }
