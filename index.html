@@ -1,53 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ephraem</title>
+    <link rel="icon" type="image/x-icon" href="Portfolio/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" rel="stylesheet">
-    <meta name="description" content="Ephraem — Video editor, developer, and open-source tool builder.">
-    <link rel="icon" type="image/x-icon" href="Portfolio/favicon.ico">
+    <meta name="description" content="Ephraem — Éditeur Vidéo, Graphiste et Motion Designer.">
     <style>
         :root {
             --primary: #ff1796;
             --secondary: #3ad0ff;
             --bg-dark: #0f1013;
-            --bg-card: rgba(30, 32, 40, 0.6);
             --text-main: #ffffff;
-            --text-muted: #b0b8c1;
-            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-            --glow-pink: 0 0 40px rgba(255, 23, 150, 0.3);
-            --glow-blue: 0 0 40px rgba(58, 208, 255, 0.3);
+            --text-muted: #7a8494;
             --radius: 20px;
             --transition: all 0.3s ease;
         }
 
-        *:not(i) { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            font-family: 'Satoshi', sans-serif !important; 
+        *:not(i) {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Satoshi', sans-serif !important;
         }
+        i { font-family: inherit; }
 
-        i {
-            font-family: inherit; /* Laisse Font Awesome gérer ses classes */
-        }
+        html, body { height: 100%; }
 
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
+            overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
         }
 
+        /* Vignette */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(15, 16, 19, 0.75) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Grid */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Blobs */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 0;
+            animation: blobPulse 9s ease-in-out infinite;
+        }
+        .blob-pink {
+            width: 560px;
+            height: 560px;
+            background: radial-gradient(circle, rgba(255, 23, 150, 0.14) 0%, transparent 70%);
+            top: -140px;
+            right: -100px;
+        }
+        .blob-cyan {
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, rgba(58, 208, 255, 0.1) 0%, transparent 70%);
+            bottom: -120px;
+            left: -100px;
+            animation-delay: -4.5s;
+        }
+        @keyframes blobPulse {
+            0%, 100% { transform: scale(1);    opacity: 0.8; }
+            50%       { transform: scale(1.15); opacity: 1;   }
+        }
+
+        /* Page Transition */
         @keyframes overlayEnter {
             from { opacity: 1; }
             to   { opacity: 0; }
@@ -65,232 +107,303 @@
             animation: overlayEnter 0.55s ease-out both;
         }
 
-        /* Socials */
-        .socials {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin-top: 15px;
-            font-size: 1.8rem;
-        }
-
-        .socials a {
-            color: var(--text-muted);
-            transition: var(--transition);
-            display: inline-block;
-        }
-
-        .socials a:hover {
-            color: var(--primary);
-            transform: translateY(-5px);
-        }
-
-        /* Background glow blobs */
-        body::before {
-            content: '';
-            position: fixed;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(255, 23, 150, 0.08) 0%, transparent 70%);
-            top: -100px;
-            left: -100px;
-            pointer-events: none;
-        }
-        body::after {
-            content: '';
-            position: fixed;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(58, 208, 255, 0.06) 0%, transparent 70%);
-            bottom: -100px;
-            right: -100px;
-            pointer-events: none;
-        }
-
-        .landing {
-            display: flex;
-            align-items: center;
-            gap: 60px;
-            padding: 40px;
+        /* Layout */
+        .wrapper {
             position: relative;
-            z-index: 1;
-        }
-
-        /* Logo side */
-        .logo-side {
+            z-index: 2;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            gap: 12px;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 24px 40px;
+            gap: 56px;
         }
 
-        .logo-name {
-            font-size: clamp(3rem, 6vw, 5.5rem);
-            font-family: 'Satoshi', sans-serif !important;
-            font-weight: 900 !important;
-            letter-spacing: -0.02em;
+        /* Hero */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 7px 18px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 23, 150, 0.35);
+            background: rgba(255, 23, 150, 0.07);
+            font-size: 0.68rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--primary);
+            flex-shrink: 0;
+            animation: dotPulse 2.2s ease-in-out infinite;
+        }
+        @keyframes dotPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.4; transform: scale(0.65); }
+        }
+
+        .name {
+            font-size: clamp(4rem, 11vw, 9rem);
+            font-weight: 900;
+            letter-spacing: 0.05em;
             line-height: 1;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--primary));
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: nameFlow 5s linear infinite;
+            filter: drop-shadow(0 0 50px rgba(255, 23, 150, 0.22));
+        }
+        @keyframes nameFlow {
+            from { background-position: 0% center; }
+            to   { background-position: 200% center; }
         }
 
-        .logo-tagline {
-            font-size: 0.95rem;
+        .tagline {
+            font-size: clamp(0.78rem, 1.8vw, 0.95rem);
             color: var(--text-muted);
             letter-spacing: 0.12em;
             text-transform: uppercase;
-            font-weight: 400;
+            font-weight: 500;
         }
 
-        /* Divider */
-        .divider {
-            width: 1px;
-            height: 160px;
-            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.15), transparent);
-            flex-shrink: 0;
-        }
-
-        /* Button side */
-        .btn-side {
+        .socials {
             display: flex;
-            flex-direction: column;
-            gap: 20px;
+            gap: 14px;
+            margin-top: 6px;
+        }
+        .socials a {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
+            text-decoration: none;
+        }
+        .socials a:hover {
+            color: var(--primary);
+            border-color: rgba(255, 23, 150, 0.45);
+            background: rgba(255, 23, 150, 0.08);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(255, 23, 150, 0.18);
         }
 
-        .nav-btn {
+        /* Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            width: 100%;
+            max-width: 780px;
+        }
+
+        .card {
+            position: relative;
             display: flex;
             align-items: center;
-            gap: 16px;
-            padding: 22px 36px;
+            gap: 20px;
+            padding: 28px 30px;
             border-radius: var(--radius);
             text-decoration: none;
             color: var(--text-main);
-            font-size: 1.2rem;
-            font-family: 'Satoshi', sans-serif !important;
-            font-weight: 900 !important;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            transition: var(--transition);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            min-width: 240px;
-            position: relative;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        box-shadow 0.35s ease,
+                        border-color 0.35s ease;
             overflow: hidden;
         }
 
-        .nav-btn::before {
+        /* Shine sweep */
+        .card::after {
             content: '';
             position: absolute;
-            inset: 0;
+            top: -60%;
+            left: -80%;
+            width: 55%;
+            height: 220%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+            transform: skewX(-15deg);
+            transition: left 0.65s ease;
+            pointer-events: none;
+        }
+        .card:hover::after { left: 130%; }
+
+        .card-portfolio {
+            background: rgba(255, 23, 150, 0.055);
+            border: 1px solid rgba(255, 23, 150, 0.18);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 40px rgba(0,0,0,0.45);
+        }
+        .card-portfolio:hover {
+            transform: translateY(-7px) scale(1.02);
+            border-color: rgba(255, 23, 150, 0.55);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.08),
+                0 0 45px rgba(255, 23, 150, 0.18),
+                0 24px 60px rgba(0,0,0,0.5);
+        }
+
+        .card-wiki {
+            background: rgba(58, 208, 255, 0.045);
+            border: 1px solid rgba(58, 208, 255, 0.16);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 40px rgba(0,0,0,0.45);
+        }
+        .card-wiki:hover {
+            transform: translateY(-7px) scale(1.02);
+            border-color: rgba(58, 208, 255, 0.5);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.08),
+                0 0 45px rgba(58, 208, 255, 0.15),
+                0 24px 60px rgba(0,0,0,0.5);
+        }
+
+        .card-icon {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            line-height: 1;
+        }
+        .card-portfolio .card-icon { background: rgba(255, 23, 150, 0.12); }
+        .card-wiki     .card-icon { background: rgba(58, 208, 255, 0.10); }
+
+        .card-body { flex: 1; }
+
+        .card-body h2 {
+            font-size: 1rem;
+            font-weight: 900;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .card-portfolio .card-body h2 { color: var(--primary); }
+        .card-wiki      .card-body h2 { color: var(--secondary); }
+
+        .card-body p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            line-height: 1.4;
+        }
+
+        .card-arrow {
+            font-size: 1.2rem;
+            color: var(--text-muted);
             opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .nav-btn:hover::before { opacity: 1; }
-
-        .nav-btn-portfolio {
-            background: rgba(255, 23, 150, 0.12);
-            border: 1px solid rgba(255, 23, 150, 0.35);
-            box-shadow: var(--glass-shadow);
-        }
-        .nav-btn-portfolio::before {
-            background: rgba(255, 23, 150, 0.08);
-        }
-        .nav-btn-portfolio:hover {
-            border-color: rgba(255, 23, 150, 0.7);
-            box-shadow: var(--glow-pink), var(--glass-shadow);
-            transform: translateX(4px);
-        }
-
-        .nav-btn-wiki {
-            background: rgba(58, 208, 255, 0.10);
-            border: 1px solid rgba(58, 208, 255, 0.3);
-            box-shadow: var(--glass-shadow);
-        }
-        .nav-btn-wiki::before {
-            background: rgba(58, 208, 255, 0.07);
-        }
-        .nav-btn-wiki:hover {
-            border-color: rgba(58, 208, 255, 0.65);
-            box-shadow: var(--glow-blue), var(--glass-shadow);
-            transform: translateX(4px);
-        }
-
-        .btn-icon {
-            font-size: 1.5rem;
+            transform: translateX(-10px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
             flex-shrink: 0;
         }
-
-        .btn-label {
-            flex: 1;
-        }
-
-        .btn-arrow {
-            opacity: 0;
-            transform: translateX(-8px);
-            transition: var(--transition);
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
-        .nav-btn:hover .btn-arrow {
+        .card:hover .card-arrow {
             opacity: 1;
             transform: translateX(0);
         }
 
-        /* Portfolio accent color on icon */
-        .nav-btn-portfolio .btn-icon { color: var(--primary); }
-        .nav-btn-wiki .btn-icon { color: var(--secondary); }
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 0 0 28px;
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+        }
 
         /* Responsive */
-        @media (max-width: 640px) {
-            .landing {
-                flex-direction: column;
-                gap: 40px;
-                align-items: center;
-                text-align: center;
+        @media (max-width: 600px) {
+            .wrapper { gap: 44px; padding: 48px 20px 36px; }
+            .cards {
+                grid-template-columns: 1fr;
+                max-width: 380px;
             }
-            .logo-side { align-items: center; }
-            .divider {
-                width: 120px;
-                height: 1px;
-                background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.15), transparent);
-            }
-            .nav-btn { min-width: 200px; }
+            .card { padding: 22px 22px; }
+            .name { letter-spacing: 0.02em; }
+            .tagline { letter-spacing: 0.08em; }
+        }
+
+        @media (max-width: 360px) {
+            .name { font-size: 3.2rem; }
         }
     </style>
 </head>
 <body>
     <div id="page-transition"></div>
-    <main class="landing">
-        <div class="logo-side">
-            <span class="logo-name">EPHRAEM</span>
-            <span class="logo-tagline">Developer &amp; Creator</span>
-        </div>
+    <div class="bg-grid"></div>
+    <div class="blob blob-pink"></div>
+    <div class="blob blob-cyan"></div>
 
-        <div class="divider"></div>
+    <div class="wrapper">
+        <section class="hero">
+            <span class="badge">Créateur Numérique</span>
+            <h1 class="name">EPHRAEM</h1>
+            <p class="tagline">Éditeur Vidéo &nbsp;·&nbsp; Graphiste &nbsp;·&nbsp; Motion Designer</p>
+            <nav class="socials">
+                <a href="https://www.youtube.com/@Eph_raem" target="_blank" rel="noopener" aria-label="YouTube">
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
+                <a href="https://www.instagram.com/bless_ephraem" target="_blank" rel="noopener" aria-label="Instagram">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="https://github.com/BlessEphraem" target="_blank" rel="noopener" aria-label="GitHub">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+            </nav>
+        </section>
 
-        <div class="btn-side">
-            <a href="./Portfolio/" class="nav-btn nav-btn-portfolio">
-                <span class="btn-icon">🎬</span>
-                <span class="btn-label">Portfolio</span>
-                <span class="btn-arrow">→</span>
+        <div class="cards">
+            <a href="./Portfolio/" class="card card-portfolio">
+                <div class="card-icon">🎬</div>
+                <div class="card-body">
+                    <h2>Portfolio</h2>
+                    <p>Montage vidéo, graphisme &amp; 3D</p>
+                </div>
+                <span class="card-arrow">→</span>
             </a>
-            <a href="./wiki/" class="nav-btn nav-btn-wiki">
-                <span class="btn-icon">📖</span>
-                <span class="btn-label">Wiki</span>
-                <span class="btn-arrow">→</span>
+            <a href="./wiki/" class="card card-wiki">
+                <div class="card-icon">📖</div>
+                <div class="card-body">
+                    <h2>Wiki</h2>
+                    <p>Notes, ressources &amp; docs</p>
+                </div>
+                <span class="card-arrow">→</span>
             </a>
-            <div class="socials">
-                <a href="https://www.youtube.com/@Eph_raem" target="_blank"><i class="fa-brands fa-youtube"></i></a>
-                <a href="https://www.instagram.com/bless_ephraem" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-                <a href="https://github.com/BlessEphraem" target="_blank"><i class="fa-brands fa-github"></i></a>
-            </div>
         </div>
-    </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Ephraem.</p>
+    </footer>
+
     <script>
-        (function() {
+        (function () {
             const overlay = document.getElementById('page-transition');
 
             function leaveAndNavigate(url) {
@@ -298,15 +411,20 @@
                     overlay.style.animation = 'none';
                     overlay.offsetHeight;
                     overlay.style.animation = 'overlayLeave 0.35s ease-in both';
-                    setTimeout(() => { window.location.href = url; }, 340);
+                    setTimeout(function () { window.location.href = url; }, 340);
                 } else {
                     window.location.href = url;
                 }
             }
 
-            document.querySelector('.nav-btn-portfolio')?.addEventListener('click', function(e) {
-                e.preventDefault();
-                leaveAndNavigate(this.getAttribute('href'));
+            document.querySelectorAll('.card').forEach(function (card) {
+                card.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href && !href.startsWith('http') && !this.getAttribute('target')) {
+                        e.preventDefault();
+                        leaveAndNavigate(href);
+                    }
+                });
             });
         })();
     </script>
