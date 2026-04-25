@@ -66,6 +66,65 @@ body {
     overflow-x: hidden;
 }
 
+/* Vignette */
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(15, 16, 19, 0.7) 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Background grid */
+.bg-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+    background-size: 64px 64px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Glow blobs */
+@keyframes blobPulse {
+    0%, 100% { transform: scale(1);    opacity: 0.8; }
+    50%       { transform: scale(1.15); opacity: 1;   }
+}
+
+.blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    z-index: 0;
+    animation: blobPulse 9s ease-in-out infinite;
+}
+
+.blob-pink {
+    width: 560px;
+    height: 560px;
+    background: radial-gradient(circle, rgba(255, 23, 150, 0.13) 0%, transparent 70%);
+    top: -140px;
+    right: -100px;
+}
+
+.blob-cyan {
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, rgba(58, 208, 255, 0.09) 0%, transparent 70%);
+    bottom: -120px;
+    left: -100px;
+    animation-delay: -4.5s;
+}
+
+@media (max-width: 600px) {
+    .blob-pink  { width: 280px; height: 280px; top: -60px; right: -60px; }
+    .blob-cyan  { width: 240px; height: 240px; bottom: -60px; left: -60px; }
+}
+
 /* Page Transition Overlay */
 @keyframes overlayEnter {
     from { opacity: 1; }
@@ -92,7 +151,7 @@ ul { list-style: none; }
 /* Utilities */
 .container { max-width: var(--max-width); margin: 0 auto; padding: 0 20px; }
 .accent { color: var(--primary); font-weight: 900; letter-spacing: var(--letter-spacing);}
-.section { padding: 80px 0; }
+.section { padding: 80px 0; position: relative; z-index: 1; }
 .section-title { font-size: 2.5rem; text-align: center; margin-bottom: 3rem; font-family: 'Satoshi', sans-serif; font-weight: 900; }
 .bg-alt { background: var(--gradient-section); }
 
@@ -135,7 +194,7 @@ ul { list-style: none; }
 /* Hero Section */
 .hero {
     min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    position: relative; overflow: hidden; padding-top: 80px;
+    position: relative; overflow: hidden; padding-top: 80px; z-index: 1;
 }
 .hero-content { text-align: center; z-index: 2; max-width: 800px; padding: 0 20px; }
 .hero-visual { position: relative; width: 250px; height: 250px; margin: 0 auto 30px; }
