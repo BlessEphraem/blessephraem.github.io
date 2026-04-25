@@ -1,3 +1,5 @@
+@import url('https://fonts.cdnfonts.com/css/satoshi');
+
 :root {
     /* --- COULEURS PRINCIPALES --- */
     --primary: #ff1796;
@@ -45,7 +47,8 @@
     padding: 0; 
     box-sizing: border-box; 
     scroll-behavior: smooth; 
-    font-family: 'Satoshi-Regular', sans-serif !important;
+    font-family: 'Satoshi', sans-serif !important;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -70,7 +73,7 @@ ul { list-style: none; }
 .container { max-width: var(--max-width); margin: 0 auto; padding: 0 20px; }
 .accent { color: var(--primary); }
 .section { padding: 80px 0; }
-.section-title { font-size: 2.5rem; text-align: center; margin-bottom: 3rem; font-family: 'Satoshi-Black', sans-serif; }
+.section-title { font-size: 2.5rem; text-align: center; margin-bottom: 3rem; font-family: 'Satoshi', sans-serif; font-weight: 900; }
 .bg-alt { background: var(--gradient-section); }
 
 /* Navbar */
@@ -119,9 +122,9 @@ ul { list-style: none; }
     font-size: 3.5rem; margin: 10px 0; 
     background: var(--gradient-text); 
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-    font-family: 'Satoshi-Black', sans-serif;
+    font-family: 'Satoshi', sans-serif; font-weight: 900;
 }
-.dynamic-text-wrapper { font-size: 1.2rem; color: var(--secondary); margin-bottom: 20px; font-family: 'Satoshi-Bold', sans-serif; }
+.dynamic-text-wrapper { font-size: 1.2rem; color: var(--secondary); margin-bottom: 20px; font-family: 'Satoshi', sans-serif; font-weight: 700; }
 .description { margin: 20px auto; color: var(--text-muted); max-width: 600px; }
 
 .hero-btns { display: flex; gap: 20px; justify-content: center; margin-top: 30px; }
@@ -129,7 +132,7 @@ ul { list-style: none; }
 .socials a:hover { transform: translateY(-5px); color: var(--primary); }
 
 /* Buttons */
-.btn { padding: 0.5em 1em; border-radius: 16px; font-family: 'Satoshi-Bold', sans-serif; cursor: pointer; border: none; transition: var(--transition); }
+.btn { padding: 0.5em 1em; border-radius: 16px; font-family: 'Satoshi', sans-serif; font-weight: 700; cursor: pointer; border: none; transition: var(--transition); }
 .btn-primary { background: var(--primary); color: white; box-shadow: var(--glow-shadow); border: 2px solid transparent}
 .btn-outline { border: 2px solid var(--primary); color: white; background: transparent;}
 .btn:hover { transform: scale(1.05); }
@@ -153,13 +156,13 @@ ul { list-style: none; }
     position: absolute; left: -6px; top: 5px; width: 10px; height: 10px;
     background: var(--primary); border-radius: 50%; box-shadow: 0 0 10px var(--primary);
 }
-.timeline-date { font-size: 0.9rem; color: var(--secondary); margin-bottom: 10px; font-family: 'Satoshi-Bold', sans-serif; }
+.timeline-date { font-size: 0.9rem; color: var(--secondary); margin-bottom: 10px; font-family: 'Satoshi', sans-serif; font-weight: 700; }
 .timeline-content { 
     background: var(--bg-card); padding: 20px; border-radius: 10px; border: var(--glass-border); 
     transition: var(--transition);
 }
 .timeline-content:hover { border-color: var(--primary); transform: translateX(5px); }
-.timeline-content h3 { color: white; margin-bottom: 5px; font-family: 'Satoshi-Bold', sans-serif; }
+.timeline-content h3 { color: white; margin-bottom: 5px; font-family: 'Satoshi', sans-serif; font-weight: 700; }
 .timeline-content p { font-size: 0.95rem; color: var(--text-muted); }
 
 /* Contact Form */
@@ -168,7 +171,7 @@ ul { list-style: none; }
     border-radius: var(--radius); border: var(--glass-border);
 }
 .form-group { margin-bottom: 20px; }
-.form-group label { display: block; margin-bottom: 8px; font-family: 'Satoshi-Bold', sans-serif; color: var(--secondary); }
+.form-group label { display: block; margin-bottom: 8px; font-family: 'Satoshi', sans-serif; font-weight: 700; color: var(--secondary); }
 .form-group input, .form-group textarea {
     width: 100%; padding: 12px; 
     background: var(--bg-input); 
@@ -178,7 +181,7 @@ ul { list-style: none; }
 .form-group input:focus, .form-group textarea:focus { 
     outline: none; border-color: var(--primary); background: var(--bg-input-focus); 
 }
-#form-status { margin-top: 15px; font-family: 'Satoshi-Bold', sans-serif; text-align: center; }
+#form-status { margin-top: 15px; font-family: 'Satoshi', sans-serif; font-weight: 700; text-align: center; }
 
 footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 0.9rem; border-top: var(--glass-border); margin-top: 50px;}
 
@@ -209,7 +212,7 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
     border-bottom: var(--glass-border);
     padding-bottom: 10px;
     width: 100%;
-    font-family: 'Satoshi-Black', sans-serif;
+    font-family: 'Satoshi', sans-serif; font-weight: 900;
 }
 
 .service-header {
@@ -225,7 +228,7 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
     font-size: 1.2rem;
     color: white;
     margin: 0;
-    font-family: 'Satoshi-Bold', sans-serif;
+    font-family: 'Satoshi', sans-serif; font-weight: 700;
 }
 
 .price-tag {
@@ -233,7 +236,7 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
     color: var(--green);
     padding: 5px 10px;
     border-radius: 8px;
-    font-family: 'Satoshi-Black', sans-serif;
+    font-family: 'Satoshi', sans-serif; font-weight: 900;
     font-size: 0.9rem;
     white-space: nowrap;
 }
@@ -247,7 +250,7 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
 .service-meta {
     font-size: 0.85rem;
     color: var(--secondary);
-    font-family: 'Satoshi-Bold', sans-serif;
+    font-family: 'Satoshi', sans-serif; font-weight: 700;
     margin-top: auto; 
 }
 
@@ -270,7 +273,7 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
     color: var(--primary);
     position: absolute;
     left: 0;
-    font-family: 'Satoshi-Black', sans-serif;
+    font-family: 'Satoshi', sans-serif; font-weight: 900;
 }
 
 /* Style spécial pour la box "Gros Concept" (RGB TILT EFFECT) */
@@ -432,7 +435,7 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
     color: white;
     display: block;
     margin-bottom: 5px;
-    font-family: 'Satoshi-Black', sans-serif;
+    font-family: 'Satoshi', sans-serif; font-weight: 900;
 }
 
 .option-item p {
@@ -493,7 +496,7 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
 .video-title {
     margin-top: 20px;
     font-size: 1.5rem;
-    font-family: 'Satoshi-Black', sans-serif;
+    font-family: 'Satoshi', sans-serif; font-weight: 900;
     color: var(--primary); /* Rose */
     text-transform: uppercase;
     letter-spacing: 2px;
