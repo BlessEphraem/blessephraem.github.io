@@ -10,7 +10,8 @@ function leaveAndNavigate(url) {
     }
 }
 
-window.addEventListener('pageshow', () => {
+window.addEventListener('pageshow', (e) => {
+    if (!e.persisted) return;
     const overlay = document.getElementById('page-transition');
     if (!overlay) return;
     overlay.style.animation = 'none';

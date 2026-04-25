@@ -85,7 +85,7 @@ body::after {
         linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
     background-size: 64px 64px;
     pointer-events: none;
-    z-index: 0;
+    z-index: 1001;
 }
 
 /* Glow blobs */
@@ -99,7 +99,7 @@ body::after {
     border-radius: 50%;
     filter: blur(90px);
     pointer-events: none;
-    z-index: 0;
+    z-index: 1001;
     animation: blobPulse 9s ease-in-out infinite;
 }
 
