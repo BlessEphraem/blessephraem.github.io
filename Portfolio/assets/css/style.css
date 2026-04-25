@@ -650,7 +650,3 @@ footer { text-align: center; padding: 40px 0; color: var(--text-muted); font-siz
 
     .desktop-only-hint { display: none; }
 }
-    .pos-right { order: 3; }
-
-    .desktop-only-hint { display: none; }
-}
