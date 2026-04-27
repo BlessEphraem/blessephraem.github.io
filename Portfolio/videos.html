@@ -126,6 +126,35 @@
     <section class="section videos-page">
         <div class="container">
             <h2 class="section-title"><span class="accent">VIDEOS</span></h2>
+
+            <!-- Carousel vitrine -->
+            <div class="carousel-container">
+                <div class="video-card pos-left" id="video-left">
+                    <div class="video-wrapper">
+                        <div class="video-overlay"></div>
+                        <iframe title="Video Left" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <h3 class="video-title"></h3>
+                </div>
+                <div class="video-card pos-center" id="video-center">
+                    <div class="video-wrapper">
+                        <div class="video-overlay"></div>
+                        <iframe title="Video Center" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <h3 class="video-title"></h3>
+                </div>
+                <div class="video-card pos-right" id="video-right">
+                    <div class="video-wrapper">
+                        <div class="video-overlay"></div>
+                        <iframe title="Video Right" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <h3 class="video-title"></h3>
+                </div>
+            </div>
+            <p class="desktop-only-hint">
+                <small>Cliquez sur une vidéo latérale pour l'afficher au centre.</small>
+            </p>
+
             <div class="videos-grid" id="videos-container"></div>
             <div class="pagination" id="pagination"></div>
             <p class="page-info" id="page-info"></p>
@@ -221,6 +250,60 @@
             nav.innerHTML = buttons.join('');
         }
 
+        function updateVideoTitles() {
+            document.querySelectorAll('.video-card').forEach(card => {
+                const iframe = card.querySelector('iframe');
+                const titleEl = card.querySelector('.video-title');
+                if (iframe && titleEl && iframe.src) {
+                    const match = iframe.src.match(/\/embed\/([a-zA-Z0-9_-]+)/);
+                    if (match && match[1]) {
+                        const videoId = match[1];
+                        fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`)
+                            .then(r => r.json())
+                            .then(d => { if (d.title) titleEl.textContent = d.title; })
+                            .catch(() => {});
+                    }
+                }
+            });
+        }
+
+        document.querySelectorAll('.video-card').forEach(card => {
+            card.addEventListener('click', () => {
+                if (window.innerWidth <= 900) return;
+                if (card.classList.contains('pos-center')) return;
+                const currentCenter = document.querySelector('.video-card.pos-center');
+                if (!currentCenter) return;
+                let pos = '';
+                if (card.classList.contains('pos-left')) pos = 'pos-left';
+                else if (card.classList.contains('pos-right')) pos = 'pos-right';
+                if (!pos) return;
+                card.classList.remove(pos);
+                card.classList.add('pos-center');
+                currentCenter.classList.remove('pos-center');
+                currentCenter.classList.add(pos);
+                const iframe = currentCenter.querySelector('iframe');
+                if (iframe) { const s = iframe.src; iframe.src = s; }
+            });
+        });
+
+        // Vitrine carousel depuis carousel.json (fichier manuel)
+        fetch('carousel.json')
+            .then(r => r.ok ? r.json() : Promise.reject())
+            .then(data => {
+                const featured = data.featured || [];
+                const slots = ['video-left', 'video-center', 'video-right'];
+                slots.forEach((id, i) => {
+                    if (!featured[i]) return;
+                    const vid = getYouTubeId(featured[i].url);
+                    if (!vid) return;
+                    const iframe = document.querySelector('#' + id + ' iframe');
+                    if (iframe) iframe.src = 'https://www.youtube.com/embed/' + vid;
+                });
+                updateVideoTitles();
+            })
+            .catch(() => {});
+
+        // Grille paginée depuis videos.json (généré par CI)
         fetch('videos.json')
             .then(r => { if (!r.ok) throw new Error(); return r.json(); })
             .then(data => {

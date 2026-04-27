@@ -175,7 +175,6 @@ def update_portfolio() -> None:
         print("\nAucune nouvelle vidéo trouvée et aucun changement d'exclusion.")
 
     # Always generate the final output for the site
-    # This combines everything in archive_videos
     save_json(OUTPUT_FILE, {"videos": archive_videos})
 
 
