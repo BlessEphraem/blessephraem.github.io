@@ -165,6 +165,7 @@
         <p>&copy; 2025 Ephraem.</p>
     </footer>
 
+    <script src="assets/js/transitions.js"></script>
     <script>
         const PER_PAGE = 6;
         let allVideos = [];
@@ -331,18 +332,6 @@
             });
         }
 
-        // Page transitions: navbar → portfolio
-        function leaveAndNavigate(url) {
-            const overlay = document.getElementById('page-transition');
-            if (overlay) {
-                overlay.style.animation = 'none';
-                overlay.offsetHeight;
-                overlay.style.animation = 'overlayLeave 0.35s ease-in both';
-                setTimeout(() => { window.location.href = url; }, 340);
-            } else {
-                window.location.href = url;
-            }
-        }
         document.querySelectorAll('.nav-links a[href^="index.html"]').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -350,14 +339,6 @@
             });
         });
 
-        window.addEventListener('pageshow', (e) => {
-            if (!e.persisted) return;
-            const overlay = document.getElementById('page-transition');
-            if (!overlay) return;
-            overlay.style.animation = 'none';
-            overlay.offsetHeight;
-            overlay.style.animation = 'overlayEnter 0.55s ease-out both';
-        });
     </script>
 </body>
 </html>
