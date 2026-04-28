@@ -79,6 +79,49 @@ window.appRouter = {
 
             setTimeout(() => {
                 document.title = doc.title;
+
+                // --- Sync Stylesheets ---
+                const currentStyles = Array.from(document.head.querySelectorAll('link[rel="stylesheet"]'));
+                const newStyles = Array.from(doc.head.querySelectorAll('link[rel="stylesheet"]'));
+
+                // 1. Remove old styles that are not in the new document
+                currentStyles.forEach(style => {
+                    const href = style.getAttribute('href');
+                    if (!href) return;
+                    const currentUrl = new URL(href, window.location.href).href;
+                    
+                    const isStillNeeded = newStyles.some(newStyle => {
+                        const newHref = newStyle.getAttribute('href');
+                        if (!newHref) return false;
+                        const newUrl = new URL(newHref, url).href;
+                        return currentUrl === newUrl;
+                    });
+                    
+                    if (!isStillNeeded) style.remove();
+                });
+
+                // 2. Add new styles from the new document
+                newStyles.forEach(style => {
+                    const href = style.getAttribute('href');
+                    if (!href) return;
+                    const newUrl = new URL(href, url).href;
+                    
+                    const isAlreadyLoaded = Array.from(document.head.querySelectorAll('link[rel="stylesheet"]')).some(currentStyle => {
+                        const currentHref = currentStyle.getAttribute('href');
+                        if (!currentHref) return false;
+                        const currentResolved = new URL(currentHref, window.location.href).href;
+                        return currentResolved === newUrl;
+                    });
+                    
+                    if (!isAlreadyLoaded) {
+                        const newLink = document.createElement('link');
+                        newLink.rel = 'stylesheet';
+                        newLink.href = newUrl;
+                        document.head.appendChild(newLink);
+                    }
+                });
+                // ------------------------
+
                 document.body.innerHTML = doc.body.innerHTML;
 
                 if (!isPopState) {
