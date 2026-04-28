@@ -61,6 +61,25 @@ body::before {
     z-index: -2;
 }
 
+/* Page Transition Overlay */
+@keyframes overlayEnter {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+@keyframes overlayLeave {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+#page-transition {
+    position: fixed;
+    inset: 0;
+    background: #0f1013; /* Même couleur que --ifm-background-color */
+    z-index: 9999;
+    pointer-events: none;
+    animation: overlayEnter 0.55s ease-out both;
+}
+
 /* Vignette */
 body::after {
     content: '';
