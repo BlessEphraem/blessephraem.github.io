@@ -1,4 +1,4 @@
-import topicMap from '../../../.github/topic-map.json';
+import topicMap from '../../topics/topic-map.json';
 
 const CATEGORY_COLORS = Object.fromEntries(
   topicMap.mappings.map(({ category, color }) => [category, color ?? '#ffffff'])
