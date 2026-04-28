@@ -596,11 +596,11 @@ jobs:
                   nav_items.append({
                       "type": "html",
                       "value": "<span class='navbar__separator'>|</span>",
-                      "position": "left"
+                      "position": "right"
                   })
               nav_items.append({
                   "to": f"/{cat}/{category_first_slug[cat]}/",
-                  "position": "left",
+                  "position": "right",
                   "label": cat.capitalize()
               })
               first_cat = False

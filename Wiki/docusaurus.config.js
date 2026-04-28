@@ -86,13 +86,7 @@ const config = {
           style: { height: '32px', width: '32px' },
         },
         items: [
-          ...generatedNav,
-          {
-            href: 'pathname:///',
-            label: 'Menu',
-            position: 'right',
-            target: '_self',
-          },
+          ...generatedNav.map(item => ({...item, position: 'right'})),
         ],
       },
       footer: {
