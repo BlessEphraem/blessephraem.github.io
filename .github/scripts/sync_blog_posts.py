@@ -144,6 +144,7 @@ def write_blog_post(prog, release):
 
     path.write_text(frontmatter + "\n" + _build_post_body(release), encoding="utf-8")
     print(f"[POST] {filename}")
+    return category
 
 
 OWNER = _site_cfg["owner"]
@@ -168,6 +169,7 @@ for _repo in _all_repos:
 
 pathlib.Path("Blog/posts").mkdir(parents=True, exist_ok=True)
 
+_active_categories = []
 for prog in PROGRAMS:
     print(f"Fetching releases for {prog['repo']}...")
     try:
@@ -179,6 +181,24 @@ for prog in PROGRAMS:
         print(f"[NO RELEASES] {prog['repo']}")
         continue
     for rel in releases:
-        write_blog_post(prog, rel)
+        cat = write_blog_post(prog, rel)
+        if cat and cat not in _active_categories:
+            _active_categories.append(cat)
+
+_cat_order = [item["category"] for item in _topic_cfg["mappings"]]
+_active_categories.sort(key=lambda c: _cat_order.index(c) if c in _cat_order else 999)
+
+_nav_items = [
+    {
+        "to": f"/tags/{cat}",
+        "label": cat.capitalize(),
+        "position": "right",
+    }
+    for cat in _active_categories
+]
+pathlib.Path("Blog/generated-blog-navbar.json").write_text(
+    json.dumps(_nav_items, indent=2), encoding="utf-8"
+)
+print(f"Generated Blog/generated-blog-navbar.json with {len(_nav_items)} categories.")
 
 print("Done.")
