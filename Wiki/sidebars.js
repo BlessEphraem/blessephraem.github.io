@@ -1,7 +1,7 @@
 // @ts-check
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const topicMap = require('../.github/topic-map.json');
+const topicMap = require('./topics/topic-map.json');
 
 const seen = new Set();
 
