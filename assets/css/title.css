@@ -1,0 +1,8 @@
+/* Shared gradient title style — used by Wiki navbar & Portfolio hero */
+
+:root {
+  --title-gradient: linear-gradient(135deg, #ff1796, #3ad0ff);
+  --title-font: 'Satoshi', sans-serif;
+  --title-weight: 900;
+  --title-letter-spacing: 2px;
+}

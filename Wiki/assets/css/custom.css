@@ -1,4 +1,5 @@
 /* Ephraem Wiki — dark theme matching portfolio palette */
+@import url('../../../assets/css/title.css');
 
 :root {
   --ifm-color-primary: #ff1796;
@@ -67,15 +68,28 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .navbar__brand .navbar__title {
-  font-family: var(--ifm-font-family-black) !important;
+  font-family: var(--title-font) !important;
   font-size: 1.5rem;
-  font-weight: 900 !important;
-  letter-spacing: 2px;
+  font-weight: var(--title-weight) !important;
+  letter-spacing: var(--title-letter-spacing);
   text-transform: uppercase;
-  background: linear-gradient(135deg, var(--ifm-color-primary), var(--ifm-color-secondary));
+  background: var(--title-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* Center generated nav items (Programs | Plugins | Scripts) */
+@media (min-width: 997px) {
+  .navbar__inner {
+    position: relative;
+  }
+  .navbar__items--right {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
+  }
 }
 
 .navbar__logo {
