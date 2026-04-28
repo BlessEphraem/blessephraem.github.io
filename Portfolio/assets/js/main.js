@@ -164,9 +164,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. Chargement vitrine depuis carousel.json
+    // 5. Chargement vitrine depuis video-carousel.json
     if (document.querySelector('.carousel-container')) {
-        fetch('carousel.json')
+        fetch('videos/video-carousel.json')
             .then(r => r.ok ? r.json() : Promise.reject())
             .then(data => {
                 const featured = data.featured || [];

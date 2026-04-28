@@ -37,7 +37,9 @@ const config = {
     locales: ['en'],
   },
 
-  clientModules: ['./src/clientModules/categoryTheme.js'],
+  staticDirectories: ['assets'],
+
+  clientModules: ['./assets/clientModules/categoryTheme.js'],
 
   presets: [
     [
@@ -49,8 +51,11 @@ const config = {
           routeBasePath: '/',
         },
         blog: false,
+        pages: {
+          path: './pages',
+        },
         theme: {
-          customCss: ['./src/css/custom.css', './src/css/icons.css'],
+          customCss: ['./assets/css/custom.css', './assets/css/icons.css'],
         },
       }),
     ],

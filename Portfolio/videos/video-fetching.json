@@ -10,5 +10,8 @@
   "channels": [
     {"url": "https://www.youtube.com/@COLAS."},
     {"url": "https://www.youtube.com/@LordMakira"}
+  ],
+  "exclude": [
+    "https://youtu.be/RKsKR4pNq2g"
   ]
 }

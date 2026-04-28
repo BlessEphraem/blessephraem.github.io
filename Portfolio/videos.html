@@ -287,8 +287,8 @@
             });
         });
 
-        // Vitrine carousel depuis carousel.json (fichier manuel)
-        fetch('carousel.json')
+        // Vitrine carousel depuis video-carousel.json (fichier manuel)
+        fetch('videos/video-carousel.json')
             .then(r => r.ok ? r.json() : Promise.reject())
             .then(data => {
                 const featured = data.featured || [];

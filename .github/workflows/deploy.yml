@@ -57,7 +57,7 @@ jobs:
               text = re.sub(r'[^\w\s-]', '', text)
               return re.sub(r'[\s-]+', '-', text).strip('-')
 
-          with open(".github/topic-map.json", encoding="utf-8") as _f:
+          with open("Wiki/topics/topic-map.json", encoding="utf-8") as _f:
               _topic_config = json.load(_f)
 
           TOPIC_PRIORITY = {
@@ -327,7 +327,7 @@ jobs:
                           break
 
               folder_index_files = set(folder_linked.values())
-              docs_root = pathlib.Path("wiki/docs")
+              docs_root = pathlib.Path("Wiki/docs")
 
               for dir_name, dir_item in dirs.items():
                   if dir_name.startswith("."):
@@ -392,7 +392,7 @@ jobs:
                           print(f"ERROR fetching {download_url}: {e}")
                   elif ext in ["png", "jpg", "jpeg", "gif", "svg", "webp", "ico"] and img_prefix:
                       try:
-                          static_img_dir = pathlib.Path("wiki/static/img") / img_prefix
+                          static_img_dir = pathlib.Path("Wiki/assets/img") / img_prefix
                           static_img_dir.mkdir(parents=True, exist_ok=True)
                           img_path = static_img_dir / name
                           img_data = fetch_binary(download_url)
@@ -417,7 +417,7 @@ jobs:
                   content = fetch(f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/README.md")
                   content = rewrite_readme_absolute_paths(content, owner, repo, branch)
                   write_doc(
-                      f"wiki/docs/{category}/{slug}/index.mdx",
+                      f"Wiki/docs/{category}/{slug}/index.mdx",
                       f"---\ntitle: {display_name}\nhide_title: true\npagination_prev: null\npagination_next: null\n---",
                       content, slug
                   )
@@ -433,12 +433,12 @@ jobs:
                       f"[View on GitHub](https://github.com/{owner}/{repo})\n"
                   )
                   write_doc(
-                      f"wiki/docs/{category}/{slug}/index.mdx",
+                      f"Wiki/docs/{category}/{slug}/index.mdx",
                       f"---\ntitle: {display_name}\nhide_title: true\npagination_prev: null\npagination_next: null\n---",
                       _placeholder
                   )
 
-              prog_dir = pathlib.Path(f"wiki/docs/{category}/{slug}")
+              prog_dir = pathlib.Path(f"Wiki/docs/{category}/{slug}")
               prog_dir.mkdir(parents=True, exist_ok=True)
               (prog_dir / "_category_.json").write_text(
                   json.dumps({"label": display_name, "link": {"type": "doc", "id": f"{category}/{slug}/index"}}),
@@ -460,7 +460,7 @@ jobs:
               repo = prog["repo"]
               category = prog["category"]
               slug = slugify(repo)
-              path = f"wiki/docs/{category}/{slug}/releases.mdx"
+              path = f"Wiki/docs/{category}/{slug}/releases.mdx"
               doc_id = "releases"
               title = "📥 Releases"
               
@@ -501,7 +501,7 @@ jobs:
                       try:
                           icon_data = fetch_binary(icon_url)
                           ext = icon_url.split(".")[-1].split("?")[0]
-                          local_path = f"wiki/static/img/{img_prefix}/logo_navbar.{ext}"
+                          local_path = f"Wiki/assets/img/{img_prefix}/logo_navbar.{ext}"
                           pathlib.Path(local_path).parent.mkdir(parents=True, exist_ok=True)
                           pathlib.Path(local_path).write_bytes(icon_data)
 
@@ -510,7 +510,7 @@ jobs:
                               f".sidebar-icon-{img_prefix} > .menu__link::before",
                               f".sidebar-icon-{img_prefix} > .menu__list-item-collapsible > .menu__link::before"
                           ]
-                          dynamic_css += f"{', '.join(selectors)} {{ background-image: url('../../static/img/{img_prefix}/logo_navbar.{ext}'); }}\n"
+                          dynamic_css += f"{', '.join(selectors)} {{ background-image: url('../img/{img_prefix}/logo_navbar.{ext}'); }}\n"
                           print(f"Icon found for {repo}: {local_path}")
                       except Exception as e:
                           print(f"Error downloading icon for {repo}: {e}")
@@ -527,7 +527,7 @@ jobs:
                       print(f"No icon found for {repo}, using emoji fallback")
 
                   # Inject className into the root _category_.json for sidebar icons
-                  cat_path = pathlib.Path(f"wiki/docs/{prog['category']}/{img_prefix}/_category_.json")
+                  cat_path = pathlib.Path(f"Wiki/docs/{prog['category']}/{img_prefix}/_category_.json")
                   if cat_path.exists():
                       cat_data = json.loads(cat_path.read_text(encoding="utf-8"))
                       cat_data["className"] = f"sidebar-icon-{img_prefix}"
@@ -544,14 +544,14 @@ jobs:
                       f" content: '📦'; background-image: none;"
                       f" width: auto; height: auto; }}\n"
                   )
-                  cat_path = pathlib.Path(f"wiki/docs/{prog['category']}/{img_prefix}/_category_.json")
+                  cat_path = pathlib.Path(f"Wiki/docs/{prog['category']}/{img_prefix}/_category_.json")
                   if cat_path.exists():
                       cat_data = json.loads(cat_path.read_text(encoding="utf-8"))
                       cat_data["className"] = f"sidebar-icon-{img_prefix}"
                       cat_path.write_text(json.dumps(cat_data), encoding="utf-8")
           
           # Write the dynamic CSS file
-          css_out = pathlib.Path("wiki/src/css/icons.css")
+          css_out = pathlib.Path("Wiki/assets/css/icons.css")
           css_out.parent.mkdir(parents=True, exist_ok=True)
           css_out.write_text(dynamic_css, encoding="utf-8")
           print("Dynamic icons.css generated.")
@@ -563,7 +563,7 @@ jobs:
               cat = prog["category"]
               icon_img = None
               for ext in ["svg", "png", "ico", "jpg", "jpeg", "webp"]:
-                  candidate = pathlib.Path(f"wiki/static/img/{slug}/logo_navbar.{ext}")
+                  candidate = pathlib.Path(f"Wiki/assets/img/{slug}/logo_navbar.{ext}")
                   if candidate.exists():
                       icon_img = f"/wiki/img/{slug}/logo_navbar.{ext}"
                       break
@@ -575,7 +575,7 @@ jobs:
                   "iconEmoji": None if icon_img else "📦",
                   "color": category_color.get(cat, "#ffffff"),
               })
-          pathlib.Path("wiki/src/pages/tools.json").write_text(
+          pathlib.Path("Wiki/pages/tools.json").write_text(
               json.dumps(tools_data, ensure_ascii=False, indent=2), encoding="utf-8"
           )
           print("Generated tools.json")
@@ -604,7 +604,7 @@ jobs:
                   "label": cat.capitalize()
               })
               first_cat = False
-          pathlib.Path("wiki/generated-navbar.json").write_text(
+          pathlib.Path("Wiki/generated-navbar.json").write_text(
               json.dumps(nav_items, indent=2), encoding="utf-8"
           )
           print("Generated generated-navbar.json")
@@ -615,15 +615,15 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: wiki/package-lock.json
+          cache-dependency-path: Wiki/package-lock.json
 
       - name: Install dependencies
         run: npm ci
-        working-directory: wiki
+        working-directory: Wiki
 
       - name: Build Docusaurus
         run: npm run build
-        working-directory: wiki
+        working-directory: Wiki
 
       - name: Update Portfolio Data
         run: |
@@ -667,7 +667,7 @@ jobs:
             mkdir -p _site/Portfolio
             cp -r Portfolio/. _site/Portfolio/
           fi
-          cp -r wiki/build/. _site/wiki/
+          cp -r Wiki/build/. _site/wiki/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

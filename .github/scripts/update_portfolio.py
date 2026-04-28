@@ -5,8 +5,7 @@ import sys
 import urllib.request
 from datetime import datetime
 
-CONFIG_FILE = "portfolio-config.json"
-EXCLUDE_FILE = "config-exclude.json"
+CONFIG_FILE = "Portfolio/videos/video-fetching.json"
 ARCHIVE_FILE = "portfolio-archive.json"
 RECENT_FILE = "portfolio-recent.json"
 OUTPUT_FILE = "Portfolio/videos.json"
@@ -67,8 +66,7 @@ def get_video_description(video_url: str) -> str:
 
 def update_portfolio() -> None:
     config = load_json(CONFIG_FILE, {})
-    exclude_config = load_json(EXCLUDE_FILE, {"urls": []})
-    excluded_urls = {normalize_youtube_url(url) for url in exclude_config.get("urls", [])}
+    excluded_urls = {normalize_youtube_url(url) for url in config.get("exclude", [])}
 
     keywords = [kw.lower() for kw in config.get("keywords", [])]
     channels = config.get("channels", []) # Note: user config uses "urls" in his example, I'll support both
