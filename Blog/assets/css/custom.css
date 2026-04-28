@@ -1,12 +1,18 @@
 /* Ephraem News — portfolio/index art direction with yellow accent */
 
-/* ─── Page transition overlay (matches index.html) ─── */
+/* ─── Z-index layering (matches index.html exactly) ─── */
+/*   1001 : grid + blobs (always on top, continuous)    */
+/*    999 : page transition overlay (below background)  */
+/*      2 : page content                                */
+/*    100 : navbar                                      */
+
+/* ─── Page transition overlay ─── */
 
 #blog-page-transition {
   position: fixed;
   inset: 0;
   background: #0f1013;
-  z-index: 9999;
+  z-index: 999;
   pointer-events: none;
   animation: blogOverlayEnter 0.55s ease-out both;
 }
@@ -16,16 +22,15 @@
   to   { opacity: 0; }
 }
 
-/* ─── Base background (matches index.html) ─── */
+/* ─── Base background ─── */
 
 html, body {
   background-color: #0f1013 !important;
   min-height: 100vh;
 }
 
-/* Grid */
-body::before {
-  content: '';
+/* Grid — injected by JS, sits above overlay */
+#blog-bg-grid {
   position: fixed;
   inset: 0;
   background-image:
@@ -34,35 +39,45 @@ body::before {
   background-size: 64px 64px;
   background-position: center center;
   pointer-events: none;
-  z-index: 0;
+  z-index: 1001;
 }
 
-/* Vignette */
+/* Blobs — injected by JS, sit above overlay */
+.blog-blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 1001;
+  animation: blogBlobPulse 9s ease-in-out infinite;
+}
+
+.blog-blob-yellow {
+  width: 560px;
+  height: 560px;
+  background: radial-gradient(circle, rgba(245, 194, 24, 0.11) 0%, transparent 70%);
+  top: -140px;
+  right: -100px;
+}
+
+.blog-blob-cyan {
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(58, 208, 255, 0.08) 0%, transparent 70%);
+  bottom: -120px;
+  left: -100px;
+}
+
+@keyframes blogBlobPulse {
+  0%, 100% { transform: scale(1);    opacity: 0.8; }
+  50%       { transform: scale(1.15); opacity: 1;   }
+}
+
+/* Content sits above overlay, below blobs */
 .main-wrapper,
 #__docusaurus > div {
   position: relative;
-  z-index: 1;
-}
-
-/* Yellow blob (top-right) */
-body::after {
-  content: '';
-  position: fixed;
-  width: 520px;
-  height: 520px;
-  background: radial-gradient(circle, rgba(245, 194, 24, 0.09) 0%, transparent 70%);
-  top: -130px;
-  right: -100px;
-  border-radius: 50%;
-  filter: blur(80px);
-  pointer-events: none;
-  z-index: 0;
-  animation: blobPulse 9s ease-in-out infinite;
-}
-
-@keyframes blobPulse {
-  0%, 100% { transform: scale(1);    opacity: 0.8; }
-  50%       { transform: scale(1.15); opacity: 1;   }
+  z-index: 2;
 }
 
 :root {
