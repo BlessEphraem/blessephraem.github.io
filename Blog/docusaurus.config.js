@@ -79,17 +79,17 @@ const config = {
         },
         items: [
           {
-            href: 'https://blessephraem.github.io',
+            href: '/',
             label: 'Menu',
             position: 'right',
           },
           {
-            href: 'https://blessephraem.github.io/wiki/',
+            href: '/wiki/',
             label: 'Wiki',
             position: 'right',
           },
           {
-            href: 'https://blessephraem.github.io/Portfolio',
+            href: '/Portfolio/',
             label: 'Portfolio',
             position: 'right',
           },
