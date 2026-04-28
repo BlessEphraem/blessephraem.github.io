@@ -165,25 +165,26 @@
         <p>&copy; 2025 Ephraem.</p>
     </footer>
 
+    <script src="assets/js/router.js"></script>
     <script src="assets/js/transitions.js"></script>
     <script>
-        const PER_PAGE = 6;
-        let allVideos = [];
-        let currentPage = 1;
+        window.PER_PAGE = 6;
+        window.allVideos = [];
+        window.currentPage = 1;
 
-        function getYouTubeId(url) {
+        window.getYouTubeId = function(url) {
             const m = url.match(/[?&]v=([A-Za-z0-9_-]{11})/);
             return m ? m[1] : null;
         }
 
-        function renderPage(page) {
-            currentPage = page;
+        window.renderPage = function(page) {
+            window.currentPage = page;
             const container = document.getElementById('videos-container');
-            const start = (page - 1) * PER_PAGE;
-            const slice = allVideos.slice(start, start + PER_PAGE);
+            const start = (page - 1) * window.PER_PAGE;
+            const slice = window.allVideos.slice(start, start + window.PER_PAGE);
 
             container.innerHTML = slice.map(video => {
-                const id = getYouTubeId(video.url);
+                const id = window.getYouTubeId(video.url);
                 if (!id) return '';
                 return `<div class="video-item">
                     <iframe src="https://www.youtube-nocookie.com/embed/${id}"
@@ -193,152 +194,132 @@
                 </div>`;
             }).join('');
 
-            renderPagination();
+            window.renderPagination();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function renderPagination() {
-            const total = Math.ceil(allVideos.length / PER_PAGE);
+        window.renderPagination = function() {
+            const total = Math.ceil(window.allVideos.length / window.PER_PAGE);
             const nav = document.getElementById('pagination');
             const info = document.getElementById('page-info');
 
-            info.textContent = `Page ${currentPage} sur ${total} — ${allVideos.length} vidéos`;
+            info.textContent = `Page ${window.currentPage} sur ${total} — ${window.allVideos.length} vidéos`;
 
             if (total <= 1) { nav.innerHTML = ''; return; }
 
             const buttons = [];
-            // Bouton Précédent
-            buttons.push(`<button ${currentPage === 1 ? 'disabled' : ''} onclick="renderPage(${currentPage - 1})">&#8592;</button>`);
+            buttons.push(`<button ${window.currentPage === 1 ? 'disabled' : ''} onclick="window.renderPage(${window.currentPage - 1})">&#8592;</button>`);
 
             if (total <= 7) {
-                // Si peu de pages, on affiche tout
                 for (let i = 1; i <= total; i++) {
-                    buttons.push(`<button class="${i === currentPage ? 'active' : ''}" onclick="renderPage(${i})">${i}</button>`);
+                    buttons.push(`<button class="${i === window.currentPage ? 'active' : ''}" onclick="window.renderPage(${i})">${i}</button>`);
                 }
             } else {
-                // Logique de fenêtre glissante (toujours max ~7 slots numériques)
-                
-                // Toujours la première
-                buttons.push(`<button class="${1 === currentPage ? 'active' : ''}" onclick="renderPage(1)">1</button>`);
+                buttons.push(`<button class="${1 === window.currentPage ? 'active' : ''}" onclick="window.renderPage(1)">1</button>`);
+                if (window.currentPage > 3) buttons.push(`<button disabled>…</button>`);
 
-                if (currentPage > 3) {
-                    buttons.push(`<button disabled>…</button>`);
-                }
+                let start = Math.max(2, window.currentPage - 1);
+                let end = Math.min(total - 1, window.currentPage + 1);
 
-                // Bloc central
-                let start = Math.max(2, currentPage - 1);
-                let end = Math.min(total - 1, currentPage + 1);
-
-                // Ajustement si on est au début ou à la fin pour garder le même nombre de boutons
-                if (currentPage <= 3) end = 4;
-                if (currentPage >= total - 2) start = total - 3;
+                if (window.currentPage <= 3) end = 4;
+                if (window.currentPage >= total - 2) start = total - 3;
 
                 for (let i = start; i <= end; i++) {
-                    buttons.push(`<button class="${i === currentPage ? 'active' : ''}" onclick="renderPage(${i})">${i}</button>`);
+                    buttons.push(`<button class="${i === window.currentPage ? 'active' : ''}" onclick="window.renderPage(${i})">${i}</button>`);
                 }
 
-                if (currentPage < total - 2) {
-                    buttons.push(`<button disabled>…</button>`);
-                }
-
-                // Toujours la dernière
-                buttons.push(`<button class="${total === currentPage ? 'active' : ''}" onclick="renderPage(${total})">${total}</button>`);
+                if (window.currentPage < total - 2) buttons.push(`<button disabled>…</button>`);
+                buttons.push(`<button class="${total === window.currentPage ? 'active' : ''}" onclick="window.renderPage(${total})">${total}</button>`);
             }
 
-            // Bouton Suivant
-            buttons.push(`<button ${currentPage === total ? 'disabled' : ''} onclick="renderPage(${currentPage + 1})">&#8594;</button>`);
-
+            buttons.push(`<button ${window.currentPage === total ? 'disabled' : ''} onclick="window.renderPage(${window.currentPage + 1})">&#8594;</button>`);
             nav.innerHTML = buttons.join('');
         }
 
-        function updateVideoTitles() {
-            document.querySelectorAll('.video-card').forEach(card => {
-                const iframe = card.querySelector('iframe');
-                const titleEl = card.querySelector('.video-title');
-                if (iframe && titleEl && iframe.src) {
-                    const match = iframe.src.match(/\/embed\/([a-zA-Z0-9_-]+)/);
-                    if (match && match[1]) {
-                        const videoId = match[1];
-                        fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`)
-                            .then(r => r.json())
-                            .then(d => { if (d.title) titleEl.textContent = d.title; })
-                            .catch(() => {});
+        window.initVideos = function() {
+            function updateVideoTitles() {
+                document.querySelectorAll('.video-card').forEach(card => {
+                    const iframe = card.querySelector('iframe');
+                    const titleEl = card.querySelector('.video-title');
+                    if (iframe && titleEl && iframe.src) {
+                        const match = iframe.src.match(/\/embed\/([a-zA-Z0-9_-]+)/);
+                        if (match && match[1]) {
+                            const videoId = match[1];
+                            fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`)
+                                .then(r => r.json())
+                                .then(d => { if (d.title) titleEl.textContent = d.title; })
+                                .catch(() => {});
+                        }
                     }
-                }
-            });
-        }
-
-        document.querySelectorAll('.video-card').forEach(card => {
-            card.addEventListener('click', () => {
-                if (window.innerWidth <= 900) return;
-                if (card.classList.contains('pos-center')) return;
-                const currentCenter = document.querySelector('.video-card.pos-center');
-                if (!currentCenter) return;
-                let pos = '';
-                if (card.classList.contains('pos-left')) pos = 'pos-left';
-                else if (card.classList.contains('pos-right')) pos = 'pos-right';
-                if (!pos) return;
-                card.classList.remove(pos);
-                card.classList.add('pos-center');
-                currentCenter.classList.remove('pos-center');
-                currentCenter.classList.add(pos);
-                const iframe = currentCenter.querySelector('iframe');
-                if (iframe) { const s = iframe.src; iframe.src = s; }
-            });
-        });
-
-        // Vitrine carousel depuis video-carousel.json (fichier manuel)
-        fetch('videos/video-carousel.json')
-            .then(r => r.ok ? r.json() : Promise.reject())
-            .then(data => {
-                const featured = data.featured || [];
-                const slots = ['video-left', 'video-center', 'video-right'];
-                slots.forEach((id, i) => {
-                    if (!featured[i]) return;
-                    const vid = getYouTubeId(featured[i].url);
-                    if (!vid) return;
-                    const iframe = document.querySelector('#' + id + ' iframe');
-                    if (iframe) iframe.src = 'https://www.youtube.com/embed/' + vid;
                 });
-                updateVideoTitles();
-            })
-            .catch(() => {});
+            }
 
-        // Grille paginée depuis videos.json (généré par CI)
-        fetch('videos.json')
-            .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-            .then(data => {
-                allVideos = (data.videos || []).filter(v => getYouTubeId(v.url));
-                if (allVideos.length === 0) {
+            document.querySelectorAll('.video-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    if (window.innerWidth <= 900) return;
+                    if (card.classList.contains('pos-center')) return;
+                    const currentCenter = document.querySelector('.video-card.pos-center');
+                    if (!currentCenter) return;
+                    let pos = '';
+                    if (card.classList.contains('pos-left')) pos = 'pos-left';
+                    else if (card.classList.contains('pos-right')) pos = 'pos-right';
+                    if (!pos) return;
+                    card.classList.remove(pos);
+                    card.classList.add('pos-center');
+                    currentCenter.classList.remove('pos-center');
+                    currentCenter.classList.add(pos);
+                    const iframe = currentCenter.querySelector('iframe');
+                    if (iframe) { const s = iframe.src; iframe.src = s; }
+                });
+            });
+
+            fetch('videos/video-carousel.json')
+                .then(r => r.ok ? r.json() : Promise.reject())
+                .then(data => {
+                    const featured = data.featured || [];
+                    const slots = ['video-left', 'video-center', 'video-right'];
+                    slots.forEach((id, i) => {
+                        if (!featured[i]) return;
+                        const vid = window.getYouTubeId(featured[i].url);
+                        if (!vid) return;
+                        const iframe = document.querySelector('#' + id + ' iframe');
+                        if (iframe) iframe.src = 'https://www.youtube.com/embed/' + vid;
+                    });
+                    updateVideoTitles();
+                })
+                .catch(() => {});
+
+            fetch('videos.json')
+                .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+                .then(data => {
+                    window.allVideos = (data.videos || []).filter(v => window.getYouTubeId(v.url));
+                    if (window.allVideos.length === 0) {
+                        document.getElementById('videos-container').innerHTML =
+                            '<p style="text-align:center;grid-column:1/-1;">Aucune vidéo disponible pour le moment.</p>';
+                        return;
+                    }
+                    window.renderPage(1);
+                })
+                .catch(() => {
                     document.getElementById('videos-container').innerHTML =
-                        '<p style="text-align:center;grid-column:1/-1;">Aucune vidéo disponible pour le moment.</p>';
-                    return;
-                }
-                renderPage(1);
-            })
-            .catch(() => {
-                document.getElementById('videos-container').innerHTML =
-                    '<p style="text-align:center;color:red;grid-column:1/-1;">Erreur lors du chargement des vidéos.</p>';
-            });
+                        '<p style="text-align:center;color:red;grid-column:1/-1;">Erreur lors du chargement des vidéos.</p>';
+                });
 
-        const mobileBtn = document.querySelector('.mobile-toggle');
-        const navLinks = document.querySelector('.nav-links');
-        if (mobileBtn) {
-            mobileBtn.addEventListener('click', () => {
-                navLinks.classList.toggle('active');
-                mobileBtn.innerHTML = navLinks.classList.contains('active')
-                    ? '<i class="fa-solid fa-xmark"></i>'
-                    : '<i class="fa-solid fa-bars"></i>';
-            });
-        }
-
-        document.querySelectorAll('.nav-links a[href^="index.html"]').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                leaveAndNavigate(link.getAttribute('href'));
-            });
-        });
-
+            const mobileBtn = document.querySelector('.mobile-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            if (mobileBtn) {
+                // Ensure no double bindings if re-injected
+                const clone = mobileBtn.cloneNode(true);
+                mobileBtn.parentNode.replaceChild(clone, mobileBtn);
+                clone.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                    clone.innerHTML = navLinks.classList.contains('active')
+                        ? '<i class="fa-solid fa-xmark"></i>'
+                        : '<i class="fa-solid fa-bars"></i>';
+                });
+            }
+        };
+        window.initVideos();
     </script>
 </body>
 </html>

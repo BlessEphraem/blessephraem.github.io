@@ -3,17 +3,7 @@ function getYouTubeId(url) {
     return m ? m[1] : null;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-
-    // Page transition: VOIR PLUS → videos.html
-    const voirPlusBtn = document.querySelector('a[href="videos.html"]');
-    if (voirPlusBtn) {
-        voirPlusBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            leaveAndNavigate('videos.html');
-        });
-    }
-
+window.initPortfolio = function() {
     // 0. Navbar dynamique au scroll
     const navbar = document.querySelector('.navbar');
     if (navbar && !navbar.classList.contains('scrolled')) {
@@ -182,5 +172,5 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(() => {});
     }
-
-});
+};
+window.initPortfolio();
