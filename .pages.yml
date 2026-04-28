@@ -24,3 +24,37 @@ content:
       - name: body
         label: Body
         type: rich-text
+  - name: video_carousel
+    label: Vidéos Accueil (Carousel 3D)
+    type: file
+    path: Portfolio/videos/video-carousel.json
+    fields:
+      - name: featured
+        label: Vidéos Mises en Avant
+        type: object
+        list: true
+        fields:
+          - name: url
+            label: URL YouTube
+            type: string
+  - name: video_fetching
+    label: Configuration Scan Vidéos
+    type: file
+    path: Portfolio/videos/video-fetching.json
+    fields:
+      - name: keywords
+        label: Mots Clés (Description)
+        type: string
+        list: true
+      - name: channels
+        label: Chaînes à scanner
+        type: object
+        list: true
+        fields:
+          - name: url
+            label: URL Chaîne YouTube
+            type: string
+      - name: exclude
+        label: Vidéos Exclues (URLs)
+        type: string
+        list: true
