@@ -71,10 +71,8 @@ body::after {
     z-index: -1;
 }
 
-/* Glow blobs specific to Docusaurus structure */
-#__docusaurus::before,
-#__docusaurus::after {
-    content: '';
+/* Glow blobs */
+.blob {
     position: fixed;
     border-radius: 50%;
     filter: blur(90px);
@@ -84,19 +82,19 @@ body::after {
 }
 
 /* Yellow/Gold Blob */
-#__docusaurus::before {
+.blob-yellow {
     width: 560px;
     height: 560px;
-    background: radial-gradient(circle, rgba(245, 194, 24, 0.08) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(245, 194, 24, 0.13) 0%, transparent 70%);
     top: -140px;
     right: -100px;
 }
 
 /* Orange/Lighter Blob */
-#__docusaurus::after {
+.blob-orange {
     width: 480px;
     height: 480px;
-    background: radial-gradient(circle, rgba(255, 140, 0, 0.06) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(255, 140, 0, 0.09) 0%, transparent 70%);
     bottom: -120px;
     left: -100px;
     animation-delay: -4.5s;
@@ -108,8 +106,8 @@ body::after {
 }
 
 @media (max-width: 600px) {
-    #__docusaurus::before  { width: 280px; height: 280px; top: -60px; right: -60px; }
-    #__docusaurus::after  { width: 240px; height: 240px; bottom: -60px; left: -60px; }
+    .blob-yellow  { width: 280px; height: 280px; top: -60px; right: -60px; }
+    .blob-orange  { width: 240px; height: 240px; bottom: -60px; left: -60px; }
 }
 
 h1, h2, h3, h4, h5, h6 {

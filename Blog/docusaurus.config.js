@@ -29,6 +29,8 @@ const config = {
 
   staticDirectories: ['assets'],
 
+  clientModules: ['./assets/clientModules/blobs.js'],
+
   presets: [
     [
       'classic',
