@@ -62,7 +62,8 @@
         </div>
 
         <footer>
-            <p>&copy; 2025 Ephraem.</p>
+            <p>&copy; <span id="footer-year"></span> Ephraem.</p>
+            <script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
         </footer>
         
     </div>

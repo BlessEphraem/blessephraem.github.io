@@ -1,24 +1,25 @@
 import {themes as prismThemes} from 'prism-react-renderer';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const siteConfig = require('../site.config.json');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'News - Ephraem',
-  tagline: 'Thoughts, Updates & Articles',
+  title: siteConfig.blog.title,
+  tagline: siteConfig.blog.tagline,
   favicon: 'img/Ephraem-white.svg',
 
   future: {
     v4: true,
   },
 
-  url: 'https://blessephraem.github.io',
+  url: siteConfig.domain,
   baseUrl: '/news/',
 
-  stylesheets: [
-    'https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap',
-  ],
+  stylesheets: [siteConfig.font],
 
-  organizationName: 'BlessEphraem',
-  projectName: 'blessephraem.github.io',
+  organizationName: siteConfig.owner,
+  projectName: siteConfig.project,
 
   onBrokenLinks: 'warn',
 
@@ -28,8 +29,6 @@ const config = {
   },
 
   staticDirectories: ['assets', '../assets'],
-
-  clientModules: ['./assets/clientModules/pageTransition.js'],
 
   presets: [
     [
@@ -97,7 +96,7 @@ const config = {
             target: '_self',
           },
           {
-            href: 'https://github.com/BlessEphraem',
+            href: siteConfig.social.github,
             label: 'GitHub',
             position: 'right',
           },

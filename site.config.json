@@ -1,0 +1,17 @@
+{
+  "owner": "BlessEphraem",
+  "project": "blessephraem.github.io",
+  "domain": "https://blessephraem.github.io",
+  "font": "https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap",
+  "blog": {
+    "title": "News - Ephraem",
+    "tagline": "Thoughts, Updates & Articles"
+  },
+  "wiki": {
+    "title": "Wiki - Ephraem",
+    "tagline": "Documentation for my open-source tools."
+  },
+  "social": {
+    "github": "https://github.com/BlessEphraem"
+  }
+}

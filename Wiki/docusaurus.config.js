@@ -3,26 +3,25 @@ import { createRequire } from 'module';
 import { existsSync } from 'fs';
 const require = createRequire(import.meta.url);
 const generatedNav = existsSync('./generated-navbar.json') ? require('./generated-navbar.json') : [];
+const siteConfig = require('../site.config.json');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Wiki - Ephraem',
-  tagline: 'Documentation for my open-source tools.',
+  title: siteConfig.wiki.title,
+  tagline: siteConfig.wiki.tagline,
   favicon: 'img/Ephraem-white.svg',
 
   future: {
     v4: true,
   },
 
-  url: 'https://blessephraem.github.io',
+  url: siteConfig.domain,
   baseUrl: '/wiki/',
 
-  stylesheets: [
-    'https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap',
-  ],
+  stylesheets: [siteConfig.font],
 
-  organizationName: 'BlessEphraem',
-  projectName: 'blessephraem.github.io',
+  organizationName: siteConfig.owner,
+  projectName: siteConfig.project,
 
   onBrokenLinks: 'warn',
   markdown: {

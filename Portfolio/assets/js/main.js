@@ -79,7 +79,7 @@ window.initPortfolio = function() {
             btn.disabled = true;
 
             try {
-                const response = await fetch(atob('aHR0cHM6Ly9mb3Jtc3ByZWUuaW8vZi9tamtxenJqZw=='), {
+                const response = await fetch('%%FORMSPREE_ENDPOINT%%', {
                     method: form.method,
                     body: data,
                     headers: { 'Accept': 'application/json' }
