@@ -11,7 +11,7 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.hero}>
           <h1 className={styles.heroTitle}>
-            <span className={styles.accent}>EPHRAEM</span> — Dev Wiki
+            Wiki - <span className={styles.accent}>EPHRAEM</span>
           </h1>
           <p className={styles.heroSubtitle}>
             Documentation for my open-source tools. Built to fix creative workflows.
