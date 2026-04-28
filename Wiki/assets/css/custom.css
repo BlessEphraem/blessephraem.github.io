@@ -68,11 +68,18 @@ h1, h2, h3, h4, h5, h6 {
 
 .navbar__brand .navbar__title {
   font-family: var(--ifm-font-family-black) !important;
-  font-size: 1.15rem;
+  font-size: 1.5rem;
+  font-weight: 900 !important;
+  letter-spacing: 2px;
+  text-transform: uppercase;
   background: linear-gradient(135deg, var(--ifm-color-primary), var(--ifm-color-secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.navbar__logo {
+  display: none !important;
 }
 
 /* Sidebar */

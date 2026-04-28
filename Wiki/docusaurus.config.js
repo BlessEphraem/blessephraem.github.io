@@ -77,13 +77,12 @@ const config = {
         respectPrefersColorScheme: false,
       },
       navbar: {
-        title: '',
+        title: 'EPHRAEM',
         logo: {
           alt: 'Ephraem',
-          src: 'img/Ephraem-white.svg',
+          src: '',
           href: '/wiki/',
           target: '_self',
-          style: { height: '32px', width: '32px' },
         },
         items: [
           ...generatedNav.map(item => ({...item, position: 'right'})),
