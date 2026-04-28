@@ -78,12 +78,6 @@ const config = {
       },
       navbar: {
         title: 'EPHRAEM',
-        logo: {
-          alt: 'Ephraem',
-          src: '',
-          href: '/wiki/',
-          target: '_self',
-        },
         items: [
           ...generatedNav.map(item => ({...item, position: 'right'})),
         ],
