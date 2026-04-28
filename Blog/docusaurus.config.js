@@ -2,7 +2,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'News — Ephraem',
+  title: 'Ephraem',
   tagline: 'Thoughts, Updates & Articles',
   favicon: 'img/favicon.ico',
 
