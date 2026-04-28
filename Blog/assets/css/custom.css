@@ -1,84 +1,4 @@
-/* Ephraem News — portfolio/index art direction with yellow accent */
-
-/* ─── Z-index layering (matches index.html exactly) ─── */
-/*   1001 : grid + blobs (always on top, continuous)    */
-/*    999 : page transition overlay (below background)  */
-/*      2 : page content                                */
-/*    100 : navbar                                      */
-
-/* ─── Page transition overlay ─── */
-
-#blog-page-transition {
-  position: fixed;
-  inset: 0;
-  background: #0f1013;
-  z-index: 999;
-  pointer-events: none;
-  animation: blogOverlayEnter 0.55s ease-out both;
-}
-
-@keyframes blogOverlayEnter {
-  from { opacity: 1; }
-  to   { opacity: 0; }
-}
-
-/* ─── Base background ─── */
-
-html, body {
-  background-color: #0f1013 !important;
-  min-height: 100vh;
-}
-
-/* Grid — injected by JS, sits above overlay */
-#blog-bg-grid {
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
-  background-size: 64px 64px;
-  background-position: center center;
-  pointer-events: none;
-  z-index: 1001;
-}
-
-/* Blobs — injected by JS, sit above overlay */
-.blog-blob {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(90px);
-  pointer-events: none;
-  z-index: 1001;
-  animation: blogBlobPulse 9s ease-in-out infinite;
-}
-
-.blog-blob-yellow {
-  width: 560px;
-  height: 560px;
-  background: radial-gradient(circle, rgba(245, 194, 24, 0.11) 0%, transparent 70%);
-  top: -140px;
-  right: -100px;
-}
-
-.blog-blob-cyan {
-  width: 480px;
-  height: 480px;
-  background: radial-gradient(circle, rgba(58, 208, 255, 0.08) 0%, transparent 70%);
-  bottom: -120px;
-  left: -100px;
-}
-
-@keyframes blogBlobPulse {
-  0%, 100% { transform: scale(1);    opacity: 0.8; }
-  50%       { transform: scale(1.15); opacity: 1;   }
-}
-
-/* Content sits above overlay, below blobs */
-.main-wrapper,
-#__docusaurus > div {
-  position: relative;
-  z-index: 2;
-}
+/* Ephraem News — blog CSS, wiki-style art direction with yellow accent */
 
 :root {
   --ifm-color-primary: #f5c218;
@@ -92,6 +12,8 @@ html, body {
   --ifm-color-secondary: #3ad0ff;
   --ifm-color-primary-alpha-10: rgba(245, 194, 24, 0.10);
   --ifm-color-primary-alpha-07: rgba(245, 194, 24, 0.07);
+  --ifm-font-family-black: 'Satoshi-Black', sans-serif;
+  --ifm-font-family-bold: 'Satoshi-Bold', sans-serif;
 
   --ifm-background-color: #0f1013;
   --ifm-background-surface-color: #16181d;
@@ -101,16 +23,10 @@ html, body {
   --ifm-font-family-base: 'Satoshi', system-ui, sans-serif;
   --ifm-heading-font-family: 'Satoshi', sans-serif;
   --ifm-heading-font-weight: 900;
-  --ifm-font-family-black: 'Satoshi-Black', sans-serif;
-  --ifm-font-family-bold: 'Satoshi-Bold', sans-serif;
-  --docusaurus-highlighted-code-line-bg: rgba(245, 194, 24, 0.10);
+  --docusaurus-highlighted-code-line-bg: var(--ifm-color-primary-alpha-10);
 
   --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --glow-primary: rgba(245, 194, 24, 0.18);
-  --glow-secondary: rgba(58, 208, 255, 0.18);
   --gradient-text: linear-gradient(135deg, #f5c218, #3ad0ff);
-  --transition: all 0.3s ease;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -125,7 +41,7 @@ html, body {
   --ifm-color-primary-light: #f7ca2e;
   --ifm-color-primary-lighter: #f8d044;
   --ifm-color-primary-lightest: #fad96a;
-  --docusaurus-highlighted-code-line-bg: rgba(245, 194, 24, 0.10);
+  --docusaurus-highlighted-code-line-bg: var(--ifm-color-primary-alpha-10);
   --ifm-background-color: #0f1013;
   --ifm-background-surface-color: #16181d;
   --ifm-navbar-background-color: rgba(15, 16, 19, 0.92);
@@ -139,12 +55,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: var(--ifm-heading-font-weight) !important;
 }
 
-/* Gradient on blog post titles */
 .markdown h1 {
-  background: var(--gradient-text);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   border-bottom: 1px solid var(--glass-border);
   padding-bottom: 0.5rem;
   margin-bottom: 1.5rem;
@@ -152,10 +63,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .markdown h2 {
   color: var(--ifm-color-primary);
-}
-
-.markdown h3 {
-  color: rgba(255, 255, 255, 0.88);
 }
 
 /* ─── Navbar ─── */
@@ -170,15 +77,15 @@ h1, h2, h3, h4, h5, h6 {
 
 .navbar__item, .navbar__link, .navbar__title {
   font-family: var(--ifm-font-family-black) !important;
-  font-weight: 900;
 }
 
 .navbar__brand .navbar__title {
+  font-family: var(--ifm-font-family-black) !important;
+  font-size: 1.15rem;
   background: var(--gradient-text);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-size: 1.15rem;
 }
 
 .navbar__link:hover {
@@ -190,27 +97,19 @@ h1, h2, h3, h4, h5, h6 {
 article.margin-bottom--xl {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--glass-border);
-  border-radius: 16px;
+  border-radius: 12px;
   padding: 1.75rem 2rem;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: var(--glass-shadow);
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-              border-color 0.35s ease,
-              box-shadow 0.35s ease;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 article.margin-bottom--xl:hover {
-  transform: translateY(-5px);
-  border-color: rgba(245, 194, 24, 0.4);
-  box-shadow: 0 0 30px var(--glow-primary), var(--glass-shadow);
+  border-color: rgba(245, 194, 24, 0.35);
+  box-shadow: 0 0 24px rgba(245, 194, 24, 0.10);
 }
 
-/* Blog post title link */
 article h2 a {
   color: var(--ifm-color-primary) !important;
   text-decoration: none;
-  transition: var(--transition);
 }
 
 article h2 a:hover {
@@ -223,7 +122,6 @@ article h2 a:hover {
 .markdown a {
   color: var(--ifm-color-secondary);
   text-decoration: none;
-  transition: var(--transition);
 }
 
 .markdown a:hover {
@@ -234,10 +132,8 @@ article h2 a:hover {
 /* ─── Code ─── */
 
 .prism-code {
-  background: rgba(22, 24, 29, 0.9) !important;
   border: 1px solid var(--glass-border);
-  border-radius: 10px;
-  box-shadow: inset 3px 0 0 var(--ifm-color-primary);
+  border-radius: 8px;
 }
 
 code {
@@ -252,17 +148,15 @@ code {
 
 .tag, a.tag {
   background: rgba(245, 194, 24, 0.08) !important;
-  border: 1px solid rgba(245, 194, 24, 0.25) !important;
+  border: 1px solid rgba(245, 194, 24, 0.22) !important;
   border-radius: 50px !important;
   color: var(--ifm-color-primary) !important;
   font-weight: 700;
-  transition: var(--transition);
 }
 
 .tag:hover, a.tag:hover {
-  background: rgba(245, 194, 24, 0.18) !important;
+  background: rgba(245, 194, 24, 0.16) !important;
   text-decoration: none !important;
-  transform: translateY(-2px);
 }
 
 /* ─── Admonitions ─── */
@@ -289,19 +183,8 @@ code {
 
 /* ─── Pagination ─── */
 
-.pagination-nav__link {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--glass-border) !important;
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
 .pagination-nav__link:hover {
-  border-color: rgba(245, 194, 24, 0.5) !important;
-  box-shadow: 0 0 20px var(--glow-primary);
-  transform: translateY(-3px);
-  text-decoration: none;
+  border-color: var(--ifm-color-primary);
 }
 
 .pagination-nav__label {
@@ -329,19 +212,7 @@ code {
 
 /* ─── Scrollbar ─── */
 
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0f1013;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(245, 194, 24, 0.3);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(245, 194, 24, 0.6);
-}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0f1013; }
+::-webkit-scrollbar-thumb { background: rgba(245, 194, 24, 0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(245, 194, 24, 0.6); }
