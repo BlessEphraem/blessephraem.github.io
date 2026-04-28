@@ -1,24 +1,25 @@
 const BLOB_PERIOD = 9; // seconds, matches index.html
 
+// Returns true if elements were freshly created, false if already present.
 function ensureBackgroundElements() {
-  if (document.getElementById('blog-bg-grid')) return;
+  if (document.getElementById('blog-bg-grid')) return false;
 
-  // Grid
   const grid = document.createElement('div');
   grid.id = 'blog-bg-grid';
   document.body.appendChild(grid);
 
-  // Yellow blob (top-right)
   const blobYellow = document.createElement('div');
   blobYellow.className = 'blog-blob blog-blob-yellow';
   document.body.appendChild(blobYellow);
 
-  // Cyan blob (bottom-left)
   const blobCyan = document.createElement('div');
   blobCyan.className = 'blog-blob blog-blob-cyan';
   document.body.appendChild(blobCyan);
+
+  return true;
 }
 
+// Only needed on first creation to align with the cross-page epoch stored in sessionStorage.
 function syncBlobAnimations() {
   if (!sessionStorage.getItem('blobEpoch')) {
     sessionStorage.setItem('blobEpoch', Date.now());
@@ -41,11 +42,21 @@ function getOverlay() {
   return el;
 }
 
+// Cover the outgoing page instantly so React unmount/remount is hidden.
+export function onRouteWillChange() {
+  const overlay = getOverlay();
+  overlay.style.transition = 'none';
+  overlay.style.animation  = 'none';
+  overlay.style.opacity    = '1';
+}
+
+// Blobs keep running via CSS — only sync animationDelay on first creation.
 export function onRouteDidUpdate() {
-  ensureBackgroundElements();
-  syncBlobAnimations();
+  const justCreated = ensureBackgroundElements();
+  if (justCreated) syncBlobAnimations();
 
   const overlay = getOverlay();
+  overlay.style.opacity   = '';
   overlay.style.animation = 'none';
   overlay.offsetHeight; // force reflow
   overlay.style.animation = 'blogOverlayEnter 0.55s ease-out both';
