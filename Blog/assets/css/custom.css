@@ -1,5 +1,54 @@
 /* Ephraem News — portfolio/index art direction with yellow accent */
 
+/* ─── Base background (matches index.html) ─── */
+
+html, body {
+  background-color: #0f1013 !important;
+  min-height: 100vh;
+}
+
+/* Grid */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+  background-size: 64px 64px;
+  background-position: center center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Vignette */
+.main-wrapper,
+#__docusaurus > div {
+  position: relative;
+  z-index: 1;
+}
+
+/* Yellow blob (top-right) */
+body::after {
+  content: '';
+  position: fixed;
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, rgba(245, 194, 24, 0.09) 0%, transparent 70%);
+  top: -130px;
+  right: -100px;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  animation: blobPulse 9s ease-in-out infinite;
+}
+
+@keyframes blobPulse {
+  0%, 100% { transform: scale(1);    opacity: 0.8; }
+  50%       { transform: scale(1.15); opacity: 1;   }
+}
+
 :root {
   --ifm-color-primary: #f5c218;
   --ifm-color-primary-dark: #dcab0f;
