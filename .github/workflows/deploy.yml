@@ -630,8 +630,6 @@ jobs:
       - name: Prepare Blog assets
         run: |
           mkdir -p Blog/assets/img
-          cp Portfolio/favicon.svg Blog/assets/img/favicon.svg
-          cp Wiki/assets/img/avatar-white.svg Blog/assets/img/avatar-white.svg
 
       - name: Install Blog dependencies
         run: npm ci
