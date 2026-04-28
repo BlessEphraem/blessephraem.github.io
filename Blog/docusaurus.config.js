@@ -4,7 +4,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 const config = {
   title: 'News - Ephraem',
   tagline: 'Thoughts, Updates & Articles',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/Ephraem-white.svg',
 
   future: {
     v4: true,
@@ -27,7 +27,7 @@ const config = {
     locales: ['en'],
   },
 
-  staticDirectories: ['assets'],
+  staticDirectories: ['assets', '../assets'],
 
   clientModules: ['./assets/clientModules/pageTransition.js'],
 
@@ -72,10 +72,10 @@ const config = {
         title: 'Ephraem',
         logo: {
           alt: 'Ephraem',
-          src: 'img/avatar-white.png',
+          src: 'img/Ephraem-white.svg',
           href: '/news/',
           target: '_self',
-          style: { height: '36px', width: '36px' },
+          style: { height: '32px', width: '32px' },
         },
         items: [
           {

@@ -630,8 +630,8 @@ jobs:
       - name: Prepare Blog assets
         run: |
           mkdir -p Blog/assets/img
-          cp Portfolio/favicon.ico Blog/assets/img/favicon.ico
-          cp Wiki/assets/img/avatar-white.png Blog/assets/img/avatar-white.png
+          cp Portfolio/favicon.svg Blog/assets/img/favicon.svg
+          cp Wiki/assets/img/avatar-white.svg Blog/assets/img/avatar-white.svg
 
       - name: Install Blog dependencies
         run: npm ci
@@ -676,9 +676,9 @@ jobs:
 
       - name: Assemble site
         run: |
-          mkdir -p _site/wiki _site/news
+          mkdir -p _site/wiki _site/news _site/assets/img
           cp index.html _site/index.html
-          cp Portfolio/favicon.ico _site/favicon.ico
+          cp -r assets/img/. _site/assets/img/
           if [ -d Portfolio ]; then
             mkdir -p _site/Portfolio
             cp -r Portfolio/. _site/Portfolio/

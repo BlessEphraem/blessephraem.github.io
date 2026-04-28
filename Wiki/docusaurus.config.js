@@ -8,7 +8,7 @@ const generatedNav = existsSync('./generated-navbar.json') ? require('./generate
 const config = {
   title: 'Wiki - Ephraem',
   tagline: 'Documentation for my open-source tools.',
-  favicon: 'img/favicon-white.ico',
+  favicon: 'img/Ephraem-white.svg',
 
   future: {
     v4: true,
@@ -37,7 +37,7 @@ const config = {
     locales: ['en'],
   },
 
-  staticDirectories: ['assets'],
+  staticDirectories: ['assets', '../assets'],
 
   clientModules: ['./assets/clientModules/categoryTheme.js'],
 
@@ -80,10 +80,10 @@ const config = {
         title: '',
         logo: {
           alt: 'Ephraem',
-          src: 'img/avatar-white.png',
+          src: 'img/Ephraem-white.svg',
           href: '/wiki/',
           target: '_self',
-          style: { height: '36px', width: '36px' },
+          style: { height: '32px', width: '32px' },
         },
         items: [
           ...generatedNav,
