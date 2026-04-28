@@ -44,6 +44,7 @@ const config = {
           blogSidebarTitle: 'Recent posts',
           blogSidebarCount: 10,
           showReadingTime: true,
+          onUntruncatedBlogPosts: 'ignore',
           feedOptions: {
             type: 'all',
             title: 'Ephraem — News',

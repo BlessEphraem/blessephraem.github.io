@@ -84,8 +84,19 @@ def _fetch_all_releases(owner, repo):
     return releases
 
 
+def _sanitize_for_mdx(content):
+    content = re.sub(r'\s*style="[^"]*"', '', content)
+    content = re.sub(
+        r'<(img|br|hr|input)([^>]*?)(?<!/)>',
+        lambda m: f'<{m.group(1)}{m.group(2).rstrip()} />',
+        content
+    )
+    content = re.sub(r'\[([^\]]+)\]\(\.docs/[^)]+\)', r'\1', content)
+    return content
+
+
 def _build_post_body(release):
-    body = (release.get("body") or "").strip()
+    body = _sanitize_for_mdx((release.get("body") or "").strip())
     assets = release.get("assets") or []
     html_url = release.get("html_url", "")
 
