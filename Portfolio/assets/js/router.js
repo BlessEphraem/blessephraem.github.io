@@ -70,6 +70,7 @@ window.appRouter = {
         }
 
         try {
+            const oldUrl = window.location.href;
             const response = await fetch(url);
             if (!response.ok) throw new Error('Network response was not ok');
             const html = await response.text();
@@ -78,65 +79,85 @@ window.appRouter = {
             const doc = parser.parseFromString(html, 'text/html');
 
             setTimeout(() => {
+                if (!isPopState) {
+                    window.history.pushState({}, '', url);
+                }
                 document.title = doc.title;
 
                 // --- Sync Stylesheets ---
-                const currentStyles = Array.from(document.head.querySelectorAll('link[rel="stylesheet"]'));
-                const newStyles = Array.from(doc.head.querySelectorAll('link[rel="stylesheet"]'));
+                const currentStyles = Array.from(document.head.querySelectorAll('link[rel="stylesheet"], style'));
+                const newStyles = Array.from(doc.head.querySelectorAll('link[rel="stylesheet"], style'));
 
                 // 1. Remove old styles that are not in the new document
                 currentStyles.forEach(style => {
-                    const href = style.getAttribute('href');
-                    if (!href) return;
-                    const currentUrl = new URL(href, window.location.href).href;
-                    
-                    const isStillNeeded = newStyles.some(newStyle => {
-                        const newHref = newStyle.getAttribute('href');
-                        if (!newHref) return false;
-                        const newUrl = new URL(newHref, url).href;
-                        return currentUrl === newUrl;
-                    });
-                    
-                    if (!isStillNeeded) style.remove();
+                    if (style.tagName.toLowerCase() === 'link') {
+                        const href = style.getAttribute('href');
+                        if (!href) return;
+                        const currentResolved = new URL(href, oldUrl).href;
+                        
+                        const isStillNeeded = newStyles.some(newStyle => {
+                            if (newStyle.tagName.toLowerCase() !== 'link') return false;
+                            const newHref = newStyle.getAttribute('href');
+                            if (!newHref) return false;
+                            const newResolved = new URL(newHref, url).href;
+                            return currentResolved === newResolved;
+                        });
+                        
+                        if (!isStillNeeded) style.remove();
+                    } else {
+                        const isStillNeeded = newStyles.some(newStyle => {
+                            if (newStyle.tagName.toLowerCase() !== 'style') return false;
+                            return newStyle.innerHTML === style.innerHTML;
+                        });
+                        if (!isStillNeeded) style.remove();
+                    }
                 });
 
                 // 2. Add new styles from the new document
                 newStyles.forEach(style => {
-                    const href = style.getAttribute('href');
-                    if (!href) return;
-                    const newUrl = new URL(href, url).href;
-                    
-                    const isAlreadyLoaded = Array.from(document.head.querySelectorAll('link[rel="stylesheet"]')).some(currentStyle => {
-                        const currentHref = currentStyle.getAttribute('href');
-                        if (!currentHref) return false;
-                        const currentResolved = new URL(currentHref, window.location.href).href;
-                        return currentResolved === newUrl;
-                    });
-                    
-                    if (!isAlreadyLoaded) {
-                        const newLink = document.createElement('link');
-                        newLink.rel = 'stylesheet';
-                        newLink.href = newUrl;
-                        document.head.appendChild(newLink);
+                    if (style.tagName.toLowerCase() === 'link') {
+                        const href = style.getAttribute('href');
+                        if (!href) return;
+                        const newResolved = new URL(href, url).href;
+                        
+                        const isAlreadyLoaded = Array.from(document.head.querySelectorAll('link[rel="stylesheet"]')).some(currentStyle => {
+                            const currentHref = currentStyle.getAttribute('href');
+                            if (!currentHref) return false;
+                            const currentResolved = new URL(currentHref, window.location.href).href;
+                            return currentResolved === newResolved;
+                        });
+                        
+                        if (!isAlreadyLoaded) {
+                            const newLink = document.createElement('link');
+                            newLink.rel = 'stylesheet';
+                            newLink.href = newResolved;
+                            document.head.appendChild(newLink);
+                        }
+                    } else {
+                        const isAlreadyLoaded = Array.from(document.head.querySelectorAll('style')).some(currentStyle => {
+                            return currentStyle.innerHTML === style.innerHTML;
+                        });
+                        if (!isAlreadyLoaded) {
+                            const newStyle = document.createElement('style');
+                            newStyle.innerHTML = style.innerHTML;
+                            document.head.appendChild(newStyle);
+                        }
                     }
                 });
                 // ------------------------
 
                 document.body.innerHTML = doc.body.innerHTML;
 
-                if (!isPopState) {
-                    window.history.pushState({}, '', url);
-                    const hash = new URL(url).hash;
-                    if (hash) {
-                        const target = document.querySelector(hash);
-                        if (target) {
-                            target.scrollIntoView();
-                        } else {
-                            window.scrollTo(0, 0);
-                        }
+                const hash = new URL(window.location.href).hash;
+                if (hash) {
+                    const target = document.querySelector(hash);
+                    if (target) {
+                        target.scrollIntoView();
                     } else {
                         window.scrollTo(0, 0);
                     }
+                } else {
+                    window.scrollTo(0, 0);
                 }
 
                 // Re-evaluate scripts so they bind to the new DOM
