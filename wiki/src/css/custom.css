@@ -19,7 +19,7 @@
   --ifm-background-color: #0f1013;
   --ifm-background-surface-color: #16181d;
   --ifm-navbar-background-color: rgba(15, 16, 19, 0.92);
-  --ifm-footer-background-color: #0a0b0d;
+  --ifm-footer-background-color: #0f1013;
   --ifm-code-font-size: 90%;
   --ifm-font-family-base: 'Satoshi', system-ui, sans-serif;
   --ifm-heading-font-family: 'Satoshi', sans-serif;
@@ -49,7 +49,7 @@ h1, h2, h3, h4, h5, h6 {
   --ifm-background-color: #0f1013;
   --ifm-background-surface-color: #16181d;
   --ifm-navbar-background-color: rgba(15, 16, 19, 0.92);
-  --ifm-footer-background-color: #0a0b0d;
+  --ifm-footer-background-color: #0f1013;
 }
 
 /* Navbar */
@@ -140,7 +140,19 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Footer */
 .footer {
+  padding: 16px 0;
+  background: #0f1013;
   border-top: 1px solid var(--glass-border);
+}
+
+.footer__bottom {
+  padding: 0;
+}
+
+.footer__copyright {
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
 }
 
 .footer__title {

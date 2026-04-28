@@ -1,8 +1,8 @@
-// @ts-check
 import {themes as prismThemes} from 'prism-react-renderer';
 import { createRequire } from 'module';
+import { existsSync } from 'fs';
 const require = createRequire(import.meta.url);
-const generatedNav = require('./generated-navbar.json');
+const generatedNav = existsSync('./generated-navbar.json') ? require('./generated-navbar.json') : [];
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
