@@ -2,7 +2,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Ephraem - News',
+  title: 'News - Ephraem',
   tagline: 'Thoughts, Updates & Articles',
   favicon: 'img/favicon.ico',
 
@@ -39,7 +39,7 @@ const config = {
         blog: {
           path: './posts',
           routeBasePath: '/',
-          blogTitle: '',
+          blogTitle: 'Home',
           blogDescription: 'Thoughts, Updates & Articles by Ephraem',
           blogSidebarTitle: 'Recent posts',
           blogSidebarCount: 10,

@@ -7,7 +7,7 @@ import toolsData from './tools.json';
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
-    <Layout description={siteConfig.tagline}>
+    <Layout title="Home" description={siteConfig.tagline}>
       <main className={styles.main}>
         <div className={styles.hero}>
           <h1 className={styles.heroTitle}>
