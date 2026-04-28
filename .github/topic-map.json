@@ -1,7 +1,7 @@
 {
   "mappings": [
-    {"topic": "program", "category": "programs", "color": "#ff1796"},
-    {"topic": "plugin",  "category": "plugins",  "color": "#C80A0A"},
-    {"topic": "scripts",  "category": "scripts",  "color": "#FFBB14"}
+    {"topic": "program", "category": "programs", "color": "#00B7FF"},
+    {"topic": "plugin",  "category": "plugins",  "color": "#FFBB00"},
+    {"topic": "scripts",  "category": "scripts",  "color": "#00FF5E"}
   ]
 }
