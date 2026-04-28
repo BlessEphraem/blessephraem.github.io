@@ -42,12 +42,11 @@ function getOverlay() {
   return el;
 }
 
-// Cover the outgoing page instantly so React unmount/remount is hidden.
-export function onRouteWillChange() {
+// onRouteUpdate fires before React unmounts — cover the page instantly.
+export function onRouteUpdate() {
   const overlay = getOverlay();
-  overlay.style.transition = 'none';
-  overlay.style.animation  = 'none';
-  overlay.style.opacity    = '1';
+  overlay.style.animation = 'none';
+  overlay.style.opacity   = '1';
 }
 
 // Blobs keep running via CSS — only sync animationDelay on first creation.
