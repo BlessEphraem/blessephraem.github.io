@@ -615,7 +615,9 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: Wiki/package-lock.json
+          cache-dependency-path: |
+            Wiki/package-lock.json
+            Blog/package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -624,6 +626,20 @@ jobs:
       - name: Build Docusaurus
         run: npm run build
         working-directory: Wiki
+
+      - name: Prepare Blog assets
+        run: |
+          mkdir -p Blog/assets/img
+          cp Portfolio/favicon.ico Blog/assets/img/favicon.ico
+          cp Wiki/assets/img/avatar-white.png Blog/assets/img/avatar-white.png
+
+      - name: Install Blog dependencies
+        run: npm ci
+        working-directory: Blog
+
+      - name: Build Blog
+        run: npm run build
+        working-directory: Blog
 
       - name: Update Portfolio Data
         run: |
@@ -660,7 +676,7 @@ jobs:
 
       - name: Assemble site
         run: |
-          mkdir -p _site/wiki
+          mkdir -p _site/wiki _site/news _site/admin
           cp index.html _site/index.html
           cp Portfolio/favicon.ico _site/favicon.ico
           if [ -d Portfolio ]; then
@@ -668,6 +684,8 @@ jobs:
             cp -r Portfolio/. _site/Portfolio/
           fi
           cp -r Wiki/build/. _site/wiki/
+          cp -r Blog/build/. _site/news/
+          cp -r Blog/admin/. _site/admin/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

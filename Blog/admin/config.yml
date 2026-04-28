@@ -3,7 +3,7 @@ backend:
   repo: BlessEphraem/blessephraem.github.io
   branch: main
   # Replace with the Client ID from your GitHub OAuth App
-  app_id: YOUR_GITHUB_OAUTH_CLIENT_ID
+  app_id: 3531145
 
 # Images uploaded via CMS land in Blog/assets/img/posts/ (git)
 # and are served at /news/img/posts/ (browser)

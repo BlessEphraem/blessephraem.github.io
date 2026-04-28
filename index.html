@@ -12,6 +12,7 @@
         :root {
             --primary: #ff1796;
             --secondary: #3ad0ff;
+            --news: #f5c218;
             --bg-dark: #0f1013;
             --text-main: #ffffff;
             --text-muted: #7a8494;
@@ -280,6 +281,21 @@
                 0 24px 60px rgba(0,0,0,0.5);
         }
 
+        .card-news {
+            grid-column: 1 / -1;
+            background: rgba(245, 194, 24, 0.06);
+            border: 1px solid rgba(245, 194, 24, 0.18);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 40px rgba(0,0,0,0.45);
+        }
+        .card-news:hover {
+            transform: translateY(-7px) scale(1.02);
+            border-color: rgba(245, 194, 24, 0.55);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.08),
+                0 0 45px rgba(245, 194, 24, 0.14),
+                0 24px 60px rgba(0,0,0,0.5);
+        }
+
         .card-icon {
             font-size: 1.8rem;
             flex-shrink: 0;
@@ -292,7 +308,8 @@
             line-height: 1;
         }
         .card-portfolio .card-icon { background: rgba(255, 36, 36, 0.12); }
-        .card-wiki     .card-icon { background: rgba(255, 255, 255, 0.07); }
+        .card-wiki      .card-icon { background: rgba(255, 255, 255, 0.07); }
+        .card-news      .card-icon { background: rgba(245, 194, 24, 0.12); }
 
         .card-body { flex: 1; }
 
@@ -305,6 +322,7 @@
         }
         .card-portfolio .card-body h2 { color: #ff2424; }
         .card-wiki      .card-body h2 { color: rgba(255, 255, 255, 0.88); }
+        .card-news      .card-body h2 { color: var(--news); }
 
         .card-body p {
             font-size: 0.8rem;
@@ -393,6 +411,14 @@
                 <div class="card-body">
                     <h2>Wiki</h2>
                     <p>Notes, Resources & Documents</p>
+                </div>
+                <span class="card-arrow">→</span>
+            </a>
+            <a href="./news/" class="card card-news">
+                <div class="card-icon">📰</div>
+                <div class="card-body">
+                    <h2>News</h2>
+                    <p>Thoughts, Updates & Articles</p>
                 </div>
                 <span class="card-arrow">→</span>
             </a>
