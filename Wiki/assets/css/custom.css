@@ -310,7 +310,7 @@ aside[class*="theme-doc-sidebar-container"],
     display: none !important;
   }
 
-  .navbar__brand {
+  .navbar__inner .navbar__brand {
     display: none;
   }
 }
