@@ -1,0 +1,23 @@
+backend:
+  name: github
+  repo: BlessEphraem/blessephraem.github.io
+  branch: main
+  # Replace with the Client ID from your GitHub OAuth App
+  app_id: YOUR_GITHUB_OAUTH_CLIENT_ID
+
+# Images uploaded via CMS land in Blog/assets/img/posts/ (git)
+# and are served at /news/img/posts/ (browser)
+media_folder: Blog/assets/img/posts
+public_folder: /news/img/posts
+
+collections:
+  - name: posts
+    label: Posts
+    folder: Blog/posts
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Date, name: date, widget: datetime }
+      - { label: Tags, name: tags, widget: list, required: false }
+      - { label: Body, name: body, widget: markdown }
