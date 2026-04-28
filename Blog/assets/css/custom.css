@@ -1,5 +1,21 @@
 /* Ephraem News — portfolio/index art direction with yellow accent */
 
+/* ─── Page transition overlay (matches index.html) ─── */
+
+#blog-page-transition {
+  position: fixed;
+  inset: 0;
+  background: #0f1013;
+  z-index: 9999;
+  pointer-events: none;
+  animation: blogOverlayEnter 0.55s ease-out both;
+}
+
+@keyframes blogOverlayEnter {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
 /* ─── Base background (matches index.html) ─── */
 
 html, body {
