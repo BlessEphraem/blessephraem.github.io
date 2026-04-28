@@ -2,6 +2,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const siteConfig = require('../site.config.json');
+const topicMap = require('../Wiki/topics/topic-map.json');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -95,6 +96,11 @@ const config = {
             position: 'right',
             target: '_self',
           },
+          ...topicMap.mappings.map(item => ({
+            to: `/tags/${item.category}`,
+            label: item.category.charAt(0).toUpperCase() + item.category.slice(1),
+            position: 'right',
+          })),
           {
             href: siteConfig.social.github,
             label: 'GitHub',
