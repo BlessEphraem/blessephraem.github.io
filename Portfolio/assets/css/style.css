@@ -86,7 +86,7 @@ body::after {
     background-size: 64px 64px;
     background-position: center center;
     pointer-events: none;
-    z-index: 2;
+    z-index: 1001;
 }
 
 /* Glow blobs */
@@ -100,7 +100,7 @@ body::after {
     border-radius: 50%;
     filter: blur(90px);
     pointer-events: none;
-    z-index: 2;
+    z-index: 1001;
     animation: blobPulse 9s ease-in-out infinite;
 }
 
