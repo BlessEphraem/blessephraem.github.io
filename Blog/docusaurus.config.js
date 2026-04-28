@@ -79,19 +79,22 @@ const config = {
         },
         items: [
           {
-            href: '/',
+            href: 'pathname:///',
             label: 'Menu',
             position: 'right',
+            target: '_self',
           },
           {
-            href: '/wiki/',
+            href: 'pathname:///wiki/',
             label: 'Wiki',
             position: 'right',
+            target: '_self',
           },
           {
-            href: '/Portfolio/',
+            href: 'pathname:///Portfolio/',
             label: 'Portfolio',
             position: 'right',
+            target: '_self',
           },
           {
             href: 'https://github.com/BlessEphraem',

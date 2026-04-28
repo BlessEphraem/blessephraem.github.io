@@ -88,9 +88,10 @@ const config = {
         items: [
           ...generatedNav,
           {
-            href: '/',
+            href: 'pathname:///',
             label: 'Menu',
             position: 'right',
+            target: '_self',
           },
         ],
       },

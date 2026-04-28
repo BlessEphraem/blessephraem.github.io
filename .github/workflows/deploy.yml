@@ -674,9 +674,9 @@ jobs:
 
       - name: Assemble site
         run: |
-          mkdir -p _site/wiki _site/news _site/assets/img
+          mkdir -p _site/wiki _site/news _site/assets
           cp index.html _site/index.html
-          cp -r assets/img/. _site/assets/img/
+          cp -r assets/. _site/assets/
           if [ -d Portfolio ]; then
             mkdir -p _site/Portfolio
             cp -r Portfolio/. _site/Portfolio/
