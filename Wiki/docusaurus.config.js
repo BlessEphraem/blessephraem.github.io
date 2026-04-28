@@ -6,7 +6,7 @@ const generatedNav = existsSync('./generated-navbar.json') ? require('./generate
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Wiki — Ephraem',
+  title: 'Ephraem',
   tagline: 'Documentation for my open-source tools.',
   favicon: 'img/favicon-white.ico',
 

@@ -38,7 +38,7 @@ const config = {
         docs: false,
         blog: {
           path: './posts',
-          routeBasePath: '/',
+          routeBasePath: '/posts/',
           blogTitle: 'News',
           blogDescription: 'Thoughts, Updates & Articles by Ephraem',
           blogSidebarTitle: 'Recent posts',
@@ -50,7 +50,9 @@ const config = {
             description: 'Thoughts, Updates & Articles by Ephraem',
           },
         },
-        pages: false,
+        pages: {
+          path: './pages',
+        },
         theme: {
           customCss: './assets/css/custom.css',
         },
