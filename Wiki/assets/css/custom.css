@@ -309,6 +309,10 @@ aside[class*="theme-doc-sidebar-container"],
   [class*="expandButton_"] {
     display: none !important;
   }
+
+  .navbar__brand {
+    display: none;
+  }
 }
 
 /* Hover glow effects */
