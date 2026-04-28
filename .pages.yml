@@ -1,0 +1,26 @@
+media:
+  input: Blog/assets/img/posts
+  output: /news/img/posts
+
+content:
+  - name: posts
+    label: Posts
+    type: collection
+    path: Blog/posts
+    filename: "{year}-{month}-{day}-{primary}.md"
+    fields:
+      - name: title
+        label: Title
+        type: string
+        primary: true
+      - name: date
+        label: Date
+        type: date
+      - name: tags
+        label: Tags
+        type: string
+        list: true
+        required: false
+      - name: body
+        label: Body
+        type: rich-text
