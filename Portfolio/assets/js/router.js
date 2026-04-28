@@ -78,17 +78,20 @@ window.appRouter = {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
 
-            setTimeout(() => {
+            setTimeout(async () => {
+                // 1. Mettre � jour l'URL *AVANT* d'ins�rer le HTML pour fixer les chemins relatifs (images, avatar)
                 if (!isPopState) {
                     window.history.pushState({}, '', url);
                 }
                 document.title = doc.title;
 
-                // --- Sync Stylesheets ---
-                const currentStyles = Array.from(document.head.querySelectorAll('link[rel="stylesheet"], style'));
-                const newStyles = Array.from(doc.head.querySelectorAll('link[rel="stylesheet"], style'));
+                const stylePromises = [];
 
-                // 1. Remove old styles that are not in the new document
+                // --- Sync Stylesheets ---
+                const currentStyles = Array.from(document.head.querySelectorAll('link[rel=\"stylesheet\"], style'));
+                const newStyles = Array.from(doc.head.querySelectorAll('link[rel=\"stylesheet\"], style'));
+
+                // Retirer les anciens styles
                 currentStyles.forEach(style => {
                     if (style.tagName.toLowerCase() === 'link') {
                         const href = style.getAttribute('href');
@@ -113,14 +116,14 @@ window.appRouter = {
                     }
                 });
 
-                // 2. Add new styles from the new document
+                // Ajouter les nouveaux styles et ATTENDRE qu'ils chargent
                 newStyles.forEach(style => {
                     if (style.tagName.toLowerCase() === 'link') {
                         const href = style.getAttribute('href');
                         if (!href) return;
                         const newResolved = new URL(href, url).href;
                         
-                        const isAlreadyLoaded = Array.from(document.head.querySelectorAll('link[rel="stylesheet"]')).some(currentStyle => {
+                        const isAlreadyLoaded = Array.from(document.head.querySelectorAll('link[rel=\"stylesheet\"]')).some(currentStyle => {
                             const currentHref = currentStyle.getAttribute('href');
                             if (!currentHref) return false;
                             const currentResolved = new URL(currentHref, window.location.href).href;
@@ -131,6 +134,11 @@ window.appRouter = {
                             const newLink = document.createElement('link');
                             newLink.rel = 'stylesheet';
                             newLink.href = newResolved;
+                            // On cr�e une promesse qui se r�sout quand le CSS est charg�
+                            stylePromises.push(new Promise((resolve) => {
+                                newLink.onload = resolve;
+                                newLink.onerror = resolve; // On r�sout m�me en cas d'erreur pour ne pas bloquer
+                            }));
                             document.head.appendChild(newLink);
                         }
                     } else {
@@ -144,21 +152,12 @@ window.appRouter = {
                         }
                     }
                 });
-                // ------------------------
+                
+                // 2. ATTENDRE que tout le nouveau CSS soit téléchargé et appliqué
+                await Promise.all(stylePromises);
 
+                // 3. SEULEMENT MAINTENANT, on met à jour le HTML (plus de flash blanc !)
                 document.body.innerHTML = doc.body.innerHTML;
-
-                const hash = new URL(window.location.href).hash;
-                if (hash) {
-                    const target = document.querySelector(hash);
-                    if (target) {
-                        target.scrollIntoView();
-                    } else {
-                        window.scrollTo(0, 0);
-                    }
-                } else {
-                    window.scrollTo(0, 0);
-                }
 
                 // Re-evaluate scripts so they bind to the new DOM
                 const scripts = document.body.querySelectorAll('script');
@@ -169,6 +168,7 @@ window.appRouter = {
                     oldScript.parentNode.replaceChild(newScript, oldScript);
                 });
 
+                // 4. On retire le fond noir (Fade in)
                 const newOverlay = document.getElementById('page-transition');
                 if (newOverlay) {
                     newOverlay.style.animation = 'none';
@@ -177,11 +177,11 @@ window.appRouter = {
                 }
                 
                 this.isAnimating = false;
-            }, 340); // Wait for fade out
+            }, 340); // On attend la fin du fade out noir initial
             
         } catch (error) {
             console.error('SPA error:', error);
-            window.location.href = url;
+            window.location.href = url; // Fallback s�curit�
         }
     },
 
