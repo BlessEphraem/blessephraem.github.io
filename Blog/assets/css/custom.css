@@ -1,4 +1,5 @@
 /* Ephraem News — blog CSS, wiki-style art direction with yellow accent */
+@import url('../../../assets/css/title.css');
 
 :root {
   --ifm-color-primary: #f5c218;
@@ -27,6 +28,7 @@
 
   --glass-border: rgba(255, 255, 255, 0.08);
   --gradient-text: linear-gradient(135deg, #f5c218, #3ad0ff);
+  --title-gradient: var(--gradient-text);
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -80,9 +82,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .navbar__brand .navbar__title {
-  font-family: var(--ifm-font-family-black) !important;
-  font-size: 1.15rem;
-  background: var(--gradient-text);
+  font-family: var(--title-font) !important;
+  font-size: 1.5rem;
+  font-weight: var(--title-weight) !important;
+  letter-spacing: var(--title-letter-spacing);
+  text-transform: uppercase;
+  background: var(--title-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
