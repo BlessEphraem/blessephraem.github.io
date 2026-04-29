@@ -85,24 +85,6 @@ const config = {
           style: { height: '32px', width: '32px' },
         },
         items: [
-          {
-            href: 'pathname:///',
-            label: 'Menu',
-            position: 'right',
-            target: '_self',
-          },
-          {
-            href: 'pathname:///wiki/',
-            label: 'Wiki',
-            position: 'right',
-            target: '_self',
-          },
-          {
-            href: 'pathname:///Portfolio/',
-            label: 'Portfolio',
-            position: 'right',
-            target: '_self',
-          },
           ...portfolioNav,
           ...generatedBlogNav,
           {
