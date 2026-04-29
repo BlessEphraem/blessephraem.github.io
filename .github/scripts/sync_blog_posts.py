@@ -15,12 +15,6 @@ TOPIC_PRIORITY = {
 }
 
 
-def fetch(url):
-    req = urllib.request.Request(url, headers=_auth_headers)
-    with urllib.request.urlopen(req) as r:
-        return r.read().decode("utf-8")
-
-
 def fetch_json(url):
     hdrs = dict(_auth_headers)
     hdrs["Accept"] = "application/vnd.github+json"
@@ -84,6 +78,13 @@ def _fetch_all_releases(owner, repo):
     return releases
 
 
+def _resolve_icon(slug):
+    for ext in ["svg", "png", "ico", "jpg", "jpeg", "webp"]:
+        if pathlib.Path(f"Wiki/assets/img/{slug}/logo_navbar.{ext}").exists():
+            return f"/wiki/img/{slug}/logo_navbar.{ext}"
+    return None
+
+
 def _sanitize_for_mdx(content):
     content = re.sub(r'\s*style="[^"]*"', '', content)
     content = re.sub(
@@ -116,7 +117,7 @@ def _build_post_body(release):
 
 def write_blog_post(prog, release):
     if release.get("draft"):
-        return
+        return False
 
     tag_name = release.get("tag_name") or release.get("name") or "latest"
     published_at = release.get("published_at", "")
@@ -129,7 +130,7 @@ def write_blog_post(prog, release):
 
     if path.exists():
         print(f"[SKIP] {filename}")
-        return
+        return True
 
     title = f"{prog['display_name']} {tag_name}".replace('"', '\\"')
     category = prog["category"]
@@ -138,13 +139,13 @@ def write_blog_post(prog, release):
         f'---\n'
         f'title: "{title}"\n'
         f'date: {published_at}\n'
-        f'tags: [{category}]\n'
+        f'tags: [{category}, {slug}]\n'
         f'---\n'
     )
 
     path.write_text(frontmatter + "\n" + _build_post_body(release), encoding="utf-8")
     print(f"[POST] {filename}")
-    return category
+    return True
 
 
 OWNER = _site_cfg["owner"]
@@ -170,6 +171,8 @@ for _repo in _all_repos:
 pathlib.Path("Blog/posts").mkdir(parents=True, exist_ok=True)
 
 _active_categories = []
+_active_repos_by_cat = {}
+
 for prog in PROGRAMS:
     print(f"Fetching releases for {prog['repo']}...")
     try:
@@ -180,25 +183,50 @@ for prog in PROGRAMS:
     if not releases:
         print(f"[NO RELEASES] {prog['repo']}")
         continue
+
+    wrote_any = False
     for rel in releases:
-        cat = write_blog_post(prog, rel)
-        if cat and cat not in _active_categories:
+        if write_blog_post(prog, rel):
+            wrote_any = True
+
+    if wrote_any:
+        cat = prog["category"]
+        slug = slugify(prog["repo"])
+        if cat not in _active_categories:
             _active_categories.append(cat)
+        if cat not in _active_repos_by_cat:
+            _active_repos_by_cat[cat] = []
+        if not any(r["slug"] == slug for r in _active_repos_by_cat[cat]):
+            _active_repos_by_cat[cat].append({
+                "name": prog["display_name"],
+                "slug": slug,
+                "iconImg": _resolve_icon(slug),
+            })
 
 _cat_order = [item["category"] for item in _topic_cfg["mappings"]]
 _active_categories.sort(key=lambda c: _cat_order.index(c) if c in _cat_order else 999)
 
 _nav_items = [
-    {
-        "to": f"/tags/{cat}",
-        "label": cat.capitalize(),
-        "position": "right",
-    }
+    {"to": f"/tags/{cat}", "label": cat.capitalize(), "position": "right"}
     for cat in _active_categories
 ]
 pathlib.Path("Blog/generated-blog-navbar.json").write_text(
     json.dumps(_nav_items, indent=2), encoding="utf-8"
 )
 print(f"Generated Blog/generated-blog-navbar.json with {len(_nav_items)} categories.")
+
+_sidebar_items = [
+    {
+        "category": cat,
+        "label": cat.capitalize(),
+        "repos": _active_repos_by_cat.get(cat, []),
+    }
+    for cat in _active_categories
+]
+pathlib.Path("Blog/src/data").mkdir(parents=True, exist_ok=True)
+pathlib.Path("Blog/src/data/generated-blog-sidebar.json").write_text(
+    json.dumps(_sidebar_items, indent=2), encoding="utf-8"
+)
+print(f"Generated Blog/src/data/generated-blog-sidebar.json with {len(_sidebar_items)} categories.")
 
 print("Done.")

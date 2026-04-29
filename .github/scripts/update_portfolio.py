@@ -156,7 +156,8 @@ def update_portfolio() -> None:
             
             archive_videos.append({
                 "url": url,
-                "published": formatted_date
+                "published": formatted_date,
+                "title": data.get("title", "")
             })
             archive_urls.add(url)
             new_count += 1

@@ -30,10 +30,39 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python .github/scripts/sync_wiki_docs.py
 
+      - name: Update Portfolio Data
+        run: |
+          git fetch origin portfolio-data
+          git show origin/portfolio-data:portfolio-archive.json > portfolio-archive.json 2>/dev/null || echo '{"videos": []}' > portfolio-archive.json
+          git show origin/portfolio-data:portfolio-recent.json > portfolio-recent.json 2>/dev/null || echo '{"videos": []}' > portfolio-recent.json
+
+          pip install yt-dlp
+          python .github/scripts/update_portfolio.py
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          ARCHIVE_BLOB=$(git hash-object -w portfolio-archive.json)
+          RECENT_BLOB=$(git hash-object -w portfolio-recent.json)
+
+          TREE_HASH=$(printf "100644 blob $ARCHIVE_BLOB\tportfolio-archive.json\n100644 blob $RECENT_BLOB\tportfolio-recent.json" | git mktree)
+
+          PARENT_COMMIT=$(git rev-parse origin/portfolio-data)
+
+          if [ "$(git rev-parse $PARENT_COMMIT^{tree})" = "$TREE_HASH" ]; then
+            echo "Aucun changement dans les données."
+          else
+            COMMIT_HASH=$(git commit-tree $TREE_HASH -p $PARENT_COMMIT -m "auto: update portfolio data [skip ci]")
+            git push origin $COMMIT_HASH:refs/heads/portfolio-data
+          fi
+
       - name: Generate blog posts from releases
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python .github/scripts/sync_blog_posts.py
+
+      - name: Generate portfolio blog posts
+        run: python .github/scripts/sync_blog_portfolio.py
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -63,32 +92,6 @@ jobs:
       - name: Build Blog
         run: npm run build
         working-directory: Blog
-
-      - name: Update Portfolio Data
-        run: |
-          git fetch origin portfolio-data
-          git show origin/portfolio-data:portfolio-archive.json > portfolio-archive.json 2>/dev/null || echo '{"videos": []}' > portfolio-archive.json
-          git show origin/portfolio-data:portfolio-recent.json > portfolio-recent.json 2>/dev/null || echo '{"videos": []}' > portfolio-recent.json
-
-          pip install yt-dlp
-          python .github/scripts/update_portfolio.py
-
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          ARCHIVE_BLOB=$(git hash-object -w portfolio-archive.json)
-          RECENT_BLOB=$(git hash-object -w portfolio-recent.json)
-
-          TREE_HASH=$(printf "100644 blob $ARCHIVE_BLOB\tportfolio-archive.json\n100644 blob $RECENT_BLOB\tportfolio-recent.json" | git mktree)
-
-          PARENT_COMMIT=$(git rev-parse origin/portfolio-data)
-
-          if [ "$(git rev-parse $PARENT_COMMIT^{tree})" = "$TREE_HASH" ]; then
-            echo "Aucun changement dans les données."
-          else
-            COMMIT_HASH=$(git commit-tree $TREE_HASH -p $PARENT_COMMIT -m "auto: update portfolio data [skip ci]")
-            git push origin $COMMIT_HASH:refs/heads/portfolio-data
-          fi
 
       - name: Assemble site
         env:
