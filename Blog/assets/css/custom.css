@@ -210,6 +210,18 @@ code {
   letter-spacing: 0.1em;
 }
 
+/* ─── Layout ─── */
+
+.container.margin-vert--lg {
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.row {
+  margin: 0 !important;
+}
+
 /* ─── Sidebar ─── */
 
 [class*="docSidebarContainer_"],
@@ -220,6 +232,7 @@ aside.col--3 {
   position: sticky;
   top: var(--ifm-navbar-height);
   height: calc(100vh - var(--ifm-navbar-height));
+  padding: 0 !important;
 }
 
 .sidebar-collapsed {
