@@ -210,7 +210,7 @@ code {
   letter-spacing: 0.1em;
 }
 
-/* ─── Layout ─── */
+/* ─── Layout & Responsiveness ─── */
 
 .container.margin-vert--lg {
   max-width: none !important;
@@ -220,6 +220,28 @@ code {
 
 .row {
   margin: 0 !important;
+  display: flex !important;
+}
+
+@media (max-width: 996px) {
+  .row {
+    flex-direction: column !important;
+  }
+
+  aside.col--3,
+  .col--2 {
+    display: none !important; /* Hide sidebars on mobile like Wiki */
+  }
+
+  .collapseSidebarButton {
+    display: none !important;
+  }
+
+  main.col {
+    padding: 1rem !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
 }
 
 /* ─── Sidebar ─── */

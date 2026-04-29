@@ -65,15 +65,13 @@ export default function BlogLayout(props) {
 
   return (
     <Layout {...layoutProps}>
-      <div className="container margin-vert--lg" style={{ maxWidth: 'none', padding: 0 }}>
+      <div className="container margin-vert--lg">
         <div 
-          className="row" 
+          className="row blog-layout-row" 
           style={{ 
             margin: 0, 
-            // Only center when there is NO sidebar. If sidebar is there, it must stay on edge.
             justifyContent: hasLeftSidebar ? 'flex-start' : 'center',
             minHeight: 'calc(100vh - var(--ifm-navbar-height))',
-            flexWrap: 'nowrap' // Prevent columns from wrapping
           }}
         >
           {hasLeftSidebar && (
@@ -84,14 +82,13 @@ export default function BlogLayout(props) {
           )}
 
           <main
-            className="col"
+            className="col blog-layout-main"
             style={{
               padding: isPostPage ? '2rem 1rem' : '2rem 2vw',
               flex: '1 1 auto',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              overflow: 'hidden'
             }}
           >
             <div style={{ width: '100%', maxWidth: isPostPage ? '800px' : '1000px' }}>
@@ -101,7 +98,7 @@ export default function BlogLayout(props) {
 
           {!isPostPage && (
             <div 
-              className="col col--2" 
+              className="col col--2 blog-layout-right-sidebar" 
               style={{ 
                 borderLeft: '1px solid var(--glass-border)', 
                 padding: '1rem',
