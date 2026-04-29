@@ -5,7 +5,12 @@ import BlogSidebar from '@theme/BlogSidebar';
 import Link from '@docusaurus/Link';
 import { useLocation } from '@docusaurus/router';
 
-// Helper to group sidebar items by year
+// Load sidebar data to check visibility
+let sidebarData = [];
+try {
+  sidebarData = require('../../data/generated-blog-sidebar.json');
+} catch { }
+
 function groupItemsByYear(items) {
   const years = {};
   items.forEach((item) => {
@@ -26,36 +31,49 @@ export default function BlogLayout(props) {
   const { pathname } = useLocation();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   
-  // Detect if on a post page: regex for /YYYY/MM/DD/
   const isPostPage = /\/\d{4}\/\d{2}\/\d{2}\//.test(pathname);
-  
-  // Extract tag slug from URL (e.g., from /news/tags/slug)
   const tagMatch = pathname.match(/\/tags\/([^/]+)/);
   const currentTag = tagMatch ? tagMatch[1] : null;
 
-  // Filter sidebar items dynamically based on tag context
-  const filteredSidebarItems = useMemo(() => {
+  // Determine if left sidebar SHOULD be visible
+  const hasLeftSidebar = useMemo(() => {
+    if (isPostPage) return false;
+    if (!sidebarData.length) return false;
+    return sidebarData.some(
+      (c) => c.category === currentTag || c.repos.some((r) => r.slug === currentTag)
+    );
+  }, [currentTag, isPostPage]);
+
+  // Robust Filtering for Right Sidebar
+  const displayItems = useMemo(() => {
     if (!sidebar || !sidebar.items) return [];
     if (!currentTag) return sidebar.items;
+
+    // Find if current tag is a category
+    const catData = sidebarData.find(c => c.category === currentTag);
+    // If it's a category, we want posts from ALL its repos
+    const allowedSlugs = catData ? catData.repos.map(r => r.slug) : [currentTag];
     
-    // Filter items whose permalink contains the tag slug as part of the post slug
-    // Format: /news/YYYY/MM/DD/slug-tag_slug or similar
     return sidebar.items.filter(item => {
       const parts = item.permalink.split('/').filter(Boolean);
       const postSlug = parts[parts.length - 1] || '';
-      return postSlug.includes(currentTag);
+      // Match if post slug contains current tag OR any repo slug of the category
+      return allowedSlugs.some(slug => postSlug.includes(slug));
     });
   }, [sidebar, currentTag]);
 
-  // If filtered items are empty but we have a tag, show nothing or all (depending on UX preference)
-  // Here we show filtered items. If empty, the right sidebar simply won't show filtered posts.
-  const displayItems = currentTag ? filteredSidebarItems : (sidebar?.items || []);
-
   return (
     <Layout {...layoutProps}>
-      <div className="container margin-vert--lg">
-        <div className="row" style={{ minHeight: 'calc(100vh - var(--ifm-navbar-height))' }}>
-          {!isPostPage && (
+      <div className="container margin-vert--lg" style={{ maxWidth: 'none', padding: 0 }}>
+        <div 
+          className="row" 
+          style={{ 
+            margin: 0, 
+            justifyContent: 'center', // Auto-centering logic
+            minHeight: 'calc(100vh - var(--ifm-navbar-height))' 
+          }}
+        >
+          {hasLeftSidebar && (
             <BlogSidebar 
               isCollapsed={isSidebarCollapsed} 
               onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
@@ -64,23 +82,37 @@ export default function BlogLayout(props) {
 
           <main
             className={clsx('col', {
-              // Post page: centered and fixed-width look via padding/offset
-              'col--8 col--offset-2': isPostPage,
-              // List page: Dynamic based on sidebar
-              'col--7': !isPostPage && !isSidebarCollapsed,
-              'col--9': !isPostPage && isSidebarCollapsed,
+              // Adjust widths but let flex-centering handle position
+              'col--8': isPostPage || !hasLeftSidebar,
+              'col--7': hasLeftSidebar && !isSidebarCollapsed,
+              'col--9': hasLeftSidebar && isSidebarCollapsed,
             })}
-            style={isPostPage ? { padding: '2rem 1rem' } : { padding: '2rem 3rem' }}
+            style={{
+              padding: isPostPage ? '2rem 1rem' : '2rem 3rem',
+              maxWidth: isPostPage ? '1000px' : '1200px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center'
+            }}
           >
-            {children}
+            <div style={{ width: '100%', maxWidth: '1000px' }}>
+              {children}
+            </div>
           </main>
 
           {!isPostPage && (
-            <div className="col col--2" style={{ borderLeft: '1px solid var(--glass-border)', padding: '1rem' }}>
+            <div 
+              className="col col--2" 
+              style={{ 
+                borderLeft: '1px solid var(--glass-border)', 
+                padding: '1rem',
+                display: displayItems.length > 0 ? 'block' : 'none' 
+              }}
+            >
               {displayItems.length > 0 && (
                 <nav className="menu thin-scrollbar" aria-label="Blog recent posts navigation">
                   <div className="menu__title" style={{ color: 'var(--ifm-color-primary)', textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '1px' }}>
-                    {currentTag ? `Posts: ${currentTag}` : 'Recent posts'}
+                    {currentTag ? `Context: ${currentTag}` : 'Recent posts'}
                   </div>
                   <ul className="menu__list">
                     {groupItemsByYear(displayItems).map(([year, items]) => (
