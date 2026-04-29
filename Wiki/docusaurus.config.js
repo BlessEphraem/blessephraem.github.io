@@ -9,7 +9,7 @@ const siteConfig = require('../site.config.json');
 const config = {
   title: siteConfig.wiki.title,
   tagline: siteConfig.wiki.tagline,
-  favicon: 'img/Ephraem-white.svg',
+  favicon: 'img/Ephraem-yellow.svg',
 
   future: {
     v4: true,
