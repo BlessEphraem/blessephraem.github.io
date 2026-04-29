@@ -49,17 +49,18 @@ export default function BlogLayout(props) {
     if (!sidebar || !sidebar.items) return [];
     if (!currentTag) return sidebar.items;
 
-    // Find if current tag is a category
+    // Get all slugs associated with current context (category or repo)
     const catData = sidebarData.find(c => c.category === currentTag);
-    // If it's a category, we want posts from ALL its repos
     const allowedSlugs = catData ? catData.repos.map(r => r.slug) : [currentTag];
     
-    return sidebar.items.filter(item => {
+    const filtered = sidebar.items.filter(item => {
       const parts = item.permalink.split('/').filter(Boolean);
       const postSlug = parts[parts.length - 1] || '';
-      // Match if post slug contains current tag OR any repo slug of the category
       return allowedSlugs.some(slug => postSlug.includes(slug));
     });
+
+    // Fallback: if no items found for a tag, show all (avoids empty sidebar during generation sync)
+    return filtered.length > 0 ? filtered : sidebar.items;
   }, [sidebar, currentTag]);
 
   return (
@@ -69,8 +70,10 @@ export default function BlogLayout(props) {
           className="row" 
           style={{ 
             margin: 0, 
-            justifyContent: 'center', // Auto-centering logic
-            minHeight: 'calc(100vh - var(--ifm-navbar-height))' 
+            // Only center when there is NO sidebar. If sidebar is there, it must stay on edge.
+            justifyContent: hasLeftSidebar ? 'flex-start' : 'center',
+            minHeight: 'calc(100vh - var(--ifm-navbar-height))',
+            flexWrap: 'nowrap' // Prevent columns from wrapping
           }}
         >
           {hasLeftSidebar && (
@@ -81,21 +84,17 @@ export default function BlogLayout(props) {
           )}
 
           <main
-            className={clsx('col', {
-              // Adjust widths but let flex-centering handle position
-              'col--8': isPostPage || !hasLeftSidebar,
-              'col--7': hasLeftSidebar && !isSidebarCollapsed,
-              'col--9': hasLeftSidebar && isSidebarCollapsed,
-            })}
+            className="col"
             style={{
-              padding: isPostPage ? '2rem 1rem' : '2rem 3rem',
-              maxWidth: isPostPage ? '1000px' : '1200px',
+              padding: isPostPage ? '2rem 1rem' : '2rem 2vw',
+              flex: '1 1 auto',
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center'
+              alignItems: 'center',
+              overflow: 'hidden'
             }}
           >
-            <div style={{ width: '100%', maxWidth: '1000px' }}>
+            <div style={{ width: '100%', maxWidth: isPostPage ? '800px' : '1000px' }}>
               {children}
             </div>
           </main>
@@ -106,40 +105,39 @@ export default function BlogLayout(props) {
               style={{ 
                 borderLeft: '1px solid var(--glass-border)', 
                 padding: '1rem',
+                minWidth: '250px',
                 display: displayItems.length > 0 ? 'block' : 'none' 
               }}
             >
-              {displayItems.length > 0 && (
-                <nav className="menu thin-scrollbar" aria-label="Blog recent posts navigation">
-                  <div className="menu__title" style={{ color: 'var(--ifm-color-primary)', textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '1px' }}>
-                    {currentTag ? `Context: ${currentTag}` : 'Recent posts'}
-                  </div>
-                  <ul className="menu__list">
-                    {groupItemsByYear(displayItems).map(([year, items]) => (
-                      <li key={year} className="menu__list-item">
-                        <div className="menu__link menu__link--sublist" style={{ pointerEvents: 'none', fontWeight: 'bold', color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem' }}>
-                          {year}
-                        </div>
-                        <ul className="menu__list">
-                          {items.map((item) => (
-                            <li key={item.permalink} className="menu__list-item">
-                              <Link
-                                isInternalLink
-                                to={item.permalink}
-                                className="menu__link"
-                                activeClassName="menu__link--active"
-                                style={{ fontSize: '0.85rem' }}
-                              >
-                                {item.title}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              )}
+              <nav className="menu thin-scrollbar" aria-label="Blog recent posts navigation">
+                <div className="menu__title" style={{ color: 'var(--ifm-color-primary)', textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '1px' }}>
+                  {currentTag ? `Filter: ${currentTag}` : 'Recent posts'}
+                </div>
+                <ul className="menu__list">
+                  {groupItemsByYear(displayItems).map(([year, items]) => (
+                    <li key={year} className="menu__list-item">
+                      <div className="menu__link menu__link--sublist" style={{ pointerEvents: 'none', fontWeight: 'bold', color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem' }}>
+                        {year}
+                      </div>
+                      <ul className="menu__list">
+                        {items.map((item) => (
+                          <li key={item.permalink} className="menu__list-item">
+                            <Link
+                              isInternalLink
+                              to={item.permalink}
+                              className="menu__link"
+                              activeClassName="menu__link--active"
+                              style={{ fontSize: '0.85rem' }}
+                            >
+                              {item.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
               {toc && <div className="margin-top--lg">{toc}</div>}
             </div>
           )}
