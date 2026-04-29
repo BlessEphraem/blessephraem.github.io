@@ -48,7 +48,7 @@ const config = {
           blogTitle: 'Home',
           blogDescription: 'Thoughts, Updates & Articles by Ephraem',
           blogSidebarTitle: 'Recent posts',
-          blogSidebarCount: 10,
+          blogSidebarCount: 'ALL',
           showReadingTime: true,
           onUntruncatedBlogPosts: 'ignore',
           feedOptions: {
@@ -87,11 +87,6 @@ const config = {
         items: [
           ...portfolioNav,
           ...generatedBlogNav,
-          {
-            href: siteConfig.social.github,
-            label: 'GitHub',
-            position: 'right',
-          },
         ],
       },
       footer: {

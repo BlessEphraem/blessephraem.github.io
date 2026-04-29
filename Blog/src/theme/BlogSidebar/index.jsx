@@ -1,88 +1,106 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation } from '@docusaurus/router';
+import clsx from 'clsx';
+import Link from '@docusaurus/Link';
 
 let sidebarData = [];
 try {
   sidebarData = require('../../data/generated-blog-sidebar.json');
 } catch {
-  // not generated yet (local dev without running sync scripts)
+  // not generated yet
 }
 
-export default function BlogSidebar({ sidebar }) {
+export default function BlogSidebar() {
   const { pathname } = useLocation();
   const tagMatch = pathname.match(/\/tags\/([^/]+)/);
   const currentTag = tagMatch ? tagMatch[1] : null;
 
-  if (!currentTag || !sidebarData.length) {
-    return null;
-  }
+  // Find if current page belongs to a category or repo
+  const activeItem = sidebarData.find(
+    (c) => c.category === currentTag || c.repos.some((r) => r.slug === currentTag)
+  );
 
-  // Match category directly, or find parent category for a repo slug
-  const catItem =
-    sidebarData.find((c) => c.category === currentTag) ||
-    sidebarData.find((c) => c.repos.some((r) => r.slug === currentTag));
+  const [collapsedCategories, setCollapsedCategories] = useState({});
 
-  if (!catItem) {
-    return null;
+  const toggleCollapse = (category) => {
+    setCollapsedCategories((prev) => ({
+      ...prev,
+      [category]: !prev[category],
+    }));
+  };
+
+  if (!activeItem || !sidebarData.length) {
+    return <aside className="col col--3" />;
   }
 
   return (
-    <div style={{ padding: '1rem 0.75rem' }}>
-      <a
-        href={`/news/tags/${catItem.category}`}
-        style={{
-          display: 'block',
-          fontWeight: 700,
-          fontSize: '0.75rem',
-          textTransform: 'uppercase',
-          letterSpacing: '0.08em',
-          marginBottom: '0.75rem',
-          textDecoration: 'none',
-          opacity: currentTag === catItem.category ? 1 : 0.55,
-        }}
-      >
-        {catItem.label}
-      </a>
-      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-        {catItem.repos.map((repo) => {
-          const isActive = currentTag === repo.slug;
-          return (
-            <li
-              key={repo.slug}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.45rem',
-                padding: '0.2rem 0',
-              }}
-            >
-              {repo.iconImg ? (
-                <img
-                  src={repo.iconImg}
-                  alt=""
-                  width={16}
-                  height={16}
-                  style={{ objectFit: 'contain', flexShrink: 0 }}
-                />
-              ) : (
-                <span style={{ fontSize: '0.9rem', lineHeight: 1, flexShrink: 0 }}>
-                  📦
-                </span>
-              )}
-              <a
-                href={`/news/tags/${repo.slug}`}
-                style={{
-                  fontWeight: isActive ? 700 : 400,
-                  textDecoration: 'none',
-                  fontSize: '0.9rem',
-                }}
+    <aside className="col col--3">
+      <nav className="menu thin-scrollbar">
+        <ul className="menu__list">
+          {sidebarData.map((catItem) => {
+            const isCategoryActive = currentTag === catItem.category;
+            const hasActiveChild = catItem.repos.some((r) => r.slug === currentTag);
+            const isCollapsed = collapsedCategories[catItem.category] ?? (!isCategoryActive && !hasActiveChild);
+
+            return (
+              <li
+                key={catItem.category}
+                className={clsx('menu__list-item', {
+                  'menu__list-item--collapsed': isCollapsed,
+                })}
               >
-                {repo.name}
-              </a>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+                <div className="menu__list-item-collapsible">
+                  <Link
+                    className={clsx('menu__link', {
+                      'menu__link--active': isCategoryActive,
+                    })}
+                    to={`/news/tags/${catItem.category}`}
+                  >
+                    {catItem.label}
+                  </Link>
+                  <button
+                    aria-label="Toggle container"
+                    type="button"
+                    className="clean-btn menu__caret"
+                    onClick={() => toggleCollapse(catItem.category)}
+                  />
+                </div>
+                <ul className="menu__list">
+                  {catItem.repos.map((repo) => {
+                    const isActive = currentTag === repo.slug;
+                    return (
+                      <li key={repo.slug} className="menu__list-item">
+                        <Link
+                          className={clsx('menu__link', {
+                            'menu__link--active': isActive,
+                          })}
+                          to={`/news/tags/${repo.slug}`}
+                          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                        >
+                          {repo.iconImg ? (
+                            <img
+                              src={repo.iconImg}
+                              alt=""
+                              width={16}
+                              height={16}
+                              style={{ objectFit: 'contain', flexShrink: 0 }}
+                            />
+                          ) : (
+                            <span style={{ fontSize: '0.9rem', lineHeight: 1, flexShrink: 0 }}>
+                              📦
+                            </span>
+                          )}
+                          {repo.name}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+    </aside>
   );
 }
