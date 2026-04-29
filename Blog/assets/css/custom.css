@@ -27,8 +27,7 @@
   --docusaurus-highlighted-code-line-bg: var(--ifm-color-primary-alpha-10);
 
   --glass-border: rgba(255, 255, 255, 0.08);
-  --gradient-text: linear-gradient(135deg, #f5c218, #3ad0ff);
-  --title-gradient: var(--gradient-text);
+  --title-gradient: var(--ifm-color-primary);
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
