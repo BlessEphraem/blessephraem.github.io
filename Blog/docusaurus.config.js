@@ -14,7 +14,7 @@ const portfolioNav = existsSync(new URL('./generated-blog-portfolio-nav.json', i
 const config = {
   title: siteConfig.blog.title,
   tagline: siteConfig.blog.tagline,
-  favicon: 'img/Ephraem-white.svg',
+  favicon: 'img/Ephraem-yellow.svg',
 
   future: {
     v4: true,
