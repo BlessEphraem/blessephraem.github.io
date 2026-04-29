@@ -11,11 +11,22 @@ try {
   sidebarData = require('../../data/generated-blog-sidebar.json');
 } catch { }
 
+function getInfoFromPermalink(permalink) {
+  const parts = permalink.split('/').filter(Boolean);
+  // Expected: ['news', 'YYYY', 'MM', 'DD', 'slug']
+  if (parts.length >= 4 && !isNaN(parts[1])) {
+    return {
+      year: parts[1],
+      slug: parts[parts.length - 1] || ''
+    };
+  }
+  return { year: 'Recent', slug: parts[parts.length - 1] || '' };
+}
+
 function groupItemsByYear(items) {
   const years = {};
   items.forEach((item) => {
-    const date = new Date(item.date);
-    const year = isNaN(date.getTime()) ? 'Recent' : date.getFullYear();
+    const { year } = getInfoFromPermalink(item.permalink);
     if (!years[year]) years[year] = [];
     years[year].push(item);
   });
@@ -31,6 +42,7 @@ export default function BlogLayout(props) {
   const { pathname } = useLocation();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   
+  // Detect if on a post page: regex for /YYYY/MM/DD/
   const isPostPage = /\/\d{4}\/\d{2}\/\d{2}\//.test(pathname);
   const tagMatch = pathname.match(/\/tags\/([^/]+)/);
   const currentTag = tagMatch ? tagMatch[1] : null;
@@ -53,9 +65,8 @@ export default function BlogLayout(props) {
     const allowedSlugs = catData ? catData.repos.map(r => r.slug) : [currentTag];
     
     return sidebar.items.filter(item => {
-      const parts = item.permalink.split('/').filter(Boolean);
-      const postSlug = parts[parts.length - 1] || '';
-      return allowedSlugs.some(slug => postSlug.includes(slug));
+      const { slug } = getInfoFromPermalink(item.permalink);
+      return allowedSlugs.some(s => slug.includes(s));
     });
   }, [sidebar, currentTag]);
 
@@ -75,39 +86,37 @@ export default function BlogLayout(props) {
           </main>
         </div>
 
-        {!isPostPage && (
-          <aside className="blog-layout__right-sidebar" style={{ display: displayItems.length > 0 ? 'block' : 'none' }}>
-            {displayItems.length > 0 && (
-              <nav className="menu thin-scrollbar" aria-label="Blog recent posts navigation">
-                <div className="menu__title" style={{ color: 'var(--ifm-color-primary)', textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '1px' }}>
-                  {currentTag ? `Filter: ${currentTag}` : 'Recent posts'}
-                </div>
-                <ul className="menu__list">
-                  {groupItemsByYear(displayItems).map(([year, items]) => (
-                    <li key={year} className="menu__list-item">
-                      <div className="menu__link menu__link--sublist" style={{ pointerEvents: 'none', fontWeight: 'bold', color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem' }}>
-                        {year}
-                      </div>
-                      <ul className="menu__list">
-                        {items.map((item) => (
-                          <li key={item.permalink} className="menu__list-item">
-                            <Link
-                              isInternalLink
-                              to={item.permalink}
-                              className="menu__link"
-                              activeClassName="menu__link--active"
-                              style={{ fontSize: '0.85rem' }}
-                            >
-                              {item.title}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            )}
+        {!isPostPage && displayItems.length > 0 && (
+          <aside className="blog-layout__right-sidebar">
+            <nav className="menu thin-scrollbar" aria-label="Blog recent posts navigation">
+              <div className="menu__title" style={{ color: 'var(--ifm-color-primary)', textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '1px' }}>
+                {currentTag ? `Filter: ${currentTag}` : 'Recent posts'}
+              </div>
+              <ul className="menu__list">
+                {groupItemsByYear(displayItems).map(([year, items]) => (
+                  <li key={year} className="menu__list-item">
+                    <div className="menu__link menu__link--sublist" style={{ pointerEvents: 'none', fontWeight: 'bold', color: 'rgba(255,255,255,0.4)', fontSize: '0.75rem' }}>
+                      {year}
+                    </div>
+                    <ul className="menu__list">
+                      {items.map((item) => (
+                        <li key={item.permalink} className="menu__list-item">
+                          <Link
+                            isInternalLink
+                            to={item.permalink}
+                            className="menu__link"
+                            activeClassName="menu__link--active"
+                            style={{ fontSize: '0.85rem' }}
+                          >
+                            {item.title}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+              </ul>
+            </nav>
             {toc && <div className="margin-top--lg">{toc}</div>}
           </aside>
         )}

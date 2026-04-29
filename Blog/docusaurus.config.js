@@ -76,14 +76,7 @@ const config = {
         respectPrefersColorScheme: false,
       },
       navbar: {
-        title: 'Ephraem',
-        logo: {
-          alt: 'Ephraem',
-          src: 'img/Ephraem-white.svg',
-          href: '/news/',
-          target: '_self',
-          style: { height: '32px', width: '32px' },
-        },
+        title: 'EPHRAEM',
         items: [
           ...portfolioNav,
           ...generatedBlogNav,
