@@ -35,7 +35,7 @@ export default function BlogLayout(props) {
   const tagMatch = pathname.match(/\/tags\/([^/]+)/);
   const currentTag = tagMatch ? tagMatch[1] : null;
 
-  // Determine if left sidebar SHOULD be visible
+  // Determine if left sidebar SHOULD be rendered
   const hasLeftSidebar = useMemo(() => {
     if (isPostPage) return false;
     if (!sidebarData.length) return false;
@@ -49,63 +49,35 @@ export default function BlogLayout(props) {
     if (!sidebar || !sidebar.items) return [];
     if (!currentTag) return sidebar.items;
 
-    // Get all slugs associated with current context (category or repo)
     const catData = sidebarData.find(c => c.category === currentTag);
     const allowedSlugs = catData ? catData.repos.map(r => r.slug) : [currentTag];
     
-    const filtered = sidebar.items.filter(item => {
+    return sidebar.items.filter(item => {
       const parts = item.permalink.split('/').filter(Boolean);
       const postSlug = parts[parts.length - 1] || '';
       return allowedSlugs.some(slug => postSlug.includes(slug));
     });
-
-    // Fallback: if no items found for a tag, show all (avoids empty sidebar during generation sync)
-    return filtered.length > 0 ? filtered : sidebar.items;
   }, [sidebar, currentTag]);
 
   return (
     <Layout {...layoutProps}>
-      <div className="container margin-vert--lg">
-        <div 
-          className="row blog-layout-row" 
-          style={{ 
-            margin: 0, 
-            justifyContent: hasLeftSidebar ? 'flex-start' : 'center',
-            minHeight: 'calc(100vh - var(--ifm-navbar-height))',
-          }}
-        >
-          {hasLeftSidebar && (
-            <BlogSidebar 
-              isCollapsed={isSidebarCollapsed} 
-              onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
-            />
-          )}
+      <div className="blog-layout__wrapper">
+        {hasLeftSidebar && (
+          <BlogSidebar 
+            isCollapsed={isSidebarCollapsed} 
+            onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
+          />
+        )}
 
-          <main
-            className="col blog-layout-main"
-            style={{
-              padding: isPostPage ? '2rem 1rem' : '2rem 2vw',
-              flex: '1 1 auto',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <div style={{ width: '100%', maxWidth: isPostPage ? '800px' : '1000px' }}>
-              {children}
-            </div>
+        <div className="blog-layout__main-container">
+          <main className="blog-layout__main-content">
+            {children}
           </main>
+        </div>
 
-          {!isPostPage && (
-            <div 
-              className="col col--2 blog-layout-right-sidebar" 
-              style={{ 
-                borderLeft: '1px solid var(--glass-border)', 
-                padding: '1rem',
-                minWidth: '250px',
-                display: displayItems.length > 0 ? 'block' : 'none' 
-              }}
-            >
+        {!isPostPage && (
+          <aside className="blog-layout__right-sidebar" style={{ display: displayItems.length > 0 ? 'block' : 'none' }}>
+            {displayItems.length > 0 && (
               <nav className="menu thin-scrollbar" aria-label="Blog recent posts navigation">
                 <div className="menu__title" style={{ color: 'var(--ifm-color-primary)', textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '1px' }}>
                   {currentTag ? `Filter: ${currentTag}` : 'Recent posts'}
@@ -135,10 +107,10 @@ export default function BlogLayout(props) {
                   ))}
                 </ul>
               </nav>
-              {toc && <div className="margin-top--lg">{toc}</div>}
-            </div>
-          )}
-        </div>
+            )}
+            {toc && <div className="margin-top--lg">{toc}</div>}
+          </aside>
+        )}
       </div>
     </Layout>
   );

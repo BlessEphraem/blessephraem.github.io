@@ -210,98 +210,100 @@ code {
   letter-spacing: 0.1em;
 }
 
-/* ─── Layout & Responsiveness ─── */
+/* ─── Layout & Responsiveness (Wiki Style) ─── */
 
-.container.margin-vert--lg {
-  max-width: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
+.blog-layout__wrapper {
+  display: flex;
+  width: 100%;
+  min-height: calc(100vh - var(--ifm-navbar-height));
+  margin: 0;
+  padding: 0;
 }
 
-.row {
-  margin: 0 !important;
-  display: flex !important;
-}
-
-@media (max-width: 996px) {
-  .row {
-    flex-direction: column !important;
-  }
-
-  aside.col--3,
-  .col--2 {
-    display: none !important; /* Hide sidebars on mobile like Wiki */
-  }
-
-  .collapseSidebarButton {
-    display: none !important;
-  }
-
-  main.col {
-    padding: 1rem !important;
-    max-width: 100% !important;
-    width: 100% !important;
-  }
-}
-
-/* ─── Sidebar ─── */
-
-[class*="docSidebarContainer_"],
-aside[class*="theme-doc-sidebar-container"],
-aside.col--3 {
-  border-right: 1px solid var(--glass-border) !important;
-  transition: width 0.3s ease;
+.blog-layout__sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--glass-border);
+  background: var(--ifm-background-color);
   position: sticky;
   top: var(--ifm-navbar-height);
   height: calc(100vh - var(--ifm-navbar-height));
-  padding: 0 !important;
+  transition: width 0.3s ease;
+  z-index: 10;
 }
 
-.sidebar-collapsed {
-  width: 60px !important;
-  flex: 0 0 60px !important;
-  max-width: 60px !important;
+.blog-layout__sidebar--collapsed {
+  width: 60px;
 }
 
-.sidebar-collapsed .menu {
-  display: none;
+.blog-layout__main-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  overflow-x: hidden;
 }
 
-/* Base style for BOTH Collapse and Expand buttons */
+.blog-layout__main-content {
+  width: 100%;
+  max-width: 1000px;
+}
+
+.blog-layout__right-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--glass-border);
+  padding: 1.5rem;
+  height: calc(100vh - var(--ifm-navbar-height));
+  position: sticky;
+  top: var(--ifm-navbar-height);
+}
+
+@media (max-width: 996px) {
+  .blog-layout__wrapper {
+    flex-direction: column;
+  }
+  
+  .blog-layout__sidebar,
+  .blog-layout__right-sidebar,
+  .collapseSidebarButton {
+    display: none !important;
+  }
+  
+  .blog-layout__main-container {
+    padding: 1rem;
+  }
+}
+
+/* ─── Sidebar Toggle Button (Wiki Style) ─── */
 .collapseSidebarButton {
-  width: 30px !important;
-  height: 30px !important;
-  border-radius: 50% !important;
-  background: var(--ifm-background-surface-color) !important;
-  border: 1px solid var(--glass-border) !important;
-  color: rgba(255, 255, 255, 0.4) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 !important;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
-  cursor: pointer !important;
-  position: absolute !important;
-  bottom: 80px !important;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--glass-border);
+  color: rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: absolute;
+  bottom: 80px;
+  right: -15px;
   z-index: 99;
+  transition: all 0.3s ease;
+}
+
+.blog-layout__sidebar--collapsed .collapseSidebarButton {
+  right: auto;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .collapseSidebarButton:hover {
-  background: var(--ifm-background-color) !important;
-  border-color: var(--ifm-color-primary) !important;
-  color: var(--ifm-color-primary) !important;
-  box-shadow: 0 0 10px var(--ifm-color-primary-alpha-10) !important;
-}
-
-/* Position for uncollapsed */
-.collapseSidebarButton--uncollapsed {
-  right: -15px !important;
-}
-
-/* Position for collapsed */
-.collapseSidebarButton--collapsed {
-  left: 50% !important;
-  transform: translateX(-50%) !important;
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
+  box-shadow: 0 0 10px var(--ifm-color-primary-alpha-10);
 }
 
 .collapseSidebarButton::before {
@@ -315,18 +317,17 @@ aside.col--3 {
   mask-repeat: no-repeat;
   -webkit-mask-repeat: no-repeat;
   mask-position: center;
-  -webkit-mask-position: center;
 }
 
+/* Icons for toggle */
 .collapseSidebarButton--uncollapsed::before {
   mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M15 18l-6-6 6-6"/></svg>');
-  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M15 18l-6-6 6-6"/></svg>');
 }
-
 .collapseSidebarButton--collapsed::before {
   mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 18l6-6-6-6"/></svg>');
-  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 18l6-6-6-6"/></svg>');
 }
+
+/* ─── Sidebar ─── */
 
 /* ─── Scrollbar ─── */
 

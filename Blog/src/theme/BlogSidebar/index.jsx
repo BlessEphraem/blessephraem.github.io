@@ -30,78 +30,76 @@ export default function BlogSidebar({ isCollapsed, onToggle }) {
   };
 
   if (!activeItem || !sidebarData.length) {
-    return <aside className="col col--3" style={{ borderRight: '1px solid var(--glass-border)', display: 'none' }} />;
+    return null; // Return nothing to let Layout center properly
   }
 
   return (
-    <aside className={clsx('col col--3', { 'sidebar-collapsed': isCollapsed })}>
-      <nav className="menu thin-scrollbar" style={{ height: '100%' }}>
-        {!isCollapsed && (
-          <ul className="menu__list">
-            {sidebarData.map((catItem) => {
-              const isCategoryActive = currentTag === catItem.category;
-              const hasActiveChild = catItem.repos.some((r) => r.slug === currentTag);
-              const isCategoryCollapsed = collapsedCategories[catItem.category] ?? (!isCategoryActive && !hasActiveChild);
+    <aside className={clsx('blog-layout__sidebar', { 'blog-layout__sidebar--collapsed': isCollapsed })}>
+      <nav className="menu thin-scrollbar" style={{ height: '100%', display: isCollapsed ? 'none' : 'block' }}>
+        <ul className="menu__list">
+          {sidebarData.map((catItem) => {
+            const isCategoryActive = currentTag === catItem.category;
+            const hasActiveChild = catItem.repos.some((r) => r.slug === currentTag);
+            const isCategoryCollapsed = collapsedCategories[catItem.category] ?? (!isCategoryActive && !hasActiveChild);
 
-              return (
-                <li
-                  key={catItem.category}
-                  className={clsx('menu__list-item', {
-                    'menu__list-item--collapsed': isCategoryCollapsed,
-                  })}
-                >
-                  <div className="menu__list-item-collapsible">
-                    <Link
-                      className={clsx('menu__link', {
-                        'menu__link--active': isCategoryActive,
-                      })}
-                      to={`/news/tags/${catItem.category}`}
-                    >
-                      {catItem.label}
-                    </Link>
-                    <button
-                      aria-label="Toggle container"
-                      type="button"
-                      className="clean-btn menu__caret"
-                      onClick={() => toggleCollapse(catItem.category)}
-                    />
-                  </div>
-                  <ul className="menu__list">
-                    {catItem.repos.map((repo) => {
-                      const isActive = currentTag === repo.slug;
-                      return (
-                        <li key={repo.slug} className="menu__list-item">
-                          <Link
-                            className={clsx('menu__link', {
-                              'menu__link--active': isActive,
-                            })}
-                            to={`/news/tags/${repo.slug}`}
-                            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-                          >
-                            {repo.iconImg ? (
-                              <img
-                                src={repo.iconImg}
-                                alt=""
-                                width={16}
-                                height={16}
-                                style={{ objectFit: 'contain', flexShrink: 0 }}
-                              />
-                            ) : (
-                              <span style={{ fontSize: '0.9rem', lineHeight: 1, flexShrink: 0 }}>
-                                📦
-                              </span>
-                            )}
-                            {repo.name}
-                          </Link>
-                        </li>
-                      );
+            return (
+              <li
+                key={catItem.category}
+                className={clsx('menu__list-item', {
+                  'menu__list-item--collapsed': isCategoryCollapsed,
+                })}
+              >
+                <div className="menu__list-item-collapsible">
+                  <Link
+                    className={clsx('menu__link', {
+                      'menu__link--active': isCategoryActive,
                     })}
-                  </ul>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+                    to={`/news/tags/${catItem.category}`}
+                  >
+                    {catItem.label}
+                  </Link>
+                  <button
+                    aria-label="Toggle container"
+                    type="button"
+                    className="clean-btn menu__caret"
+                    onClick={() => toggleCollapse(catItem.category)}
+                  />
+                </div>
+                <ul className="menu__list">
+                  {catItem.repos.map((repo) => {
+                    const isActive = currentTag === repo.slug;
+                    return (
+                      <li key={repo.slug} className="menu__list-item">
+                        <Link
+                          className={clsx('menu__link', {
+                            'menu__link--active': isActive,
+                          })}
+                          to={`/news/tags/${repo.slug}`}
+                          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                        >
+                          {repo.iconImg ? (
+                            <img
+                              src={repo.iconImg}
+                              alt=""
+                              width={16}
+                              height={16}
+                              style={{ objectFit: 'contain', flexShrink: 0 }}
+                            />
+                          ) : (
+                            <span style={{ fontSize: '0.9rem', lineHeight: 1, flexShrink: 0 }}>
+                              📦
+                            </span>
+                          )}
+                          {repo.name}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </li>
+            );
+          })}
+        </ul>
       </nav>
       <button
         type="button"
