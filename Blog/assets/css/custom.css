@@ -210,6 +210,89 @@ code {
   letter-spacing: 0.1em;
 }
 
+/* ─── Sidebar ─── */
+
+[class*="docSidebarContainer_"],
+aside[class*="theme-doc-sidebar-container"],
+aside.col--3 {
+  border-right: 1px solid var(--glass-border) !important;
+  transition: width 0.3s ease;
+  position: sticky;
+  top: var(--ifm-navbar-height);
+  height: calc(100vh - var(--ifm-navbar-height));
+}
+
+.sidebar-collapsed {
+  width: 60px !important;
+  flex: 0 0 60px !important;
+  max-width: 60px !important;
+}
+
+.sidebar-collapsed .menu {
+  display: none;
+}
+
+/* Base style for BOTH Collapse and Expand buttons */
+.collapseSidebarButton {
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 50% !important;
+  background: var(--ifm-background-surface-color) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+  cursor: pointer !important;
+  position: absolute !important;
+  bottom: 80px !important;
+  z-index: 99;
+}
+
+.collapseSidebarButton:hover {
+  background: var(--ifm-background-color) !important;
+  border-color: var(--ifm-color-primary) !important;
+  color: var(--ifm-color-primary) !important;
+  box-shadow: 0 0 10px var(--ifm-color-primary-alpha-10) !important;
+}
+
+/* Position for uncollapsed */
+.collapseSidebarButton--uncollapsed {
+  right: -15px !important;
+}
+
+/* Position for collapsed */
+.collapseSidebarButton--collapsed {
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+.collapseSidebarButton::before {
+  content: "";
+  display: block;
+  width: 14px;
+  height: 14px;
+  background-color: currentColor;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
+}
+
+.collapseSidebarButton--uncollapsed::before {
+  mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M15 18l-6-6 6-6"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M15 18l-6-6 6-6"/></svg>');
+}
+
+.collapseSidebarButton--collapsed::before {
+  mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 18l6-6-6-6"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M9 18l6-6-6-6"/></svg>');
+}
+
 /* ─── Scrollbar ─── */
 
 ::-webkit-scrollbar { width: 6px; }
