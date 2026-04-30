@@ -37,7 +37,7 @@ body::after {
     inset: 0;
     background: radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(var(--color-bg-rgb), 0.75) 100%);
     pointer-events: none;
-    z-index: 1009;
+    z-index: 150;
 }
 
 /* Grid */
@@ -50,7 +50,7 @@ body::after {
     background-size: 64px 64px;
     background-position: center center;
     pointer-events: none;
-    z-index: 1008;
+    z-index: 3;
 }
 
 /* Blobs */
@@ -59,7 +59,7 @@ body::after {
     border-radius: 50%;
     filter: blur(90px);
     pointer-events: none;
-    z-index: 1008;
+    z-index: 5;
     animation: blobPulse 9s ease-in-out infinite;
 }
 .blob-pink {

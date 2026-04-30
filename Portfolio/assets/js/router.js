@@ -1,5 +1,6 @@
 window.appRouter = {
     isAnimating: false,
+    currentPath: window.location.pathname,
     
     init() {
         this.bindEvents();
@@ -61,6 +62,19 @@ window.appRouter = {
 
     async navigateSPA(url, isPopState = false) {
         if (this.isAnimating) return;
+
+        const targetUrl = new URL(url);
+        if (targetUrl.pathname === this.currentPath) {
+            if (targetUrl.hash) {
+                const el = document.querySelector(targetUrl.hash);
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                else window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            return;
+        }
+
         this.isAnimating = true;
 
         const overlay = document.getElementById('page-transition');
@@ -83,6 +97,7 @@ window.appRouter = {
                 if (!isPopState) {
                     window.history.pushState({}, '', url);
                 }
+                this.currentPath = new URL(url).pathname;
                 document.title = doc.title;
 
                 const stylePromises = [];
@@ -159,8 +174,19 @@ window.appRouter = {
                 await new Promise(r => requestAnimationFrame(r));
                 await new Promise(r => requestAnimationFrame(r));
 
-                // 4. On met à jour le HTML (plus de flash blanc !)
+                // 4. Préserver les éléments de fond (grid, blobs, overlay) pour éviter leur disparition
+                const preserved = [
+                    document.getElementById('page-transition'),
+                    document.querySelector('.bg-grid'),
+                    ...Array.from(document.querySelectorAll('.blob'))
+                ].filter(Boolean);
+                preserved.forEach(el => el.remove());
+
                 document.body.innerHTML = doc.body.innerHTML;
+
+                // Supprimer les doublons injectés par le nouveau HTML, réinsérer les originaux
+                document.querySelectorAll('#page-transition, .bg-grid, .blob').forEach(el => el.remove());
+                [...preserved].reverse().forEach(el => document.body.prepend(el));
 
                 // Scroll à la bonne position
                 const hash = new URL(window.location.href).hash;
@@ -202,6 +228,17 @@ window.appRouter = {
     },
 
     handlePopState(e) {
+        const newUrl = new URL(window.location.href);
+        if (newUrl.pathname === this.currentPath) {
+            if (newUrl.hash) {
+                const el = document.querySelector(newUrl.hash);
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                else window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            return;
+        }
         const overlay = document.getElementById('page-transition');
         if (overlay) {
             overlay.style.animation = 'none';

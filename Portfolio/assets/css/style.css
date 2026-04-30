@@ -75,7 +75,7 @@ body::after {
     inset: 0;
     background: radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(var(--color-bg-rgb), 0.7) 100%);
     pointer-events: none;
-    z-index: 1009;
+    z-index: 150;
 }
 
 /* Background grid */
@@ -88,7 +88,7 @@ body::after {
     background-size: 64px 64px;
     background-position: center center;
     pointer-events: none;
-    z-index: 1008;
+    z-index: 3;
 }
 
 /* Glow blobs */
@@ -102,7 +102,7 @@ body::after {
     border-radius: 50%;
     filter: blur(90px);
     pointer-events: none;
-    z-index: 1008;
+    z-index: 5;
     animation: blobPulse 9s ease-in-out infinite;
 }
 
@@ -153,13 +153,13 @@ ul { list-style: none; }
 /* Utilities */
 .container { max-width: var(--max-width); margin: 0 auto; padding: 0 20px; }
 .accent { color: var(--primary); font-weight: 900; letter-spacing: var(--letter-spacing);}
-.section { padding: 80px 0; position: relative; z-index: 1006; }
+.section { padding: 80px 0; position: relative; z-index: 10; }
 .section-title { font-size: 2.5rem; text-align: center; margin-bottom: 3rem; font-family: 'Satoshi', sans-serif; font-weight: 900; }
 .bg-alt { background: var(--gradient-section); }
 
 /* Navbar */
 .navbar {
-    position: fixed; top: 0; width: 100%; z-index: 1002;
+    position: fixed; top: 0; width: 100%; z-index: 200;
     background: var(--bg-nav);
     backdrop-filter: var(--backdrop);
     border-bottom: var(--glass-border);
@@ -196,7 +196,7 @@ ul { list-style: none; }
 /* Hero Section */
 .hero {
     min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    position: relative; overflow: hidden; padding-top: 80px; z-index: 1006;
+    position: relative; overflow: hidden; padding-top: 80px; z-index: 10;
     transition: opacity 0.35s ease;
 }
 .hero-content { text-align: center; z-index: 2; max-width: 800px; padding: 0 20px; }
