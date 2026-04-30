@@ -11,22 +11,31 @@
   --ifm-color-primary-lightest: #ff78c3;
 
   /* Custom Ephraem Variables */
+  --primary-rgb:   255, 23, 150;
+  --secondary-rgb: 58, 208, 255;
+  --color-bg-rgb:  15, 16, 19;
+
+  /* Topic-map — must mirror Wiki/topics/topic-map.json exactly */
+  --topic-program:  #00B7FF;
+  --topic-plugin:   #FFBB00;
+  --topic-scripts:  #00FF5E;
+
   --ifm-color-secondary: #3ad0ff;
-  --ifm-color-primary-alpha-10: rgba(255, 23, 150, 0.1);
-  --ifm-color-primary-alpha-07: rgba(255, 23, 150, 0.07);
+  --ifm-color-primary-alpha-10: rgba(var(--primary-rgb), 0.1);
+  --ifm-color-primary-alpha-07: rgba(var(--primary-rgb), 0.07);
   --ifm-font-family-black: 'Satoshi-Black', sans-serif;
   --ifm-font-family-bold: 'Satoshi-Bold', sans-serif;
 
   --ifm-background-color: #0f1013;
   --ifm-background-surface-color: #16181d;
-  --ifm-navbar-background-color: rgba(15, 16, 19, 0.92);
+  --ifm-navbar-background-color: rgba(var(--color-bg-rgb), 0.92);
   --ifm-footer-background-color: #0f1013;
   --ifm-code-font-size: 90%;
   --ifm-font-family-base: 'Satoshi', system-ui, sans-serif;
   --ifm-heading-font-family: 'Satoshi', sans-serif;
   --ifm-heading-font-weight: 900;
   --docusaurus-highlighted-code-line-bg: var(--ifm-color-primary-alpha-10);
-  --title-gradient: linear-gradient(-90deg, #ffffff 0%, #FF1796 100%);
+  --title-gradient: linear-gradient(-90deg, #ffffff 0%, var(--ifm-color-primary) 100%);
   --secondary: var(--ifm-color-secondary);
   --glass-border: rgba(255, 255, 255, 0.08);
   -webkit-font-smoothing: antialiased;
@@ -50,7 +59,7 @@ h1, h2, h3, h4, h5, h6 {
   --docusaurus-highlighted-code-line-bg: var(--ifm-color-primary-alpha-10);
   --ifm-background-color: #0f1013;
   --ifm-background-surface-color: #16181d;
-  --ifm-navbar-background-color: rgba(15, 16, 19, 0.92);
+  --ifm-navbar-background-color: rgba(var(--color-bg-rgb), 0.92);
   --ifm-footer-background-color: #0f1013;
 }
 
@@ -164,7 +173,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Footer */
 .footer {
   padding: 16px 0;
-  background: #0f1013;
+  background: var(--ifm-background-color);
   border-top: 1px solid var(--glass-border);
 }
 
@@ -189,8 +198,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Admonitions */
 .alert--info {
-  background: rgba(58, 208, 255, 0.08);
-  border-color: rgba(58, 208, 255, 0.3);
+  background: rgba(var(--secondary-rgb), 0.08);
+  border-color: rgba(var(--secondary-rgb), 0.3);
 }
 
 .alert--warning {

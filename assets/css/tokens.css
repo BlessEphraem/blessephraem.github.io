@@ -1,0 +1,37 @@
+/* Design tokens — single source of truth for the site palette.
+ * Imported by: assets/css/root.css, Portfolio/assets/css/style.css
+ * Wiki & Blog run Docusaurus (separate build) — they maintain matching
+ * copies of these values inside their own custom.css :root blocks. */
+
+:root {
+    /* Core palette */
+    --color-pink:     #ff1796;
+    --color-pink-rgb: 255, 23, 150;
+    --color-cyan:     #3ad0ff;
+    --color-cyan-rgb: 58, 208, 255;
+    --color-gold:     #f5c218;
+    --color-gold-rgb: 245, 194, 24;
+    --color-green:    #00ff7f;
+    --color-bg:       #0f1013;
+    --color-bg-rgb:   15, 16, 19;
+    --color-surface:  #16181d;
+    --color-text:     #ffffff;
+
+    /* Topic-map — must mirror Wiki/topics/topic-map.json exactly */
+    --topic-program:  #00B7FF;
+    --topic-plugin:   #FFBB00;
+    --topic-scripts:  #00FF5E;
+
+    /* Glass utilities */
+    --glass-alpha-border:       rgba(255, 255, 255, 0.08);
+    --glass-alpha-border-heavy: rgba(255, 255, 255, 0.10);
+    --glass-alpha-shine:        rgba(255, 255, 255, 0.03);
+
+    /* Typography */
+    --font-base:          'Satoshi', sans-serif;
+    --font-weight-black:  900;
+    --letter-spacing-wide: 2px;
+
+    /* Motion */
+    --transition-base: all 0.3s ease;
+}
