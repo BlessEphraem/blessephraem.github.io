@@ -1,4 +1,5 @@
 @import './tokens.css';
+@import './socials.css';
 
 :root {
     --primary:    var(--color-pink);
@@ -176,33 +177,6 @@ body::after {
     letter-spacing: 0.12em;
     text-transform: uppercase;
     font-weight: 500;
-}
-
-.socials {
-    display: flex;
-    gap: 14px;
-    margin-top: 6px;
-}
-.socials a {
-    color: var(--text-muted);
-    font-size: 1.15rem;
-    transition: var(--transition);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 1px solid var(--glass-alpha-border);
-    background: var(--glass-alpha-shine);
-    text-decoration: none;
-}
-.socials a:hover {
-    color: var(--primary);
-    border-color: rgba(var(--color-pink-rgb), 0.45);
-    background: rgba(var(--color-pink-rgb), 0.08);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(var(--color-pink-rgb), 0.18);
 }
 
 /* Footer */

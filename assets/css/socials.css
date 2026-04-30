@@ -1,0 +1,113 @@
+@property --accent {
+    syntax: '<color>';
+    inherits: true;
+    initial-value: rgba(255, 255, 255, 0.4);
+}
+
+:root {
+    --color-youtube:   #ff0000;
+    --color-instagram: #c13584;
+    --color-github:    #0088ff;
+}
+
+.socials {
+    display: flex;
+    gap: 38px;
+    margin-top: 16px;
+}
+
+/* Plasma Glass Spheroids */
+.socials a {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(var(--color-bg-rgb), 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 1.55rem;
+    text-decoration: none;
+    backdrop-filter: blur(8px);
+    transition:
+        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.6s ease,
+        background 0.6s ease,
+        box-shadow 0.6s ease,
+        color 0.6s ease;
+    isolation: isolate;
+}
+
+/* Internal Plasma Core — gradient stays constant, only opacity/scale animate */
+.socials a::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at 50% 50%, var(--accent), transparent 70%);
+    opacity: 0;
+    filter: blur(10px);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+    z-index: -1;
+}
+
+/* Glass Surface Shine — always accent-tinted, only opacity animates */
+.socials a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--accent) 45%, rgba(255,255,255,0.9)) 0%,
+        transparent 45%,
+        color-mix(in srgb, var(--accent) 20%, transparent) 100%
+    );
+    opacity: 0.12;
+    z-index: 2;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+}
+
+.socials a i {
+    z-index: 1;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+}
+
+/* Hover: Ignition */
+.socials a:hover {
+    color: var(--accent);
+    transform: translateY(-15px) scale(1.15);
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--accent) 8%, rgba(var(--color-bg-rgb), 0.5));
+    box-shadow:
+        0 0 40px 6px color-mix(in srgb, var(--accent) 45%, transparent),
+        0 0 18px 0px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.socials a:hover::before {
+    opacity: 0.8;
+    filter: blur(18px);
+    transform: scale(1.55);
+}
+
+.socials a:hover::after {
+    opacity: 0.75;
+}
+
+.socials a:hover i {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 12px var(--accent));
+}
+
+/* Platform Color Assignments */
+.socials a[aria-label="YouTube"]   { --accent: var(--color-youtube);   }
+.socials a[aria-label="Instagram"] { --accent: var(--color-instagram); }
+.socials a[aria-label="GitHub"]    { --accent: var(--color-github);    }
+
+/* Click feedback */
+.socials a:active {
+    transform: translateY(-8px) scale(0.95);
+}

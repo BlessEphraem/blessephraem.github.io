@@ -227,8 +227,7 @@ ul { list-style: none; }
 .description { margin: 20px auto; color: var(--text-muted); max-width: 600px; }
 
 .hero-btns { display: flex; gap: 20px; justify-content: center; margin-top: 30px; }
-.socials { margin-top: 30px; font-size: 1.5rem; display: flex; gap: 20px; justify-content: center; }
-.socials a:hover { transform: translateY(-5px); color: var(--primary); }
+.socials { margin-top: 30px; justify-content: center; }
 
 /* Buttons */
 .btn {
