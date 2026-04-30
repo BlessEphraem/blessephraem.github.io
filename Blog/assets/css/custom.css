@@ -32,7 +32,9 @@
   --docusaurus-highlighted-code-line-bg: var(--ifm-color-primary-alpha-10);
 
   --glass-border: rgba(255, 255, 255, 0.08);
-  --title-gradient: linear-gradient(-90deg, var(--ifm-color-primary) 0%, var(--color-pink) 100%);
+  --title-gradient-from: var(--ifm-color-primary);
+  --title-gradient-to:   var(--color-pink);
+  --title-gradient-dir:  -90deg;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

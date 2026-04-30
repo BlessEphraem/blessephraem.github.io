@@ -35,7 +35,9 @@
   --ifm-heading-font-family: 'Satoshi', sans-serif;
   --ifm-heading-font-weight: 900;
   --docusaurus-highlighted-code-line-bg: var(--ifm-color-primary-alpha-10);
-  --title-gradient: linear-gradient(-90deg, #ffffff 0%, var(--ifm-color-primary) 100%);
+  --title-gradient-from: #ffffff;
+  --title-gradient-to:   var(--ifm-color-primary);
+  --title-gradient-dir:  -90deg;
   --secondary: var(--ifm-color-secondary);
   --glass-border: rgba(255, 255, 255, 0.08);
   -webkit-font-smoothing: antialiased;

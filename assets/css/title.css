@@ -1,8 +1,17 @@
-/* Shared gradient title style — used by Wiki navbar & Portfolio hero */
+/* Shared gradient title style — used by Wiki navbar, Blog navbar & Portfolio
+ * Override --title-gradient-from / --title-gradient-to / --title-gradient-dir
+ * per section. Never override --title-gradient directly. */
 
 :root {
-  --title-gradient: linear-gradient(135deg, #ff1796, #3ad0ff);
-  --title-font: 'Satoshi', sans-serif;
-  --title-weight: 900;
+  --title-gradient-from: #ff1796;  /* first stop  (0%)   — default: pink */
+  --title-gradient-to:   #3ad0ff;  /* second stop (100%) — default: cyan */
+  --title-gradient-dir:  135deg;   /* default: diagonal (Portfolio) */
+  --title-gradient: linear-gradient(
+    var(--title-gradient-dir),
+    var(--title-gradient-from),
+    var(--title-gradient-to)
+  );
+  --title-font:           'Satoshi', sans-serif;
+  --title-weight:         900;
   --title-letter-spacing: 2px;
 }

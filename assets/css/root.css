@@ -155,8 +155,8 @@ body::after {
     font-weight: 900;
     letter-spacing: 0.05em;
     line-height: 1;
-    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--news), var(--primary));
-    background-size: 200% auto;
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--news));
+    background-size: 400% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
