@@ -1,0 +1,10 @@
+{
+  "name": "blessephraem-local",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local development proxy for unified site access",
+  "dependencies": {
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.6"
+  }
+}

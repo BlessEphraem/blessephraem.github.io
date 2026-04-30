@@ -14,6 +14,21 @@ Portfolio/videos.json
 scan_full_history.py
 portfolio-registry.json
 
+# Mocked Local Data & CI Generated Files
+Wiki/generated-navbar.json
+Wiki/pages/tools.json
+Wiki/assets/css/icons.css
+Wiki/assets/img/*/
+Wiki/docs/mock-category
+Blog/posts/*.md
+Blog/posts/*.mdx
+!Blog/posts/.gitkeep
+Blog/generated-blog-navbar.json
+Blog/generated-blog-portfolio-nav.json
+Blog/src/data/generated-blog-sidebar.json
+portfolio-archive.json
+portfolio-recent.json
+
 # Misc
 .DS_Store
 .env.local
