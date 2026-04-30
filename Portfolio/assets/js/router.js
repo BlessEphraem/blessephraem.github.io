@@ -2,17 +2,21 @@ window.appRouter = {
     isAnimating: false,
     currentPath: window.location.pathname,
     
+    getContentEls() {
+        return Array.from(document.body.children).filter(
+            el => !el.matches('.bg-grid, .blob, #page-transition, script')
+        );
+    },
+
     init() {
         this.bindEvents();
         window.addEventListener('popstate', (e) => this.handlePopState(e));
         window.addEventListener('pageshow', (e) => {
             if (!e.persisted) return;
             this.isAnimating = false;
-            const overlay = document.getElementById('page-transition');
-            if (!overlay) return;
-            overlay.style.animation = 'none';
-            void overlay.offsetHeight;
-            overlay.style.animation = 'overlayEnter 0.55s ease-out both';
+            this.getContentEls().forEach(el => {
+                el.style.opacity = '1';
+            });
         });
     },
 
@@ -49,15 +53,16 @@ window.appRouter = {
     leaveAndNavigate(url) {
         if (this.isAnimating) return;
         this.isAnimating = true;
-        const overlay = document.getElementById('page-transition');
-        if (overlay) {
-            overlay.style.animation = 'none';
-            void overlay.offsetHeight;
-            overlay.style.animation = 'overlayLeave 0.35s ease-in both';
-            setTimeout(() => { window.location.href = url; }, 340);
-        } else {
-            window.location.href = url;
-        }
+        
+        this.getContentEls().forEach(el => {
+            el.animate([
+                { opacity: 1 },
+                { opacity: 0 }
+            ], { duration: 320, easing: 'ease-in' });
+            el.style.opacity = '0';
+        });
+        
+        setTimeout(() => { window.location.href = url; }, 320);
     },
 
     async navigateSPA(url, isPopState = false) {
@@ -77,149 +82,180 @@ window.appRouter = {
 
         this.isAnimating = true;
 
-        const overlay = document.getElementById('page-transition');
-        if (overlay && !isPopState) {
-            overlay.style.animation = 'none';
-            void overlay.offsetHeight;
-            overlay.style.animation = 'overlayLeave 0.35s ease-in both';
+        if (!isPopState) {
+            this.getContentEls().forEach(el => {
+                el.animate([
+                    { opacity: 1 },
+                    { opacity: 0 }
+                ], { duration: 320, easing: 'ease-in' });
+                el.style.opacity = '0';
+            });
         }
 
         try {
             const oldUrl = window.location.href;
-            const response = await fetch(url);
+            
+            // Promise.all to fetch HTML while animation plays
+            const [response] = await Promise.all([
+                fetch(url),
+                new Promise(resolve => setTimeout(resolve, isPopState ? 0 : 320))
+            ]);
+
             if (!response.ok) throw new Error('Network response was not ok');
             const html = await response.text();
             
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
 
-            setTimeout(async () => {
-                if (!isPopState) {
-                    window.history.pushState({}, '', url);
+            if (!isPopState) {
+                window.history.pushState({}, '', url);
+            }
+            this.currentPath = new URL(url).pathname;
+            document.title = doc.title;
+
+            const stylePromises = [];
+
+            // --- Sync Stylesheets ---
+            const currentStyles = Array.from(document.head.querySelectorAll('link[rel="stylesheet"], style'));
+            const newStyles = Array.from(doc.head.querySelectorAll('link[rel="stylesheet"], style'));
+
+            // 1. Ajouter les nouveaux styles et ATTENDRE qu'ils chargent
+            newStyles.forEach(style => {
+                if (style.tagName.toLowerCase() === 'link') {
+                    const href = style.getAttribute('href');
+                    if (!href) return;
+                    const newResolved = new URL(href, url).href;
+                    
+                    const isAlreadyLoaded = Array.from(document.head.querySelectorAll('link[rel="stylesheet"]')).some(currentStyle => {
+                        const currentHref = currentStyle.getAttribute('href');
+                        if (!currentHref) return false;
+                        const currentResolved = new URL(currentHref, window.location.href).href;
+                        return currentResolved === newResolved;
+                    });
+                    
+                    if (!isAlreadyLoaded) {
+                        const newLink = document.createElement('link');
+                        newLink.rel = 'stylesheet';
+                        newLink.href = newResolved;
+                        stylePromises.push(new Promise((resolve) => {
+                            newLink.onload = resolve;
+                            newLink.onerror = resolve;
+                        }));
+                        document.head.appendChild(newLink);
+                    }
+                } else {
+                    const isAlreadyLoaded = Array.from(document.head.querySelectorAll('style')).some(currentStyle => {
+                        return currentStyle.innerHTML === style.innerHTML;
+                    });
+                    if (!isAlreadyLoaded) {
+                        const newStyle = document.createElement('style');
+                        newStyle.innerHTML = style.innerHTML;
+                        document.head.appendChild(newStyle);
+                    }
                 }
-                this.currentPath = new URL(url).pathname;
-                document.title = doc.title;
+            });
+            
+            // 2. ATTENDRE que tout le nouveau CSS soit complètement téléchargé et appliqué
+            await Promise.all(stylePromises);
 
-                const stylePromises = [];
+            // 3. SEULEMENT ENSUITE, on retire les anciens styles pour éviter de dénuder la page
+            currentStyles.forEach(style => {
+                if (style.tagName.toLowerCase() === 'link') {
+                    const href = style.getAttribute('href');
+                    if (!href) return;
+                    const currentResolved = new URL(href, oldUrl).href;
+                    
+                    const isStillNeeded = newStyles.some(newStyle => {
+                        if (newStyle.tagName.toLowerCase() !== 'link') return false;
+                        const newHref = newStyle.getAttribute('href');
+                        if (!newHref) return false;
+                        const newResolved = new URL(newHref, url).href;
+                        return currentResolved === newResolved;
+                    });
+                    
+                    if (!isStillNeeded) style.remove();
+                } else {
+                    const isStillNeeded = newStyles.some(newStyle => {
+                        if (newStyle.tagName.toLowerCase() !== 'style') return false;
+                        return newStyle.innerHTML === style.innerHTML;
+                    });
+                    if (!isStillNeeded) style.remove();
+                }
+            });
 
-                // --- Sync Stylesheets ---
-                const currentStyles = Array.from(document.head.querySelectorAll('link[rel="stylesheet"], style'));
-                const newStyles = Array.from(doc.head.querySelectorAll('link[rel="stylesheet"], style'));
+            // Optionnel: Donner le temps au navigateur de recalculer le DOM
+            await new Promise(r => requestAnimationFrame(r));
+            await new Promise(r => requestAnimationFrame(r));
 
-                // 1. Ajouter les nouveaux styles et ATTENDRE qu'ils chargent
-                newStyles.forEach(style => {
-                    if (style.tagName.toLowerCase() === 'link') {
-                        const href = style.getAttribute('href');
-                        if (!href) return;
-                        const newResolved = new URL(href, url).href;
-                        
-                        const isAlreadyLoaded = Array.from(document.head.querySelectorAll('link[rel="stylesheet"]')).some(currentStyle => {
-                            const currentHref = currentStyle.getAttribute('href');
-                            if (!currentHref) return false;
-                            const currentResolved = new URL(currentHref, window.location.href).href;
-                            return currentResolved === newResolved;
-                        });
-                        
-                        if (!isAlreadyLoaded) {
-                            const newLink = document.createElement('link');
-                            newLink.rel = 'stylesheet';
-                            newLink.href = newResolved;
-                            stylePromises.push(new Promise((resolve) => {
-                                newLink.onload = resolve;
-                                newLink.onerror = resolve;
-                            }));
-                            document.head.appendChild(newLink);
-                        }
-                    } else {
-                        const isAlreadyLoaded = Array.from(document.head.querySelectorAll('style')).some(currentStyle => {
-                            return currentStyle.innerHTML === style.innerHTML;
-                        });
-                        if (!isAlreadyLoaded) {
-                            const newStyle = document.createElement('style');
-                            newStyle.innerHTML = style.innerHTML;
-                            document.head.appendChild(newStyle);
-                        }
-                    }
-                });
-                
-                // 2. ATTENDRE que tout le nouveau CSS soit complètement téléchargé et appliqué
-                await Promise.all(stylePromises);
+            // 4. Supprimer chirurgicalement l'ancien contenu
+            this.getContentEls().forEach(el => el.remove());
 
-                // 3. SEULEMENT ENSUITE, on retire les anciens styles pour éviter de dénuder la page
-                currentStyles.forEach(style => {
-                    if (style.tagName.toLowerCase() === 'link') {
-                        const href = style.getAttribute('href');
-                        if (!href) return;
-                        const currentResolved = new URL(href, oldUrl).href;
-                        
-                        const isStillNeeded = newStyles.some(newStyle => {
-                            if (newStyle.tagName.toLowerCase() !== 'link') return false;
-                            const newHref = newStyle.getAttribute('href');
-                            if (!newHref) return false;
-                            const newResolved = new URL(newHref, url).href;
-                            return currentResolved === newResolved;
-                        });
-                        
-                        if (!isStillNeeded) style.remove();
-                    } else {
-                        const isStillNeeded = newStyles.some(newStyle => {
-                            if (newStyle.tagName.toLowerCase() !== 'style') return false;
-                            return newStyle.innerHTML === style.innerHTML;
-                        });
-                        if (!isStillNeeded) style.remove();
-                    }
-                });
+            // 5. Extraire et insérer le nouveau contenu
+            const newContentEls = Array.from(doc.body.children).filter(
+                el => !el.matches('.bg-grid, .blob, #page-transition, script')
+            );
+            
+            newContentEls.forEach(el => {
+                el.style.opacity = '0';
+                document.body.appendChild(el);
+            });
 
-                // Optionnel: Donner le temps au navigateur de recalculer le DOM
-                await new Promise(r => requestAnimationFrame(r));
-                await new Promise(r => requestAnimationFrame(r));
-
-                // 4. Préserver les éléments de fond (grid, blobs, overlay) pour éviter leur disparition
-                const preserved = [
-                    document.getElementById('page-transition'),
-                    document.querySelector('.bg-grid'),
-                    ...Array.from(document.querySelectorAll('.blob'))
-                ].filter(Boolean);
-                preserved.forEach(el => el.remove());
-
-                document.body.innerHTML = doc.body.innerHTML;
-
-                // Supprimer les doublons injectés par le nouveau HTML, réinsérer les originaux
-                document.querySelectorAll('#page-transition, .bg-grid, .blob').forEach(el => el.remove());
-                [...preserved].reverse().forEach(el => document.body.prepend(el));
-
-                // Scroll à la bonne position
-                const hash = new URL(window.location.href).hash;
-                if (hash) {
-                    const target = document.querySelector(hash);
-                    if (target) {
-                        target.scrollIntoView();
-                    } else {
-                        window.scrollTo(0, 0);
-                    }
+            // Scroll à la bonne position
+            const hash = new URL(window.location.href).hash;
+            if (hash) {
+                const target = document.querySelector(hash);
+                if (target) {
+                    target.scrollIntoView();
                 } else {
                     window.scrollTo(0, 0);
                 }
+            } else {
+                window.scrollTo(0, 0);
+            }
 
-                // Relancer les scripts pour que le carrousel/bontons marchent
-                const scripts = document.body.querySelectorAll('script');
-                scripts.forEach(oldScript => {
+            // Relancer les scripts pour que le carrousel/bontons marchent
+            const scripts = doc.body.querySelectorAll('script');
+            scripts.forEach(oldScript => {
+                if (oldScript.src) {
+                    const existing = document.querySelector(`script[src="${oldScript.getAttribute('src')}"]`);
+                    if (!existing) {
+                        const newScript = document.createElement('script');
+                        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                        document.body.appendChild(newScript);
+                    }
+                } else {
                     const newScript = document.createElement('script');
-                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
                     newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-                    oldScript.parentNode.replaceChild(newScript, oldScript);
-                });
-
-                // 5. On retire le fond noir (Fade in)
-                const newOverlay = document.getElementById('page-transition');
-                if (newOverlay) {
-                    newOverlay.style.animation = 'none';
-                    void newOverlay.offsetHeight;
-                    newOverlay.style.animation = 'overlayEnter 0.55s ease-out both';
+                    document.body.appendChild(newScript);
                 }
-                
+            });
+
+            // Explicitly re-initialize page logic if scripts are already loaded
+            setTimeout(() => {
+                if (document.querySelector('.carousel-container') && typeof window.initPortfolio === 'function') {
+                    window.initPortfolio();
+                }
+                if (document.querySelector('.videos-page') && typeof window.initVideos === 'function') {
+                    window.initVideos();
+                }
+                if (document.querySelector('.hero .name') && typeof window.initRoot === 'function') {
+                    window.initRoot();
+                }
+            }, 50);
+
+            // Fade in content
+            await new Promise(r => requestAnimationFrame(r));
+            this.getContentEls().forEach(el => {
+                el.animate([
+                    { opacity: 0 },
+                    { opacity: 1 }
+                ], { duration: 300, easing: 'ease-out' });
+                el.style.opacity = '1';
+            });
+            
+            setTimeout(() => {
                 this.isAnimating = false;
-            }, isPopState ? 0 : 340);
+            }, 300);
             
         } catch (error) {
             console.error('SPA error:', error);
@@ -239,12 +275,9 @@ window.appRouter = {
             }
             return;
         }
-        const overlay = document.getElementById('page-transition');
-        if (overlay) {
-            overlay.style.animation = 'none';
-            void overlay.offsetHeight;
-            overlay.style.opacity = '1';
-        }
+        this.getContentEls().forEach(el => {
+            el.style.opacity = '0';
+        });
         this.navigateSPA(window.location.href, true);
     }
 };

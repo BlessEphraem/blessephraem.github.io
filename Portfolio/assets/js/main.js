@@ -5,24 +5,42 @@ function getYouTubeId(url) {
 
 window.initPortfolio = function() {
     // 0. Navbar dynamique au scroll
-    const navbar = document.querySelector('.navbar');
-    if (navbar && !navbar.classList.contains('scrolled')) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 100) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-        if (window.scrollY > 100) navbar.classList.add('scrolled');
+    if (window._portfolioScrollHandler) {
+        window.removeEventListener('scroll', window._portfolioScrollHandler);
     }
+    
+    window._portfolioScrollHandler = () => {
+        const navbar = document.querySelector('.navbar');
+        if (!navbar) return;
+        
+        // If there's no hero section (e.g. on videos.html), navbar should remain visible
+        const hasHero = document.querySelector('.hero');
+        if (!hasHero) {
+            navbar.classList.add('scrolled');
+            return;
+        }
+
+        if (window.scrollY > 100) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    };
+    
+    window.addEventListener('scroll', window._portfolioScrollHandler);
+    window._portfolioScrollHandler(); // Check immediately on load
 
     // 1. Menu Mobile
-    const mobileBtn = document.querySelector('.mobile-toggle');
-    const navLinks = document.querySelector('.nav-links');
-
-    if(mobileBtn) {
+    const oldMobileBtn = document.querySelector('.mobile-toggle');
+    if (oldMobileBtn) {
+        // Clone to remove any stale event listeners from previous initializations
+        const mobileBtn = oldMobileBtn.cloneNode(true);
+        oldMobileBtn.parentNode.replaceChild(mobileBtn, oldMobileBtn);
+        
+        const navLinks = document.querySelector('.nav-links');
+        
         mobileBtn.addEventListener('click', () => {
+            if (!navLinks) return;
             navLinks.classList.toggle('active');
             mobileBtn.innerHTML = navLinks.classList.contains('active')
                 ? '<i class="fa-solid fa-times"></i>'
@@ -31,6 +49,7 @@ window.initPortfolio = function() {
 
         document.querySelectorAll('.nav-links a').forEach(link => {
             link.addEventListener('click', () => {
+                if (!navLinks) return;
                 navLinks.classList.remove('active');
                 mobileBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
             });
@@ -38,6 +57,10 @@ window.initPortfolio = function() {
     }
 
     // 2. Typing Effect
+    if (window._typingTimeout) {
+        clearTimeout(window._typingTimeout);
+    }
+    
     const typingElement = document.querySelector('.typing-text');
     if(typingElement) {
         const texts = ["Éditeur Vidéo", "Graphiste", "Artiste FX", "Motion Designer"];
@@ -46,27 +69,35 @@ window.initPortfolio = function() {
         let currentText = "";
         let letter = "";
 
-        (function type() {
+        function type() {
+            // Stop if element is no longer in the DOM (e.g. navigated away)
+            if (!document.querySelector('.typing-text')) return; 
+            
             if (count === texts.length) { count = 0; }
             currentText = texts[count];
             letter = currentText.slice(0, ++index);
 
-            typingElement.textContent = letter;
+            const el = document.querySelector('.typing-text');
+            if(el) el.textContent = letter;
 
             if (letter.length === currentText.length) {
                 count++;
                 index = 0;
-                setTimeout(type, 2000);
+                window._typingTimeout = setTimeout(type, 2000);
             } else {
-                setTimeout(type, 100);
+                window._typingTimeout = setTimeout(type, 100);
             }
-        })();
+        }
+        type();
     }
 
     // 3. Formulaire de contact (FORMSPREE AJAX)
-    const form = document.getElementById("contact-form");
-
-    if(form) {
+    const oldForm = document.getElementById("contact-form");
+    if(oldForm) {
+        // Clone to reset listeners
+        const form = oldForm.cloneNode(true);
+        oldForm.parentNode.replaceChild(form, oldForm);
+        
         form.addEventListener("submit", async function(event) {
             event.preventDefault();
 
@@ -128,9 +159,9 @@ window.initPortfolio = function() {
 
     // 4. Portfolio 3D Carousel Logic
     const videoCards = document.querySelectorAll('.video-card');
-
     if(videoCards.length > 0) {
         videoCards.forEach(card => {
+            // These are fresh nodes inserted by the router, so it's safe to add listeners
             card.addEventListener('click', () => {
                 if (window.innerWidth <= 900) return;
                 if (card.classList.contains('pos-center')) return;
@@ -156,8 +187,13 @@ window.initPortfolio = function() {
 
     // 5. Chargement vitrine depuis video-carousel.json
     if (document.querySelector('.carousel-container')) {
-        fetch('videos/video-carousel.json')
-            .then(r => r.ok ? r.json() : Promise.reject())
+        // Use an absolute path /Portfolio/... to ensure it resolves correctly regardless of current URL
+        const jsonPath = window.location.pathname.includes('/Portfolio/') 
+            ? 'videos/video-carousel.json' 
+            : '/Portfolio/videos/video-carousel.json';
+
+        fetch(jsonPath)
+            .then(r => r.ok ? r.json() : Promise.reject('Failed to load ' + jsonPath))
             .then(data => {
                 const featured = data.featured || [];
                 const slots = ['video-left', 'video-center', 'video-right'];
@@ -166,11 +202,11 @@ window.initPortfolio = function() {
                     const vid = getYouTubeId(featured[i].url);
                     if (!vid) return;
                     const iframe = document.querySelector('#' + id + ' iframe');
-                    if (iframe) iframe.src = 'https://www.youtube.com/embed/' + vid;
+                    if (iframe) iframe.src = 'https://www.youtube-nocookie.com/embed/' + vid;
                 });
                 updateVideoTitles();
             })
-            .catch(() => {});
+            .catch(e => console.error('Carousel load error:', e));
     }
 };
 window.initPortfolio();

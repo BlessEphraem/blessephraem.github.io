@@ -37,8 +37,9 @@ body::after {
     inset: 0;
     background: radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(var(--color-bg-rgb), 0.75) 100%);
     pointer-events: none;
-    z-index: 150;
-}
+    z-index: 1;
+    }
+
 
 /* Grid */
 .bg-grid {
@@ -50,8 +51,9 @@ body::after {
     background-size: 64px 64px;
     background-position: center center;
     pointer-events: none;
-    z-index: 3;
-}
+    z-index: 1;
+    }
+
 
 /* Blobs */
 .blob {

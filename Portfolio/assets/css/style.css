@@ -75,8 +75,9 @@ body::after {
     inset: 0;
     background: radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(var(--color-bg-rgb), 0.7) 100%);
     pointer-events: none;
-    z-index: 150;
-}
+    z-index: 1;
+    }
+
 
 /* Background grid */
 .bg-grid {
@@ -88,8 +89,9 @@ body::after {
     background-size: 64px 64px;
     background-position: center center;
     pointer-events: none;
-    z-index: 3;
-}
+    z-index: 1;
+    }
+
 
 /* Glow blobs */
 @keyframes blobPulse {
@@ -197,7 +199,6 @@ ul { list-style: none; }
 .hero {
     min-height: 100vh; display: flex; align-items: center; justify-content: center;
     position: relative; overflow: hidden; padding-top: 80px; z-index: 10;
-    transition: opacity 0.35s ease;
 }
 .hero-content { text-align: center; z-index: 2; max-width: 800px; padding: 0 20px; }
 .hero-visual { position: relative; width: 250px; height: 250px; margin: 0 auto 30px; }
