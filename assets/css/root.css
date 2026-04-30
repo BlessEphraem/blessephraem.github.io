@@ -156,7 +156,7 @@ body::after {
     letter-spacing: 0.05em;
     line-height: 1;
     background: linear-gradient(90deg, var(--primary), var(--secondary), var(--news), var(--primary));
-    background-size: 400% auto;
+    background-size: 300% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -165,7 +165,7 @@ body::after {
 }
 @keyframes nameFlow {
     from { background-position: 0% center; }
-    to   { background-position: 200% center; }
+    to   { background-position: 150% center; }
 }
 
 .tagline {
