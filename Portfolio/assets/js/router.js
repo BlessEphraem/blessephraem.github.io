@@ -6,6 +6,7 @@ window.appRouter = {
         window.addEventListener('popstate', (e) => this.handlePopState(e));
         window.addEventListener('pageshow', (e) => {
             if (!e.persisted) return;
+            this.isAnimating = false;
             const overlay = document.getElementById('page-transition');
             if (!overlay) return;
             overlay.style.animation = 'none';
