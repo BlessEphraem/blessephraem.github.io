@@ -217,7 +217,7 @@ ul { list-style: none; }
 
 .hero h1 {
     font-size: 3.5rem; margin: 10px 0;
-    background: var(--title-gradient);
+    background: var(--color-pink);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-family: var(--title-font); font-weight: var(--title-weight);
