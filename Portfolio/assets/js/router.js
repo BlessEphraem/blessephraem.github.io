@@ -62,9 +62,9 @@ window.appRouter = {
     async navigateSPA(url, isPopState = false) {
         if (this.isAnimating) return;
         this.isAnimating = true;
-        
+
         const overlay = document.getElementById('page-transition');
-        if (overlay) {
+        if (overlay && !isPopState) {
             overlay.style.animation = 'none';
             void overlay.offsetHeight;
             overlay.style.animation = 'overlayLeave 0.35s ease-in both';
@@ -193,7 +193,7 @@ window.appRouter = {
                 }
                 
                 this.isAnimating = false;
-            }, 340); // On attend la fin du fade out noir initial
+            }, isPopState ? 0 : 340);
             
         } catch (error) {
             console.error('SPA error:', error);
@@ -202,6 +202,12 @@ window.appRouter = {
     },
 
     handlePopState(e) {
+        const overlay = document.getElementById('page-transition');
+        if (overlay) {
+            overlay.style.animation = 'none';
+            void overlay.offsetHeight;
+            overlay.style.opacity = '1';
+        }
         this.navigateSPA(window.location.href, true);
     }
 };
