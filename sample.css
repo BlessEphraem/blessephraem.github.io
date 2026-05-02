@@ -1,0 +1,101 @@
+```
+.button {
+  --btn-color: #006eff;
+  --key-text-color: #ffffff;
+
+  --btn-light: color-mix(in srgb, var(--btn-color), white 15%);
+  --btn-dark: color-mix(in srgb, var(--btn-color), black 10%);
+  --3d-base-color: color-mix(in srgb, var(--btn-color), black 30%);
+
+  --docsearch-key-gradient: linear-gradient(-225deg, var(--btn-dark), var(--btn-light));
+
+  --shadow-idle: 
+    inset 0 -2px 0 0 rgba(0, 0, 0, 0.15), 
+    inset 0 0 1px 1px rgba(255, 255, 255, 0.4), 
+    0 0.3em 0 0 var(--3d-base-color), 
+    0 0.4em 2px 1px rgba(30, 35, 90, 0.2); 
+
+  --shadow-active: 
+    inset 0 -2px 0 0 rgba(0, 0, 0, 0.15), 
+    inset 0 0 1px 1px rgba(255, 255, 255, 0.4), 
+    0 0 0 0 var(--3d-base-color), 
+    0 1px 2px 1px rgba(30, 35, 90, 0.2);
+
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 3em;
+  min-height: 3em;
+  padding: 0 1em;
+  transform: rotateX(30deg);
+  transition: all 150ms ease;
+
+  border: none;
+  background: var(--docsearch-key-gradient);
+  border-radius: 0.3em;
+  box-shadow: var(--shadow-idle);
+  color: var(--key-text-color);
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1em;
+  user-select: none;
+}
+
+.button:active {
+  transform: rotateX(30deg) translateY(0.3em);
+  box-shadow: var(--shadow-active);
+}
+```
+
+```
+.button {
+  --btn-color: #006eff;
+  --key-text-color: #ffffff;
+
+  --btn-light: color-mix(in srgb, var(--btn-color), white 15%);
+  --btn-dark: color-mix(in srgb, var(--btn-color), black 10%);
+  --3d-base-color: color-mix(in srgb, var(--btn-color), black 30%);
+
+  --docsearch-key-gradient: linear-gradient(-225deg, var(--btn-dark), var(--btn-light));
+
+  --shadow-idle: 
+    inset 0 -2px 0 0 rgba(0, 0, 0, 0.15), 
+    inset 0 0 1px 1px rgba(255, 255, 255, 0.4), 
+    0 0.3em 0 0 var(--3d-base-color), 
+    0 0.4em 2px 1px rgba(30, 35, 90, 0.2); 
+
+  --shadow-active: 
+    inset 0 -2px 0 0 rgba(0, 0, 0, 0.15), 
+    inset 0 0 1px 1px rgba(255, 255, 255, 0.4), 
+    0 0 0 0 var(--3d-base-color), 
+    0 1px 2px 1px rgba(30, 35, 90, 0.2);
+
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 3em;
+  min-height: 3em;
+  padding: 0 1em;
+  transform: rotateX(30deg);
+  transition: all 150ms ease;
+
+  border: none;
+  background: var(--docsearch-key-gradient);
+  border-radius: 0.3em;
+  box-shadow: var(--shadow-idle);
+  color: var(--key-text-color);
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1em;
+  user-select: none;
+}
+
+.button:active {
+  transform: rotateX(30deg) translateY(0.3em);
+  box-shadow: var(--shadow-active);
+}
+```
