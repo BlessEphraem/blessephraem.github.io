@@ -12,9 +12,6 @@
 
 .socials a {
     --btn-color: #888888;
-    --btn-light: color-mix(in srgb, var(--btn-color), white 15%);
-    --btn-dark:  color-mix(in srgb, var(--btn-color), black 10%);
-    --btn-base:  color-mix(in srgb, var(--btn-color), black 30%);
 
     position: relative;
     display: inline-flex;
@@ -23,38 +20,38 @@
     width: 56px;
     height: 56px;
     border-radius: 14px;
-    background: linear-gradient(-225deg, var(--btn-dark), var(--btn-light));
+    background: linear-gradient(-225deg, #d5dbe4, #f8f8f8);
     box-shadow:
-        inset 0 -2px 0 0 rgba(0, 0, 0, 0.15),
-        inset 0 0 1px 1px rgba(255, 255, 255, 0.4),
-        0 0.3em 0 0 var(--btn-base),
-        0 0.4em 2px 1px rgba(30, 35, 90, 0.2);
-    color: #fff;
+        inset 0 -2px 0 0 #cdcde6,
+        inset 0 0 1px 1px #fff,
+        inset 0 -8px 10px rgba(30, 35, 90, 0.12),
+        0 calc(0.3em - 2px) 0 0 #b0b5c8;
+    color: var(--btn-color);
     font-size: 1.4rem;
     text-decoration: none;
-    transform: rotateX(20deg);
+    transform: translateZ(0);
     transition: transform 150ms ease, box-shadow 150ms ease;
     cursor: pointer;
     user-select: none;
 }
 
 .socials a:hover {
-    transform: rotateX(20deg) translateY(-4px);
+    transform: translateZ(0) translateY(-4px);
     box-shadow:
-        inset 0 -2px 0 0 rgba(0, 0, 0, 0.15),
-        inset 0 0 1px 1px rgba(255, 255, 255, 0.4),
-        0 0.55em 0 0 var(--btn-base),
-        0 0.65em 4px 2px rgba(30, 35, 90, 0.25),
+        inset 0 -2px 0 0 #cdcde6,
+        inset 0 0 1px 1px #fff,
+        inset 0 -8px 10px rgba(30, 35, 90, 0.12),
+        0 calc(0.3em + 2px) 0 0 #b0b5c8,
         0 0 20px 4px color-mix(in srgb, var(--btn-color) 50%, transparent);
 }
 
 .socials a:active {
-    transform: rotateX(20deg) translateY(0.3em);
+    transform: translateZ(0) translateY(calc(0.3em - 2px));
     box-shadow:
-        inset 0 -2px 0 0 rgba(0, 0, 0, 0.15),
-        inset 0 0 1px 1px rgba(255, 255, 255, 0.4),
-        0 0 0 0 var(--btn-base),
-        0 1px 2px 1px rgba(30, 35, 90, 0.2);
+        inset 0 -2px 0 0 #cdcde6,
+        inset 0 0 1px 1px #fff,
+        inset 0 -4px 6px rgba(30, 35, 90, 0.1),
+        0 0 0 0 #b0b5c8;
 }
 
 .socials a[aria-label="YouTube"]   { --btn-color: var(--color-youtube);   }
