@@ -1,4 +1,5 @@
 import urllib.request, pathlib, os, re, json
+import markdownCleaner
 
 with open("site.config.json", encoding="utf-8") as _f:
     _site_cfg = json.load(_f)
@@ -14,7 +15,6 @@ TOPIC_PRIORITY = {
     for idx, item in enumerate(_topic_cfg["mappings"])
 }
 
-
 def fetch_json(url):
     hdrs = dict(_auth_headers)
     hdrs["Accept"] = "application/vnd.github+json"
@@ -27,12 +27,8 @@ def fetch_json(url):
             return None
         raise
 
-
 def slugify(text):
-    text = text.lower()
-    text = re.sub(r"[^\w\s-]", "", text)
-    return re.sub(r"[\s-]+", "-", text).strip("-")
-
+    return markdownCleaner.slugify(text)
 
 def _assign_category(topics):
     best = None
@@ -42,7 +38,6 @@ def _assign_category(topics):
             if best is None or priority < best[1]:
                 best = (cat, priority)
     return best[0] if best else None
-
 
 def _fetch_all_repos(username):
     repos = []
@@ -60,7 +55,6 @@ def _fetch_all_repos(username):
         page += 1
     return repos
 
-
 def _fetch_all_releases(owner, repo):
     releases = []
     page = 1
@@ -77,27 +71,19 @@ def _fetch_all_releases(owner, repo):
         page += 1
     return releases
 
-
 def _resolve_icon(slug):
     for ext in ["svg", "png", "ico", "jpg", "jpeg", "webp"]:
         if pathlib.Path(f"Wiki/assets/img/{slug}/logo_navbar.{ext}").exists():
             return f"/wiki/img/{slug}/logo_navbar.{ext}"
     return None
 
-
-def _sanitize_for_mdx(content):
-    content = re.sub(r'\s*style="[^"]*"', '', content)
-    content = re.sub(
-        r'<(img|br|hr|input)([^>]*?)(?<!/)>',
-        lambda m: f'<{m.group(1)}{m.group(2).rstrip()} />',
-        content
-    )
-    content = re.sub(r'\[([^\]]+)\]\(\.docs/[^)]+\)', r'\1', content)
-    return content
-
-
 def _build_post_body(release):
-    body = _sanitize_for_mdx((release.get("body") or "").strip())
+    raw_body = (release.get("body") or "").strip()
+    body = markdownCleaner.clean_for_mdx(raw_body, is_wiki=False)
+    
+    # Specific fix for blog posts where .docs links should be removed
+    body = re.sub(r'\[([^\]]+)\]\(\.docs/[^)]+\)', r'\1', body)
+    
     assets = release.get("assets") or []
     html_url = release.get("html_url", "")
 
@@ -113,6 +99,7 @@ def _build_post_body(release):
     if html_url:
         lines += ["", f"[View on GitHub]({html_url})"]
     return "\n".join(lines)
+
 
 
 def write_blog_post(prog, release):

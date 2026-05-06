@@ -23,7 +23,7 @@ const config = {
   url: siteConfig.domain,
   baseUrl: '/news/',
 
-  stylesheets: [siteConfig.font],
+  stylesheets: [siteConfig.font, siteConfig.fontCode].filter(Boolean),
 
   organizationName: siteConfig.owner,
   projectName: siteConfig.project,

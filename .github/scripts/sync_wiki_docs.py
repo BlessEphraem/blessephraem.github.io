@@ -1,4 +1,5 @@
 import urllib.request, pathlib, os, re, json
+import markdownCleaner
 
 with open("site.config.json", encoding="utf-8") as _cfg_f:
     _site_cfg = json.load(_cfg_f)
@@ -24,9 +25,7 @@ def fetch_json(url):
         raise
 
 def slugify(text):
-    text = text.lower()
-    text = re.sub(r'[^\w\s-]', '', text)
-    return re.sub(r'[\s-]+', '-', text).strip('-')
+    return markdownCleaner.slugify(text)
 
 with open("Wiki/topics/topic-map.json", encoding="utf-8") as _f:
     _topic_config = json.load(_f)
@@ -145,20 +144,6 @@ def rewrite_media(content, img_prefix):
     content = re.sub(rf'(?<!/wiki)/img/{re.escape(img_prefix)}/', f'/wiki/img/{img_prefix}/', content)
     return content
 
-def css_to_jsx_style(css):
-    props = {}
-    for decl in css.split(';'):
-        decl = decl.strip()
-        if ':' not in decl:
-            continue
-        prop, _, val = decl.partition(':')
-        prop = prop.strip()
-        val = val.strip().replace("'", "\\'")
-        parts = prop.split('-')
-        camel = parts[0] + ''.join(p.capitalize() for p in parts[1:])
-        props[camel] = val
-    return ', '.join("{}: '{}'".format(k, v) for k, v in props.items())
-
 def fix_folder_links(content, dir_name):
     folder_escaped = re.escape(dir_name)
     def replace_href(m):
@@ -179,76 +164,18 @@ def fix_folder_links(content, dir_name):
     )
     return content
 
-def fix_html_for_mdx(content, img_prefix=None):
-    content = re.sub(r'<!--\s*wiki-hide-start\s*-->.*?<!--\s*wiki-hide-end\s*-->', '', content, flags=re.DOTALL)
-    content = re.sub(r'<!--\s*embed\s*(.*?)-->', lambda m: m.group(1).strip(), content, flags=re.DOTALL)
-
-    def transform_url(url):
-        my_domain = _site_cfg["domain"] + "/wiki"
-        if url.startswith(my_domain):
-            url = url[len(_site_cfg["domain"]):]
-        if "://" in url or url.startswith(('#', 'mailto:', 'tel:', '/')):
-            return url
-        parts = url.split('#', 1)
-        path = parts[0]
-        anchor = parts[1] if len(parts) > 1 else None
-        is_readme = "readme.md" in path.lower() or path.lower() == "readme"
-        is_md = path.lower().endswith(".md")
-        if is_readme:
-            if img_prefix:
-                path = f"/wiki/programs/{img_prefix}/"
-            else:
-                path = "./"
-        elif is_md:
-            path = path[:-3]
-            path_parts = path.split('/')
-            new_parts = []
-            for p in path_parts:
-                if p in ('.', '..') or not p:
-                    continue
-                new_parts.append(slugify(p))
-            slug_path = "/".join(new_parts)
-            if img_prefix:
-                path = f"/wiki/programs/{img_prefix}/{slug_path}"
-            else:
-                path = slug_path
-        if anchor:
-            return f"{path}#{slugify(anchor)}"
-        return path
-
-    content = re.sub(r'\[((?:\[[^\]]*\]|[^\]])*)\]\(([^)]+)\)',
-                     lambda m: f'[{m.group(1)}]({transform_url(m.group(2))})', content)
-    content = re.sub(r'href="([^"]+)"', lambda m: f'href="{transform_url(m.group(1))}"', content)
-    content = re.sub(
-        r'(https://github\.com/[^\s)\]"]+\.(?:mp4|webm))',
-        r'<video controls width="100%"><source src="\1" /></video>',
-        content
-    )
-    content = re.sub(
-        r'style="([^"]*)"',
-        lambda m: 'style={{' + css_to_jsx_style(m.group(1)) + '}}',
-        content
-    )
-    content = re.sub(
-        r'<(img|br|hr|input|meta|link)([^>]*?)(?<!/)>',
-        lambda m: '<{}{} />'.format(m.group(1), m.group(2).rstrip()),
-        content
-    )
-    content = re.sub(
-        r'src="https://www\.youtube\.com/embed/([^"]+)"',
-        r'src="https://www.youtube-nocookie.com/embed/\1"',
-        content
-    )
-    content = re.sub(r'</(br|hr)>', lambda m: '<{} />'.format(m.group(1)), content)
-    content = re.sub(r'\bframeborder=', 'frameBorder=', content, flags=re.IGNORECASE)
-    content = re.sub(r'\ballowfullscreen\b', 'allowFullScreen', content, flags=re.IGNORECASE)
-    return content
-
 def write_doc(path, frontmatter, content, img_prefix=None):
     pathlib.Path(path).parent.mkdir(parents=True, exist_ok=True)
     if img_prefix:
         content = rewrite_media(content, img_prefix)
-    content = fix_html_for_mdx(content, img_prefix)
+    
+    content = markdownCleaner.clean_for_mdx(
+        content, 
+        site_cfg=_site_cfg, 
+        img_prefix=img_prefix, 
+        is_wiki=True
+    )
+    
     out = frontmatter + "\n\n" + content
     pathlib.Path(path).write_text(out, encoding="utf-8")
     print(f"Written: {path}")

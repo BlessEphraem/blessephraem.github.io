@@ -1,0 +1,120 @@
+/* Ephraem Wiki — Markdown / document content styles */
+
+/* Titles */
+.markdown h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 1.25rem 0;
+}
+
+.markdown h1 {
+  color: var(--ifm-color-primary);
+  margin-bottom: 1.25rem;
+}
+
+
+
+.markdown a {
+  color: var(--ifm-color-secondary);
+  text-decoration: none;
+}
+
+.markdown a:hover {
+  color: var(--ifm-color-primary);
+  text-decoration: underline;
+}
+
+/* Paragraph */
+
+.markdown p {
+  margin: 0 0 1.25rem 0;
+}
+
+/* Tables */
+.markdown table {
+  display: table;
+  border: none;
+  width: 100%;
+}
+
+.markdown table thead {
+  background: none;
+}
+
+.markdown tr {
+  background: none;
+  border: none;
+}
+
+.markdown th,
+.markdown td {
+  padding: 0.25rem;
+  text-align: left;
+  border: none;
+}
+
+.markdown tr:nth-child(2n) td {
+  background: none !important;
+
+}
+
+/* Cards */
+
+.markdown a.theme-doc-card-container:hover {
+  text-decoration: none;
+}
+
+.markdown tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Admonitions */
+.alert--info {
+  background: rgba(var(--secondary-rgb), 0.08);
+  border-color: rgba(var(--secondary-rgb), 0.3);
+}
+
+.alert--warning {
+  background: rgba(255, 187, 0, 0.08);
+  border-color: rgba(255, 187, 0, 0.3);
+}
+
+/* Table of contents */
+.table-of-contents__link:hover,
+.table-of-contents__link--active {
+  color: var(--ifm-color-primary);
+}
+
+/* Hide Table of Contents and remove its column space */
+.table-of-contents,
+.theme-doc-toc-desktop,
+.theme-doc-toc-mobile,
+.col.col--3:not(.theme-doc-sidebar-container) {
+  display: none !important;
+}
+
+/* Center content by overriding Docusaurus grid */
+[class*="docItemCol_"] {
+  max-width: 1000px !important;
+  margin: 0 auto !important;
+  flex: 0 0 100% !important;
+  width: 100% !important;
+}
+
+[class*="docRoot_"] .row {
+  justify-content: center !important;
+}
+
+/* Pagination */
+.pagination-nav__link:hover {
+  border-color: var(--ifm-color-primary);
+}
+
+/* Badge-style kbd from source docs */
+kbd {
+  background: #30363d;
+  color: #e6edf3;
+  border: none;
+  padding: 3px 10px;
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 0.85em;
+}

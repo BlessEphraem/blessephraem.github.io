@@ -1,0 +1,311 @@
+/* ─────────────────────────────────────────────
+   Ephraem Wiki — Prism token overrides
+   Base: vsDark  |  Palette: saturated brand
+   Primary  #ff1796  /  Cyan  #3ad0ff
+   ───────────────────────────────────────────── */
+
+:root {
+  --ifm-font-family-monospace: 'JetBrains Mono', monospace;
+}
+
+/* ── Code block container ───────────────────── */
+.prism-code {
+  border-radius: 8px;
+}
+
+div[class*="codeBlockContainer_"] {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+code[class*="codeBlockLines_"] {
+  padding: 1rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Copy button */
+button[class*="copyButton_"] {
+  color: rgba(255, 255, 255, 0.3);
+  transition: color 0.2s;
+}
+button[class*="copyButton_"]:hover {
+  color: var(--ifm-color-primary);
+}
+
+/* Line numbers */
+.token-line .line-number {
+  color: rgba(255, 255, 255, 0.2);
+  user-select: none;
+}
+
+/* Highlighted line */
+.docusaurus-highlight-code-line {
+  display: block;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+}
+
+/* ── Base text ───────────────────────────────── */
+.token.plain,
+.token.text,
+.token.literal {
+  color: #f8f8f2;
+}
+
+/* ── Comments ────────────────────────────────── */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #5e6a82;
+  font-style: italic;
+}
+
+/* ── Punctuation ─────────────────────────────── */
+.token.punctuation {
+  color: #a8b2c0;
+}
+
+/* ── Namespace ───────────────────────────────── */
+.token.namespace {
+  color: #a8b2c0;
+  opacity: 0.8;
+}
+
+/* ── Strings ─────────────────────────────────── */
+.token.string,
+.token.char,
+.token.attr-value,
+.token.template-string,
+.token.triple-quoted-string {
+  color: #f1fa8c;
+}
+
+.token.template-punctuation.string {
+  color: #e5e87a;
+}
+
+.token.interpolation {
+  color: #f8f8f2;
+}
+
+.token.interpolation-punctuation {
+  color: #ff79c6;
+}
+
+/* ── Numbers & booleans ──────────────────────── */
+.token.number,
+.token.boolean,
+.token.null,
+.token.nil,
+.token.undefined {
+  color: #bd93f9;
+}
+
+/* ── Keywords ────────────────────────────────── */
+.token.keyword {
+  color: #ff79c6;
+  font-style: italic;
+}
+
+/* import / export / from / as */
+.token.keyword.module,
+.token.imports,
+.token.exports,
+.token.module {
+  color: #ff1717;
+  font-style: normal;
+}
+
+/* control flow: if / else / return / for / while / break / continue */
+.token.keyword.control-flow,
+.token.control-flow {
+  color: #ff79c6;
+  font-style: italic;
+}
+
+/* ── Operators ───────────────────────────────── */
+.token.operator,
+.token.arrow,
+.token.spread {
+  color: #ff79c6;
+}
+
+/* ── Functions ───────────────────────────────── */
+.token.function,
+.token.function-definition,
+.token.function-variable,
+.token.method,
+.token.method-definition {
+  color: #50fa7b;
+}
+
+/* ── Classes & types ─────────────────────────── */
+.token.class-name,
+.token.maybe-class-name {
+  color: #3ad0ff;
+}
+
+.token.known-class-name,
+.token.type-hint,
+.token.type-args,
+.token.generic-function {
+  color: #8be9fd;
+}
+
+/* ── Built-ins ───────────────────────────────── */
+.token.builtin,
+.token.console,
+.token.self,
+.token.super {
+  color: #3ad0ff;
+}
+
+/* ── Variables ───────────────────────────────── */
+.token.variable {
+  color: #f8f8f2;
+}
+
+.token.variable.language {
+  color: #ff79c6;
+}
+
+/* ── Parameters ──────────────────────────────── */
+.token.parameter {
+  color: #ffb86c;
+}
+
+/* ── Constants & symbols ─────────────────────── */
+.token.constant,
+.token.symbol,
+.token.enum {
+  color: #bd93f9;
+}
+
+/* ── HTML / JSX tags ─────────────────────────── */
+.token.tag {
+  color: #ff79c6;
+}
+
+.token.tag .token.punctuation {
+  color: #a8b2c0;
+}
+
+.token.attr-name {
+  color: #50fa7b;
+}
+
+.token.entity {
+  color: #ff79c6;
+  cursor: help;
+}
+
+/* ── CSS selectors & properties ──────────────── */
+.token.selector,
+.token.selector .token.class,
+.token.selector .token.id {
+  color: #50fa7b;
+}
+
+.token.property {
+  color: #3ad0ff;
+}
+
+.token.atrule {
+  color: #ff79c6;
+}
+
+.token.unit {
+  color: #bd93f9;
+}
+
+.token.pseudo-class,
+.token.pseudo-element {
+  color: #50fa7b;
+  opacity: 0.85;
+}
+
+/* ── Regex ───────────────────────────────────── */
+.token.regex,
+.token.regex-delimiter {
+  color: #ff5555;
+}
+
+.token.regex-flags {
+  color: #ffb86c;
+}
+
+.token.regex-source {
+  color: #ff5555;
+}
+
+/* ── Important / bold / italic ───────────────── */
+.token.important {
+  color: #ff5555;
+  font-weight: bold;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+/* ── URL ─────────────────────────────────────── */
+.token.url {
+  color: #3ad0ff;
+  text-decoration: underline;
+}
+
+/* ── Diff ────────────────────────────────────── */
+.token.deleted {
+  color: #ff5555;
+  background: rgba(255, 85, 85, 0.1);
+}
+
+.token.inserted {
+  color: #50fa7b;
+  background: rgba(80, 250, 123, 0.08);
+}
+
+.token.coord {
+  color: #ffb86c;
+}
+
+/* ── Decorators & annotations ────────────────── */
+.token.decorator,
+.token.annotation {
+  color: #3cff00;
+  font-style: italic;
+}
+
+/* ── Labels ──────────────────────────────────── */
+.token.label {
+  color: #8be9fd;
+}
+
+/* ── Literal property (JS object keys) ──────── */
+.token.literal-property.property {
+  color: #8be9fd;
+}
+
+/* ── Script / style blocks (HTML inline) ──────── */
+.token.script,
+.token.language-javascript,
+.token.language-css {
+  color: #f8f8f2;
+}
+
+/* ── Inline code ─────────────────────────────── */
+code {
+  background-color: var(--ifm-color-primary-alpha-07);
+  font-family: 'JetBrains Mono', monospace;
+  border-radius: 4px;
+  color: var(--ifm-color-primary);
+  padding: 0.1em 0.35em;
+  font-size: 0.875em;
+}

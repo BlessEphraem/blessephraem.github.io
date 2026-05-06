@@ -1,0 +1,805 @@
+---
+title: "Mock Repo"
+sidebar_position: 0
+
+---
+
+# Mock Repo
+
+This is a mock document used for local styling and visual testing.
+
+---
+
+## 1. Headings
+
+All heading levels supported by Markdown:
+
+## Heading Level 2 (H2)
+
+### Heading Level 3 (H3)
+
+#### Heading Level 4 (H4)
+
+##### Heading Level 5 (H5)
+
+###### Heading Level 6 (H6)
+
+---
+
+## 2. Paragraphs & Formatting
+
+Standard paragraph. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.
+
+Text formatting variants:
+
+- **Bold text**
+- _Italic text_
+- _**Bold and italic**_
+- ~~Strikethrough~~
+- Inline `code snippet` inside a sentence
+- A link to [Google](https://www.google.com)
+- Keyboard shortcut: press Ctrl + C to copy
+
+---
+
+## 3. Lists
+
+### Unordered List
+
+- Item 1
+- Item 2
+  - Sub-item 2.1
+  - Sub-item 2.2
+    - Sub-sub-item 2.2.1
+- Item 3
+
+### Ordered List
+
+1. First item
+2. Second item
+   1. Nested ordered item 2.1
+   2. Nested ordered item 2.2
+3. Third item
+
+### Task List
+
+- [x] Completed task
+- [ ] Pending task
+- [ ] Another pending task with a longer description to test wrapping at narrow widths
+
+---
+
+## 4. Blockquotes
+
+Simple blockquote:
+
+> This is a block quote. It can span multiple lines and is usually styled with a left border.
+
+Nested blockquote:
+
+> This is the first level of quoting.
+>
+> > This is a nested quote (level 2). Here is another line at level 2.
+>
+> Back to level 1.
+
+---
+
+## 5. Code Blocks
+
+### Plain — no syntax highlighting
+
+```
+function plain() {
+  return "no language tag, raw block";
+}
+```
+
+---
+
+### JavaScript — full token showcase
+
+Covers: `comment`, `keyword`, `keyword.module`, `imports/exports`, `class-name`, `function`,
+`parameter`, `string`, `template-string`, `interpolation`, `number`, `boolean`, `null`,
+`operator`, `arrow`, `spread`, `regex`, `decorator`, `literal-property`, `console`, `builtin`.
+
+```javascript
+// ── Imports (keyword.module / imports) ───────────────────────────────────────
+import EventEmitter from 'events';
+import { readFileSync, writeFileSync } from 'fs';
+import * as path from 'path';
+
+// ── Constants & symbols ───────────────────────────────────────────────────────
+const MAX_RETRIES = 3;           // number
+const IS_PROD    = false;        // boolean
+const EMPTY      = null;         // null
+const UNKNOWN    = undefined;    // undefined
+
+// ── Regex ─────────────────────────────────────────────────────────────────────
+const EMAIL_RE = /^[\w.-]+@[\w.-]+\.[a-z]{2,}$/i;
+
+// ── Decorator (experimental — Babel) ──────────────────────────────────────────
+function sealed(target) {
+  Object.seal(target);
+  return target;
+}
+
+// ── Class ─────────────────────────────────────────────────────────────────────
+@sealed
+class UserService extends EventEmitter {
+  /** @type {Map<string, User>} */
+  #cache = new Map();
+
+  /**
+   * @param {string} baseUrl
+   * @param {number} timeout
+   */
+  constructor(baseUrl, timeout = 5000) {
+    super();
+    this.baseUrl = baseUrl;
+    this.timeout = timeout;
+  }
+
+  // ── Arrow function / operator / spread ──────────────────────────────────────
+  getIds = () => [...this.#cache.keys()];
+
+  // ── Async method / template-string / interpolation / builtin ────────────────
+  async fetchUser(id) {
+    const url = `${this.baseUrl}/users/${id}`;
+
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      this.#cache.set(id, data);
+      this.emit('fetch', id);
+      return data;
+    } catch (err) {
+      console.error(`[UserService] fetch failed:`, err); // console token
+      return null;
+    }
+  }
+
+  // ── Literal property (object key) ─────────────────────────────────────────
+  toJSON() {
+    return {
+      baseUrl:  this.baseUrl,
+      cached:   this.#cache.size,
+      isActive: IS_PROD,
+    };
+  }
+}
+
+// ── Destructuring / spread / operator ────────────────────────────────────────
+const { baseUrl, ...rest } = new UserService('https://api.example.com').toJSON();
+
+// ── Control-flow keywords ─────────────────────────────────────────────────────
+for (const [key, val] of Object.entries(rest)) {
+  if (typeof val === 'number' && val > 0) {
+    console.log(`${key} =`, val);
+  } else {
+    continue;
+  }
+}
+
+// ── Export ────────────────────────────────────────────────────────────────────
+export default UserService;
+export { MAX_RETRIES, EMAIL_RE };
+```
+
+---
+
+### TypeScript — types, generics, interfaces
+
+Covers: `class-name`, `maybe-class-name`, `known-class-name`, `type-hint`, `type-args`,
+`generic-function`, `builtin`, `keyword`.
+
+```typescript
+// ── Interface ─────────────────────────────────────────────────────────────────
+interface Pagination {
+  page:  number;
+  limit: number;
+  total: number;
+}
+
+interface ApiResponse<T> {
+  data:    T;
+  meta:    Pagination;
+  error?:  string | null;
+}
+
+// ── Enum (constant-like) ──────────────────────────────────────────────────────
+enum Status {
+  Idle    = 'idle',
+  Loading = 'loading',
+  Done    = 'done',
+  Error   = 'error',
+}
+
+// ── Generic function ──────────────────────────────────────────────────────────
+async function apiFetch<T>(
+  endpoint: string,
+  options?: RequestInit,
+): Promise<ApiResponse<T>> {
+  const res  = await fetch(endpoint, options);
+  const body = (await res.json()) as ApiResponse<T>;
+
+  if (!res.ok) {
+    throw new Error(body.error ?? `Request failed: ${res.status}`);
+  }
+
+  return body;
+}
+
+// ── Type alias / union / intersection ────────────────────────────────────────
+type ID      = string | number;
+type WithId  = { id: ID };
+type User    = WithId & { name: string; email: string; status: Status };
+
+// ── Class with type annotations ───────────────────────────────────────────────
+class Repository<T extends WithId> {
+  private store = new Map<ID, T>();
+
+  set(entity: T): void {
+    this.store.set(entity.id, entity);
+  }
+
+  get(id: ID): T | undefined {
+    return this.store.get(id);
+  }
+
+  getAll(): T[] {
+    return [...this.store.values()];
+  }
+}
+
+// ── Utility types ────────────────────────────────────────────────────────────
+type PartialUser   = Partial<User>;
+type ReadonlyUser  = Readonly<User>;
+type UserKeys      = keyof User;
+
+export { Repository, apiFetch, Status };
+export type { User, ApiResponse, ID };
+```
+
+---
+
+### Python — decorators, type hints, triple-quoted strings
+
+Covers: `decorator`, `annotation`, `type-hint`, `triple-quoted-string`,
+`builtin`, `self`, `super`, `keyword`, `function`, `class-name`.
+
+```python
+from __future__ import annotations
+
+import asyncio
+import functools
+from dataclasses import dataclass, field
+from typing import Generic, TypeVar, Iterator
+
+T = TypeVar("T")
+
+# ── Triple-quoted docstring (triple-quoted-string) ─────────────────────────────
+def fibonacci(n: int) -> int:
+    """
+    Return the n-th Fibonacci number.
+
+    Args:
+        n: Position in the sequence (0-indexed).
+
+    Returns:
+        The Fibonacci number at position ``n``.
+    """
+    if n < 2:
+        return n
+    return fibonacci(n - 1) + fibonacci(n - 2)
+
+
+# ── Decorator ──────────────────────────────────────────────────────────────────
+def retry(times: int = 3):
+    """Decorator that retries a coroutine on exception."""
+    def decorator(fn):
+        @functools.wraps(fn)
+        async def wrapper(*args, **kwargs):
+            for attempt in range(1, times + 1):
+                try:
+                    return await fn(*args, **kwargs)
+                except Exception as exc:          # noqa: BLE001
+                    if attempt == times:
+                        raise
+                    print(f"[retry] attempt {attempt} failed: {exc}")
+        return wrapper
+    return decorator
+
+
+# ── Dataclass / class with self / super ───────────────────────────────────────
+@dataclass
+class Stack(Generic[T]):
+    """Generic LIFO stack."""
+    _items: list[T] = field(default_factory=list)
+
+    def push(self, item: T) -> None:
+        self._items.append(item)
+
+    def pop(self) -> T:
+        if not self._items:
+            raise IndexError("pop from empty stack")
+        return self._items.pop()
+
+    def __len__(self) -> int:
+        return len(self._items)
+
+    def __iter__(self) -> Iterator[T]:
+        return reversed(self._items)
+
+
+@dataclass
+class BoundedStack(Stack[T]):
+    capacity: int = 64
+
+    def push(self, item: T) -> None:
+        if len(self) >= self.capacity:
+            raise OverflowError(f"Stack full ({self.capacity})")
+        super().push(item)
+
+
+# ── Async / control-flow ──────────────────────────────────────────────────────
+@retry(times=2)
+async def fetch_data(url: str) -> bytes:
+    reader, writer = await asyncio.open_connection("example.com", 443)
+    writer.write(f"GET {url} HTTP/1.0\r\n\r\n".encode())
+    data = await reader.read(4096)
+    writer.close()
+    return data
+```
+
+---
+
+### CSS — selectors, properties, pseudo-classes, atrules
+
+Covers: `selector`, `pseudo-class`, `pseudo-element`, `property`, `atrule`,
+`unit`, `important`, `url`, `comment`.
+
+```css
+/* ── @import / @font-face (atrule) ────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter');
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+/* ── @keyframes ────────────────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── @media (atrule) ───────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  .card {
+    animation: fadeIn 0.3s ease both;
+  }
+}
+
+/* ── Selectors — class / id / attribute / combinator ──────────────────────── */
+.container,
+#root > .wrapper,
+input[type="text"]::placeholder,
+a[href^="https"] {
+  box-sizing:  border-box;
+  color:       #f8f8f2;
+  font-size:   1rem;          /* unit: rem */
+  line-height: 1.6;
+  margin:      0 auto;
+  max-width:   80ch;          /* unit: ch */
+}
+
+/* ── Pseudo-class ──────────────────────────────────────────────────────────── */
+.btn:hover,
+.btn:focus-visible,
+.btn:not(:disabled) {
+  background:  rgba(255, 23, 150, 0.15);
+  border-color: #ff1796;
+  outline:     none;
+}
+
+/* ── Pseudo-element ────────────────────────────────────────────────────────── */
+.quote::before { content: '\201C'; color: #3ad0ff; }
+.quote::after  { content: '\201D'; color: #3ad0ff; }
+
+.sr-only::after {
+  display:  block;
+  content:  '';
+  clear:    both;
+}
+
+/* ── !important ────────────────────────────────────────────────────────────── */
+.override {
+  display:  flex !important;
+  padding:  0    !important;
+}
+
+/* ── Custom properties ─────────────────────────────────────────────────────── */
+:root {
+  --brand-pink: #ff1796;
+  --brand-cyan: #3ad0ff;
+  --spacing-unit: 8px;
+}
+
+.themed {
+  color:        var(--brand-pink);
+  padding:      calc(var(--spacing-unit) * 2);
+  border-left:  4px solid var(--brand-cyan);
+}
+```
+
+---
+
+### HTML — Example 1 · Structure & entities
+
+Covers: `doctype`, `tag`, `attr-name`, `attr-value`, `entity`, `cdata`, `comment`.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Meta & SEO (comment) -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Token showcase page" />
+  <title>Ephraem &mdash; Token Showcase</title>
+  <link rel="stylesheet" href="/assets/css/main.css" />
+  <link rel="icon" type="image/svg+xml" href="/img/Ephraem-white.svg" />
+</head>
+<body>
+
+  <header role="banner">
+    <nav aria-label="Main navigation">
+      <a href="/" class="brand" aria-current="page">
+        EPHRAEM
+      </a>
+      <ul class="nav-list">
+        <li><a href="/wiki/">Wiki</a></li>
+        <li><a href="/blog/">Blog</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="content" tabindex="-1">
+    <article class="post" data-topic="program">
+
+      <h1>Hello &amp; Welcome</h1>
+      <p>
+        Entity references: &lt;angle brackets&gt;, &amp;ampersand,
+        &copy; 2024 Ephraem, non&#8209;breaking&#160;spaces.
+      </p>
+
+      <!-- CDATA section (XML-compatible) -->
+      <script type="text/plain">
+        //<![CDATA[
+          raw content that won't be parsed as markup
+        //]]>
+      </script>
+
+      <figure>
+        <img
+          src="/img/banner.webp"
+          alt="Banner image"
+          width="1200"
+          height="630"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>Figure 1 &mdash; banner screenshot</figcaption>
+      </figure>
+
+    </article>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Ephraem. Built with Docusaurus.</p>
+  </footer>
+
+</body>
+</html>
+```
+
+---
+
+### HTML — Example 2 · Inline `<script>` & `<style>` blocks
+
+Covers: inline JavaScript (language-javascript) and inline CSS (language-css)
+embedded inside HTML — all token types layered.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Inline Blocks</title>
+
+  <!-- Inline style block (language-css tokens inside HTML) -->
+  <style>
+    :root {
+      --brand: #ff1796;
+      --cyan:  #3ad0ff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #0f1013;
+        color:      #f8f8f2;
+      }
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(255, 23, 150, 0.2);
+    }
+
+    .card::after {
+      content:    '';
+      display:    block;
+      background: var(--brand);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app"></div>
+
+  <!-- Inline script block (language-javascript tokens inside HTML) -->
+  <script type="module">
+    import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+
+    const MAX = 100;
+    const PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+    class Counter {
+      #count = 0;
+
+      increment(step = 1) {
+        if (this.#count + step > MAX) throw new RangeError('Exceeded MAX');
+        this.#count += step;
+        return this;
+      }
+
+      get value() { return this.#count; }
+    }
+
+    const counter = new Counter();
+    counter.increment(5).increment(10);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const el = document.querySelector('#app');
+      el.textContent = `Counter: ${counter.value}`;
+      console.log('App mounted', { value: counter.value, max: MAX });
+    });
+  </script>
+
+</body>
+</html>
+```
+
+---
+
+### Bash — variables, functions, control flow
+
+Covers: `comment`, `function`, `variable`, `string`, `keyword`, `builtin`.
+
+```bash
+#!/usr/bin/env bash
+# Deploy script — builds and pushes the wiki to GitHub Pages
+
+set -euo pipefail
+
+# ── Variables ─────────────────────────────────────────────────────────────────
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BUILD_DIR="${REPO_DIR}/build"
+BRANCH="gh-pages"
+REMOTE="${1:-origin}"
+
+# ── Functions ─────────────────────────────────────────────────────────────────
+log()  { echo "[$(date '+%H:%M:%S')] $*"; }
+die()  { echo "ERROR: $*" >&2; exit 1; }
+
+check_deps() {
+  for cmd in git node npm; do
+    command -v "$cmd" &>/dev/null || die "missing dependency: $cmd"
+  done
+}
+
+build() {
+  log "Building site…"
+  cd "$REPO_DIR"
+  npm ci --prefer-offline
+  npm run build
+
+  [[ -d "$BUILD_DIR" ]] || die "build output not found at $BUILD_DIR"
+  log "Build complete → $BUILD_DIR"
+}
+
+deploy() {
+  local commit_msg="deploy: $(git rev-parse --short HEAD) [$(date -u '+%Y-%m-%dT%H:%M:%SZ')]"
+
+  log "Deploying to $REMOTE/$BRANCH…"
+  git -C "$BUILD_DIR" init
+  git -C "$BUILD_DIR" checkout -b "$BRANCH"
+  git -C "$BUILD_DIR" add -A
+  git -C "$BUILD_DIR" commit -m "$commit_msg"
+  git -C "$BUILD_DIR" push -f "$REMOTE" "$BRANCH"
+  log "Done."
+}
+
+# ── Entry point ───────────────────────────────────────────────────────────────
+check_deps
+build
+deploy
+```
+
+---
+
+### JSON — keys, strings, numbers, booleans, null
+
+Covers: `property` (keys), `string`, `number`, `boolean`, `null`.
+
+```json
+{
+  "name": "@ephraem/wiki",
+  "version": "2.1.0",
+  "private": true,
+  "description": "Ephraem personal wiki built with Docusaurus",
+  "author": {
+    "name": "Ephraem",
+    "email": "valentin.gerome2002@gmail.com",
+    "url": "https://blessephraem.github.io"
+  },
+  "keywords": ["docusaurus", "wiki", "personal", "documentation"],
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start":  "docusaurus start",
+    "build":  "docusaurus build",
+    "deploy": "docusaurus deploy",
+    "clear":  "docusaurus clear"
+  },
+  "dependencies": {
+    "@docusaurus/core":             "3.7.0",
+    "@docusaurus/preset-classic":   "3.7.0",
+    "prism-react-renderer":         "^2.4.1"
+  },
+  "config": {
+    "maxRetries":    3,
+    "timeout":       5000,
+    "debug":         false,
+    "featureFlags":  null
+  }
+}
+```
+
+---
+
+### Diff — inserted & deleted lines
+
+Covers: `deleted`, `inserted`, `coord`.
+
+```diff
+@@ -12,9 +12,12 @@ class UserService {
+-  constructor(baseUrl) {
++  constructor(baseUrl, timeout = 5000) {
+     super();
+     this.baseUrl = baseUrl;
++    this.timeout = timeout;
+   }
+ 
+-  fetch(id) {
+-    return fetch(`${this.baseUrl}/users/${id}`).then(r => r.json());
++  async fetch(id) {
++    const res = await fetch(`${this.baseUrl}/users/${id}`, {
++      signal: AbortSignal.timeout(this.timeout),
++    });
++    return res.json();
+   }
+ }
+```
+
+---
+
+### PowerShell — variables, cmdlets, strings, control flow
+
+Covers: `comment`, `variable`, `function`, `string`, `keyword`, `operator`.
+
+```powershell
+# Build & deploy script for Windows
+#Requires -Version 7.0
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+
+# ── Config ─────────────────────────────────────────────────────────────────────
+$RepoDir  = $PSScriptRoot
+$BuildDir = Join-Path $RepoDir 'build'
+$Branch   = 'gh-pages'
+$Remote   = if ($args.Count -gt 0) { $args[0] } else { 'origin' }
+
+# ── Functions ──────────────────────────────────────────────────────────────────
+function Write-Log {
+  param([string]$Message)
+  $ts = Get-Date -Format 'HH:mm:ss'
+  Write-Host "[$ts] $Message" -ForegroundColor Cyan
+}
+
+function Assert-Command {
+  param([string[]]$Commands)
+  foreach ($cmd in $Commands) {
+    if (-not (Get-Command $cmd -ErrorAction SilentlyContinue)) {
+      throw "Missing dependency: $cmd"
+    }
+  }
+}
+
+function Invoke-Build {
+  Write-Log 'Building site…'
+  Set-Location $RepoDir
+  npm ci --prefer-offline
+  npm run build
+
+  if (-not (Test-Path $BuildDir)) {
+    throw "Build output not found at $BuildDir"
+  }
+  Write-Log "Build complete → $BuildDir"
+}
+
+function Invoke-Deploy {
+  $hash = git rev-parse --short HEAD
+  $date = (Get-Date -Format 'yyyy-MM-ddTHH:mm:ssZ')
+  $msg  = "deploy: $hash [$date]"
+
+  Write-Log "Deploying to $Remote/$Branch…"
+  Push-Location $BuildDir
+  git init
+  git checkout -b $Branch
+  git add -A
+  git commit -m $msg
+  git push -f $Remote $Branch
+  Pop-Location
+  Write-Log 'Done.'
+}
+
+# ── Entry point ────────────────────────────────────────────────────────────────
+Assert-Command 'git', 'node', 'npm'
+Invoke-Build
+Invoke-Deploy
+```
+
+---
+
+## 6. Tables
+
+| Column 1 | Column 2 | Column 3 |
+|---|---|---|
+| Data A | Data B | Data C |
+| A longer string here | Centered | `123.45` |
+| **Bold** | _Italic_ | [Link](#) |
+
+---
+
+## 7. Horizontal Rules
+
+Three dashes `---`:
+
+---
+
+Three asterisks `***`:
+
+***
+
+Three underscores `___`:
+
+___
+
+---
+
+## End of test document.

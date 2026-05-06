@@ -1,6 +1,7 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import { createRequire } from 'module';
 import { existsSync } from 'fs';
+import remarkTabs from './plugins/remark-tabs.mjs';
 const require = createRequire(import.meta.url);
 const generatedNav = existsSync('./generated-navbar.json') ? require('./generated-navbar.json') : [];
 const siteConfig = require('../site.config.json');
@@ -18,7 +19,7 @@ const config = {
   url: siteConfig.domain,
   baseUrl: '/wiki/',
 
-  stylesheets: [siteConfig.font],
+  stylesheets: [siteConfig.font, siteConfig.fontCode].filter(Boolean),
 
   organizationName: siteConfig.owner,
   projectName: siteConfig.project,
@@ -29,6 +30,10 @@ const config = {
       onBrokenMarkdownLinks: 'warn',
       onBrokenMarkdownImages: 'warn',
     },
+    preprocessor: ({ fileContent }) =>
+      fileContent
+        .replace(/<!--\s*tabs:start\s*-->/g, '{/* tabs:start */}')
+        .replace(/<!--\s*tabs:end\s*-->/g, '{/* tabs:end */}'),
   },
 
   i18n: {
@@ -48,13 +53,14 @@ const config = {
         docs: {
           sidebarPath: './sidebars.js',
           routeBasePath: '/',
+          remarkPlugins: [remarkTabs],
         },
         blog: false,
         pages: {
           path: './pages',
         },
         theme: {
-          customCss: ['./assets/css/custom.css', './assets/css/icons.css'],
+          customCss: ['./assets/css/custom.css', './assets/css/markdown.css', './assets/css/icons.css', './assets/css/codeblock.css', './assets/css/tabs.css'],
         },
       }),
     ],
@@ -86,8 +92,14 @@ const config = {
         copyright: `© ${new Date().getFullYear()} Ephraem. Built with Docusaurus.`,
       },
       prism: {
-        theme: prismThemes.vsDark,
-        darkTheme: prismThemes.vsDark,
+        theme: {
+          ...prismThemes.vsDark,
+          plain: { ...prismThemes.vsDark.plain, backgroundColor: 'transparent' },
+        },
+        darkTheme: {
+          ...prismThemes.vsDark,
+          plain: { ...prismThemes.vsDark.plain, backgroundColor: 'transparent' },
+        },
         additionalLanguages: ['python', 'json', 'bash', 'powershell'],
       },
     }),

@@ -1,9 +1,9 @@
 import pathlib, os, re, json
+import markdownCleaner
 
 ARCHIVE_FILE = "portfolio-archive.json"
 POSTS_DIR = pathlib.Path("Blog/posts")
 PORTFOLIO_NAV_FILE = pathlib.Path("Blog/generated-blog-portfolio-nav.json")
-
 
 def _load_json(path, default):
     p = pathlib.Path(path)
@@ -15,7 +15,6 @@ def _load_json(path, default):
     except Exception:
         return default
 
-
 def _extract_video_id(url):
     m = re.search(r'[?&]v=([a-zA-Z0-9_-]+)', url)
     if m:
@@ -25,22 +24,23 @@ def _extract_video_id(url):
         return m.group(1)
     return re.sub(r'[^a-zA-Z0-9_-]', '-', url)[-16:]
 
-
 def _build_post_body(video):
     video_id = _extract_video_id(video["url"])
     url = video["url"]
-    lines = [
-        '<iframe',
-        '  width="100%"',
-        '  height="400"',
-        f'  src="https://www.youtube-nocookie.com/embed/{video_id}"',
-        '  frameBorder="0"',
-        '  allowFullScreen',
-        '/>',
-        '',
-        f'[Watch on YouTube]({url})',
-    ]
-    return '\n'.join(lines)
+    
+    # Use centralized cleaner to ensure iframe and attributes are MDX-safe
+    raw_content = (
+        f'<iframe\n'
+        f'  width="100%"\n'
+        f'  height="400"\n'
+        f'  src="https://www.youtube.com/embed/{video_id}"\n'
+        f'  frameborder="0"\n'
+        f'  allowfullscreen\n'
+        f'/>\n\n'
+        f'[Watch on YouTube]({url})'
+    )
+    
+    return markdownCleaner.clean_for_mdx(raw_content, is_wiki=False)
 
 
 def write_portfolio_post(video):

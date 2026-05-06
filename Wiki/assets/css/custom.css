@@ -23,6 +23,7 @@
   --ifm-color-secondary: #3ad0ff;
   --ifm-color-primary-alpha-10: rgba(var(--primary-rgb), 0.1);
   --ifm-color-primary-alpha-07: rgba(var(--primary-rgb), 0.07);
+  --ifm-color-primary-alpha-03: rgba(var(--primary-rgb), 0.03);
   --ifm-font-family-black: 'Satoshi-Black', sans-serif;
   --ifm-font-family-bold: 'Satoshi-Bold', sans-serif;
 
@@ -128,50 +129,6 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--ifm-color-primary-alpha-07);
 }
 
-/* Doc content */
-.markdown h1 {
-  border-bottom: 1px solid var(--glass-border);
-  padding-bottom: 0.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.markdown a {
-  color: var(--ifm-color-secondary);
-  text-decoration: none;
-}
-
-.markdown a:hover {
-  color: var(--ifm-color-primary);
-  text-decoration: underline;
-}
-
-/* Tables */
-.markdown table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-.markdown th,
-.markdown td {
-  border: 0px;
-}
-
-/* Cards */
-
-.markdown a.theme-doc-card-container:hover {
-  text-decoration: none;
-}
-
-.markdown tr:nth-child(even) td {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-/* Code blocks */
-.prism-code {
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-}
-
 /* Footer */
 .footer {
   padding: 16px 0;
@@ -196,59 +153,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .footer__link-item:hover {
   color: var(--ifm-color-secondary);
-}
-
-/* Admonitions */
-.alert--info {
-  background: rgba(var(--secondary-rgb), 0.08);
-  border-color: rgba(var(--secondary-rgb), 0.3);
-}
-
-.alert--warning {
-  background: rgba(255, 187, 0, 0.08);
-  border-color: rgba(255, 187, 0, 0.3);
-}
-
-/* Table of contents */
-.table-of-contents__link:hover,
-.table-of-contents__link--active {
-  color: var(--ifm-color-primary);
-}
-
-/* Hide Table of Contents and remove its column space */
-.table-of-contents,
-.theme-doc-toc-desktop,
-.theme-doc-toc-mobile,
-.col.col--3:not(.theme-doc-sidebar-container) {
-  display: none !important;
-}
-
-/* Center content by overriding Docusaurus grid */
-[class*="docItemCol_"] {
-  max-width: 1000px !important;
-  margin: 0 auto !important;
-  flex: 0 0 100% !important;
-  width: 100% !important;
-}
-
-[class*="docRoot_"] .row {
-  justify-content: center !important;
-}
-
-/* Pagination */
-.pagination-nav__link:hover {
-  border-color: var(--ifm-color-primary);
-}
-
-/* Badge-style kbd from source docs */
-kbd {
-  background: #30363d;
-  color: #e6edf3;
-  border: none;
-  padding: 3px 10px;
-  border-radius: 5px;
-  font-family: inherit;
-  font-size: 0.85em;
 }
 
 /* Navbar category separator */

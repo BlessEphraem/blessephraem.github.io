@@ -1,0 +1,68 @@
+/* ─────────────────────────────────────────────
+   Ephraem Wiki — Code-preview tabs
+   Scoped to .code-tabs (injected by remark-tabs plugin)
+   ───────────────────────────────────────────── */
+
+/* Container */
+.code-tabs {
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+
+/* Tab list — dark header strip */
+.code-tabs .tabs {
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  padding: 0 4px;
+  background: var(--ifm-background-surface-color);
+  border-bottom: 1px solid var(--glass-border);
+  gap: 0;
+}
+
+/* Individual tab button */
+.code-tabs .tabs__item {
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 9px 14px;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  background: transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.code-tabs .tabs__item:hover {
+  color: rgba(255, 255, 255, 0.65);
+  background: transparent;
+}
+
+.code-tabs .tabs__item--active,
+.code-tabs .tabs__item--active:hover {
+  color: var(--ifm-color-primary);
+  border-bottom-color: var(--ifm-color-primary);
+  background: transparent;
+}
+
+/* Tab panel — flush against the header strip */
+.code-tabs .margin-top--md {
+  margin-top: 0 !important;
+}
+
+/* Code block inside tabs: remove its own border-radius (container handles it) */
+.code-tabs div[class*="codeBlockContainer_"] {
+  border-radius: 0 !important;
+  margin: 0;
+  box-shadow: none;
+}
+
+.code-tabs .prism-code {
+  border-radius: 0 !important;
+}

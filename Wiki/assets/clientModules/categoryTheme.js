@@ -18,7 +18,8 @@ function mix(hex, target, t) {
 }
 
 function applyCategory(pathname) {
-  const seg = pathname.replace(/^\/wiki/, '').split('/').filter(Boolean)[0];
+  const segs = pathname.replace(/^\/wiki/, '').split('/').filter(Boolean);
+  const seg  = segs[0] === 'mock' ? segs[1] : segs[0];
   const color = seg ? CATEGORY_COLORS[seg] : null;
   const root = document.documentElement;
 

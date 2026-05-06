@@ -19,7 +19,7 @@ Wiki/generated-navbar.json
 Wiki/pages/tools.json
 Wiki/assets/css/icons.css
 Wiki/assets/img/*/
-Wiki/docs/mock-category
+Wiki/docs/mock/
 Blog/posts/*.md
 Blog/posts/*.mdx
 !Blog/posts/.gitkeep
