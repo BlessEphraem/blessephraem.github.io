@@ -37,7 +37,7 @@ def clean_for_mdx(content, site_cfg=None, img_prefix=None, is_wiki=False):
     def transform_tabs(match):
         inner = match.group(1).strip()
         return f"{{/* tabs:start */}}\n\n{inner}\n\n{{/* tabs:end */}}"
-    content = re.sub(r'<!--\s*tabs\s*\n?(.*?)-->', transform_tabs, content, flags=re.DOTALL)
+    content = re.sub(r'<!--\s*tabs\s*\n(.*?)-->', transform_tabs, content, flags=re.DOTALL)
 
     # 2. HTML Sanitization & JSX Compatibility
     
