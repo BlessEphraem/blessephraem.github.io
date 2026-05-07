@@ -3,11 +3,11 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const path = require('path');
 
 const app = express();
-const PORT = 8080;
+const PORT = 2003;
 
-// 1. Proxy Wiki (Port 4001)
+// 1. Proxy Wiki (Port 2001)
 app.use('/wiki', createProxyMiddleware({
-    target: 'http://127.0.0.1:4001', // Changed from localhost to 127.0.0.1 to avoid Node 18+ IPv6 ECONNREFUSED
+    target: 'http://127.0.0.1:2001',
     changeOrigin: true,
     ws: true, // Enable WebSockets for Hot Reload
     logLevel: 'error',
@@ -16,9 +16,9 @@ app.use('/wiki', createProxyMiddleware({
     }
 }));
 
-// 2. Proxy Blog (Port 4002)
+// 2. Proxy Blog (Port 2002)
 app.use('/news', createProxyMiddleware({
-    target: 'http://127.0.0.1:4002', // Changed from localhost to 127.0.0.1
+    target: 'http://127.0.0.1:2002',
     changeOrigin: true,
     ws: true, // Enable WebSockets for Hot Reload
     logLevel: 'error',

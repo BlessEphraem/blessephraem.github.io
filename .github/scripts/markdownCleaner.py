@@ -108,6 +108,14 @@ def clean_for_mdx(content, site_cfg=None, img_prefix=None, is_wiki=False):
                          lambda m: f'[{m.group(1)}]({transform_url(m.group(2))})', content)
         content = re.sub(r'href="([^"]+)"', lambda m: f'href="{transform_url(m.group(1))}"', content)
 
+    # Handle <!-- tabs-start --> ... <!-- tabs-end --> (list-based format, content visible on GitHub)
+    content = re.sub(
+        r'<!--\s*tabs-start\s*-->(.*?)<!--\s*tabs-end\s*-->',
+        lambda m: '{/* tabs:start */}\n\n' + m.group(1).strip() + '\n\n{/* tabs:end */}',
+        content,
+        flags=re.DOTALL
+    )
+
     # 4. Final comment pass: convert remaining HTML comments to MDX comments
     # This prevents MDX compilation errors while preserving the comments.
     content = re.sub(r'<!--\s*(.*?)\s*-->', r'{/* \1 */}', content, flags=re.DOTALL)

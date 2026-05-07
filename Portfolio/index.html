@@ -42,7 +42,7 @@
         <div class="hero-content">
             <div class="hero-visual">
                 <div class="glow-circle"></div>
-                <img src="/assets/img/Ephraem-pink.svg" alt="Avatar" class="avatar-img" onload="this.style.opacity=1">
+                <img src="/assets/img/Ephraem-pink.svg" alt="Avatar" class="avatar-img" draggable="false" onload="this.style.opacity=1">
             </div>
             <h1>EPHRAEM</h1>
             <div class="dynamic-text-wrapper">
@@ -303,5 +303,37 @@
     <script src="/Portfolio/assets/js/vanilla-tilt.min.js"></script>
     <script src="/Portfolio/assets/js/transitions.js"></script>
     <script src="/Portfolio/assets/js/main.js"></script>
+    <script type="module">
+        import { animate, utils, createDraggable, spring } from 'https://cdn.jsdelivr.net/npm/animejs@4.4.1/dist/bundles/anime.esm.min.js';
+
+        const [$logo] = utils.$('.avatar-img');
+        let rotations = 0;
+
+        // Bounce animation loop (identique à l'exemple)
+        animate('.avatar-img', {
+            scale: [
+                { to: 1.25, ease: 'inOut(3)', duration: 200 },
+                { to: 1, ease: spring({ bounce: .7 }) }
+            ],
+            loop: true,
+            loopDelay: 250,
+        });
+
+        // Draggable (identique à l'exemple)
+        createDraggable('.avatar-img', {
+            container: [0, 0, 0, 0],
+            releaseEase: spring({ bounce: .7 })
+        });
+
+        // Clic sur le logo = rotation (remplace le bouton de l'exemple)
+        $logo.addEventListener('click', () => {
+            rotations++;
+            animate($logo, {
+                rotate: rotations * 360,
+                ease: 'out(4)',
+                duration: 1500,
+            });
+        });
+    </script>
 </body>
 </html>

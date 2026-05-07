@@ -6,19 +6,42 @@
 
 :root {
   --ifm-font-family-monospace: 'JetBrains Mono', monospace;
+  --ifm-pagination-nav-border-radius: 0 !important;
+  --ifm-global-radius: 0 !important;
+
 }
 
 /* ── Code block container ───────────────────── */
-.prism-code {
-  border-radius: 8px;
+
+@layer docusaurus.infima {
+  .margin-top--md {
+    margin-top: 0 !important;
+  }
 }
 
-div[class*="codeBlockContainer_"] {
-  border-radius: 10px;
-  overflow: hidden;
+/* Header */
+.code-tabs {
+  background-color: var(--ifm-color-primary-alpha-10);
+  align-items: center;
+  border-radius: 8px 8px 0 0;
 }
 
+.tabs__item {
+  padding: 0.7em;
+  font-size: 0.8em;
+  font-weight: 100;
+}
+
+.tabs__item--active {
+   border-bottom-color: var(--ifm-tabs-color-active-border);
+   border-bottom-left-radius: 0;
+   border-bottom-right-radius: 0;
+   color: var(--ifm-tabs-color-active);
+}
+
+/* ── Body ───────────────────── */
 code[class*="codeBlockLines_"] {
+  border-radius: 0 0 8px 8px;
   padding: 1rem;
   font-size: 0.78rem;
   letter-spacing: 0.06em;

@@ -1,22 +1,22 @@
 /**
  * remark-tabs — transforms tab marker comments into Docusaurus <Tabs>/<TabItem>.
  *
- * .md files (GitHub-compatible — renders as headings + code blocks on GitHub):
- *   <!-- tabs
- *   #### **JavaScript**
- *   ```javascript
- *   code here
- *   ```
- *   -->
- *   (markdownCleaner.py transforms this into the MDX form below)
- *
- * .mdx files (direct MDX syntax):
+ * Format 1 — heading-based (existing, .mdx or old .md via markdownCleaner):
  *   {/* tabs:start *\/}
  *   #### **JavaScript**
  *   ```javascript
  *   code here
  *   ```
  *   {/* tabs:end *\/}
+ *
+ * Format 2 — list-based (new, GitHub-visible in .md files):
+ *   <!-- tabs-start -->
+ *   * **Label**
+ *
+ *     Tab content here (blank line required between label and content)
+ *
+ *   <!-- tabs-end -->
+ *   (markdownCleaner.py / preprocessor converts markers to tabs:start/tabs:end)
  */
 
 function getText(node) {
@@ -73,6 +73,39 @@ function isComment(node, marker) {
   return false;
 }
 
+function parseListTabs(inner) {
+  const listNode = inner.find(n => n.type === 'list');
+  if (!listNode) return null;
+
+  const tabs = [];
+  for (const listItem of listNode.children) {
+    const [labelNode, ...contentNodes] = listItem.children;
+    if (!labelNode) continue;
+    const label = extractLabel(labelNode);
+    if (!label) continue;
+    tabs.push(makeTabItem(label, contentNodes));
+  }
+  return tabs.length > 0 ? tabs : null;
+}
+
+function parseHeadingTabs(inner) {
+  const tabs  = [];
+  let label   = null;
+  let content = [];
+
+  for (const node of inner) {
+    if (node.type === 'heading' && node.depth === 4) {
+      if (label !== null) tabs.push(makeTabItem(label, content));
+      label   = extractLabel(node);
+      content = [];
+    } else if (label !== null) {
+      content.push(node);
+    }
+  }
+  if (label !== null) tabs.push(makeTabItem(label, content));
+  return tabs.length > 0 ? tabs : null;
+}
+
 export default function remarkTabs() {
   return (tree) => {
     const nodes = tree.children;
@@ -101,27 +134,15 @@ export default function remarkTabs() {
     // Process in reverse so splice doesn't shift later indices
     for (const { start, end } of [...blocks].reverse()) {
       const inner = nodes.slice(start + 1, end);
-      const tabs  = [];
-      let label   = null;
-      let content = [];
 
-      for (const node of inner) {
-        if (node.type === 'heading' && node.depth === 4) {
-          if (label !== null) tabs.push(makeTabItem(label, content));
-          label   = extractLabel(node);
-          content = [];
-        } else if (label !== null) {
-          content.push(node);
-        }
-      }
-      if (label !== null) tabs.push(makeTabItem(label, content));
+      // List-based format takes priority; fall back to heading-based
+      const tabs = parseListTabs(inner) ?? parseHeadingTabs(inner);
 
-      if (tabs.length > 0) {
+      if (tabs && tabs.length > 0) {
         nodes.splice(start, end - start + 1, makeTabs(tabs));
       } else {
         nodes.splice(start, end - start + 1);
       }
     }
-
   };
 }

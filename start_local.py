@@ -26,13 +26,11 @@ def kill_process_tree(pid):
 def free_ports():
     """Forcefully kills any process listening on the required ports using npx kill-port."""
     npx_cmd = "npx.cmd" if os.name == 'nt' else "npx"
-    subprocess.run([npx_cmd, "--yes", "kill-port", "4001", "4002", "8080"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run([npx_cmd, "--yes", "kill-port", "2001", "2002", "2003"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 def run():
     print("=== 1. Checking Dependencies ===")
     check_and_install(".")
-    check_and_install("Wiki")
-    check_and_install("Blog")
 
     print("\n=== 2. Cleaning Orphaned Processes & Generating Mocks ===")
     # Free the ports so Docusaurus doesn't auto-increment to 3489/3490

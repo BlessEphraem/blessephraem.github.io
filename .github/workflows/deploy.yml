@@ -69,29 +69,20 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: |
-            Wiki/package-lock.json
-            Blog/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
-        working-directory: Wiki
 
       - name: Build Docusaurus
-        run: npm run build
-        working-directory: Wiki
+        run: npm run build -w wiki
 
       - name: Prepare Blog assets
         run: |
           mkdir -p Blog/assets/img
 
-      - name: Install Blog dependencies
-        run: npm ci
-        working-directory: Blog
-
       - name: Build Blog
-        run: npm run build
-        working-directory: Blog
+        run: npm run build -w blog
 
       - name: Assemble site
         env:

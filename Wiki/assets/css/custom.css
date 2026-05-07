@@ -68,12 +68,22 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Navbar */
 .navbar {
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--glass-border);
   box-shadow: none;
-  z-index: 100;
+  z-index: var(--ifm-z-index-fixed);
+  background: transparent !important;
   font-family: var(--ifm-font-family-black);
+}
+
+.navbar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--ifm-navbar-background-color);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: none;
 }
 
 .navbar__item, .navbar__link, .navbar__title {
@@ -218,7 +228,7 @@ aside[class*="theme-doc-sidebar-container"],
   padding: 0 !important;
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
   cursor: pointer !important;
-  z-index: 999999 !important; /* Above everything */
+  z-index: 5 !important;
   opacity: 1 !important;
   visibility: visible !important;
 }

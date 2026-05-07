@@ -32,8 +32,10 @@ const config = {
     },
     preprocessor: ({ fileContent }) =>
       fileContent
+        .replace(/<!--\s*tabs-start\s*-->/g, '{/* tabs:start */}')
+        .replace(/<!--\s*tabs-end\s*-->/g,   '{/* tabs:end */}')
         .replace(/<!--\s*tabs:start\s*-->/g, '{/* tabs:start */}')
-        .replace(/<!--\s*tabs:end\s*-->/g, '{/* tabs:end */}'),
+        .replace(/<!--\s*tabs:end\s*-->/g,   '{/* tabs:end */}'),
   },
 
   i18n: {
@@ -60,7 +62,7 @@ const config = {
           path: './pages',
         },
         theme: {
-          customCss: ['./assets/css/custom.css', './assets/css/markdown.css', './assets/css/icons.css', './assets/css/codeblock.css', './assets/css/tabs.css'],
+          customCss: ['./assets/css/custom.css', './assets/css/markdown.css', './assets/css/icons.css', './assets/css/codeblock.css'],
         },
       }),
     ],
@@ -93,12 +95,12 @@ const config = {
       },
       prism: {
         theme: {
-          ...prismThemes.vsDark,
-          plain: { ...prismThemes.vsDark.plain, backgroundColor: 'transparent' },
+          plain: { color: '#f8f8f2', backgroundColor: 'transparent' },
+          styles: [],
         },
         darkTheme: {
-          ...prismThemes.vsDark,
-          plain: { ...prismThemes.vsDark.plain, backgroundColor: 'transparent' },
+          plain: { color: '#f8f8f2', backgroundColor: 'transparent' },
+          styles: [],
         },
         additionalLanguages: ['python', 'json', 'bash', 'powershell'],
       },
