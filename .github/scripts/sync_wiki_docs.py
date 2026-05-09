@@ -341,7 +341,8 @@ for prog in PROGRAMS:
     repo = prog["repo"]
     category = prog["category"]
     slug = slugify(repo)
-    path = f"Wiki/docs/{category}/{slug}/releases.mdx"
+    prog_dir = pathlib.Path(f"Wiki/docs/{category}/{slug}")
+    path = str(prog_dir / "releases.mdx")
     doc_id = "releases"
     title = "📥 Releases"
 
@@ -355,12 +356,81 @@ for prog in PROGRAMS:
         print(f"No latest release for {owner}/{repo} (skipping).")
         continue
     content = build_release_markdown(data)
-    next_id = f"{category}/{slug}/index"
-    frontmatter = f"---\nid: {doc_id}\ntitle: {title}\nsidebar_position: 0\npagination_prev: null\npagination_next: {next_id}\n---"
+
+    # Find installation file (case-insensitive match for install.mdx / installation.mdx)
+    install_mdx = None
+    for _f in sorted(prog_dir.glob("*.mdx")):
+        if _f.stem.lower() in ("install", "installation"):
+            install_mdx = _f
+            break
+
+    # Collect candidates for the first "next" doc after releases in sidebar order
+    _other_top = sorted(
+        [_f for _f in prog_dir.glob("*.mdx")
+         if _f.stem not in ("index", "releases") and _f.stem.lower() not in ("install", "installation")],
+        key=lambda _f: _f.stem.lower()
+    )
+    _subdirs = sorted(
+        [_d for _d in prog_dir.iterdir()
+         if _d.is_dir() and not _d.name.startswith(".") and (_d / "_category_.json").exists()],
+        key=lambda _d: _d.name.lower()
+    )
+    _candidates = []
+    for _f in _other_top:
+        _candidates.append((_f.stem.lower(), f"{category}/{slug}/{_f.stem}"))
+    for _d in _subdirs:
+        _cat_data = json.loads((_d / "_category_.json").read_text(encoding="utf-8"))
+        _link = _cat_data.get("link", {})
+        if _link.get("type") == "doc":
+            _candidates.append((_d.name.lower(), _link["id"]))
+        else:
+            _children = sorted(_d.glob("*.mdx"), key=lambda _f: _f.stem.lower())
+            if _children:
+                _candidates.append((_d.name.lower(), f"{category}/{slug}/{_d.name}/{_children[0].stem}"))
+    _candidates.sort(key=lambda x: x[0])
+    next_after_releases = _candidates[0][1] if _candidates else "null"
+
+    if install_mdx:
+        _install_doc_id = f"{category}/{slug}/{install_mdx.stem}"
+        frontmatter = (
+            f"---\nid: {doc_id}\ntitle: {title}\nsidebar_position: 1\n"
+            f"pagination_prev: {_install_doc_id}\npagination_next: {next_after_releases}\n---"
+        )
+    else:
+        frontmatter = (
+            f"---\nid: {doc_id}\ntitle: {title}\nsidebar_position: 0\n"
+            f"pagination_prev: null\npagination_next: {next_after_releases}\n---"
+        )
     try:
         write_doc(path, frontmatter, content, slug)
     except Exception as e:
         print(f"ERROR writing release page for {owner}/{repo}: {e}")
+        continue
+
+    # Update installation file: set sidebar_position 0, fix pagination
+    if install_mdx:
+        try:
+            _text = install_mdx.read_text(encoding="utf-8")
+            _fm_end = _text.find("---", 3) if _text.startswith("---") else -1
+            if _fm_end != -1:
+                _fm_body = _text[3:_fm_end].strip()
+                _doc_body = _text[_fm_end + 3:].lstrip("\n")
+                _fm_fields = {}
+                for _line in _fm_body.splitlines():
+                    if ":" in _line:
+                        _k, _, _v = _line.partition(":")
+                        _fm_fields[_k.strip()] = _v.strip()
+            else:
+                _fm_fields = {}
+                _doc_body = _text
+            _fm_fields["sidebar_position"] = "0"
+            _fm_fields["pagination_prev"] = "null"
+            _fm_fields["pagination_next"] = f"{category}/{slug}/releases"
+            _fm_out = "---\n" + "\n".join(f"{_k}: {_v}" for _k, _v in _fm_fields.items()) + "\n---"
+            install_mdx.write_text(_fm_out + "\n\n" + _doc_body, encoding="utf-8")
+            print(f"Updated installation pagination: {install_mdx}")
+        except Exception as e:
+            print(f"ERROR updating installation file for {owner}/{repo}: {e}")
 
 print("Done.")
 
