@@ -139,7 +139,7 @@ def rewrite_readme_absolute_paths(content, owner, repo, branch='main'):
     return content
 
 def rewrite_media(content, img_prefix):
-    content = re.sub(r'\.docs/(?:\.\.?/)?medias/', f'/wiki/img/{img_prefix}/', content)
+    content = re.sub(r'(?:[^"\'<>\s]*/)?\.docs/(?:\.\.?/)?medias/', f'/wiki/img/{img_prefix}/', content)
     content = re.sub(r'(?:\.\.?/)?medias/', f'/wiki/img/{img_prefix}/', content)
     content = re.sub(rf'(?<!/wiki)/img/{re.escape(img_prefix)}/', f'/wiki/img/{img_prefix}/', content)
     return content
