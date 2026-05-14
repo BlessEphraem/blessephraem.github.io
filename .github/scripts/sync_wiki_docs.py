@@ -326,7 +326,11 @@ for prog in PROGRAMS:
         json.dumps({"label": display_name, "link": {"type": "doc", "id": f"{category}/{slug}/index"}}),
         encoding="utf-8"
     )
-    fetch_directory_recursively(owner, repo, ".docs", str(prog_dir), slug)
+    _docs_path = ".docs"
+    if fetch_json(f"https://api.github.com/repos/{owner}/{repo}/contents/.docs") is None:
+        if fetch_json(f"https://api.github.com/repos/{owner}/{repo}/contents/src/.docs") is not None:
+            _docs_path = "src/.docs"
+    fetch_directory_recursively(owner, repo, _docs_path, str(prog_dir), slug)
 
     child_docs = [f for f in prog_dir.rglob("*.mdx") if f.name != "index.mdx"]
     index_path = prog_dir / "index.mdx"
